@@ -1,0 +1,9 @@
+background_color: '#ffffff'
+displays: 
+  CPU:
+    temp: True
+    util: True 
+  GPU:
+    temp:
+    util:
+    

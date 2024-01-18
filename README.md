@@ -13,9 +13,11 @@ git clone git@github.com:blakekrpec/pypi_monitor.git
 
 To install OpenHardwareMonitor, grab the latest release [here](https://github.com/hexagon-oss/openhardwaremonitor/releases). Then follow the setup guide to complete installation. 
 
-Launch OpenHardwareMonitor and make the following changes to settings: TODO
+Launch OpenHardwareMonitor and make the following changes to settings:
 
-
+    Enable run on startup
+    Enable web server
+    Enable remote access for the web server
 
 ### Client 
 The client is a Qt GUI written in python intended to run on a RaspberryPi. However, being in python, portability to other OS shouldn't be too painful. 
@@ -35,4 +37,20 @@ Start the client GUI
 client
 ```
 
+On Windows Setup:
+
+create venv
+```
+python -m venv .pypi_monitor
+```
+source venv
+```
+.\pypi_monitor\Scripts\activate
+```
+install pypi_monitor 
+```
+pip install -e \src\pypi_monitor
+```
+
+Can now run code.
 
