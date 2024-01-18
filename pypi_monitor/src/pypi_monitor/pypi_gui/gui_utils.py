@@ -5,11 +5,7 @@
     #this class will take in the client data and update the display as needed
     #first we will just print the number, but then later we can move on ot more advanced options
 
-import sys
-import os
-import yaml
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QColorDialog, QTabWidget, QWidget
-from PyQt5.QtGui import QIcon, QColor
+from PyQt5.QtGui import QColor
 
 #Set the background color for the main window
 def set_main_background_color(main_window, color):

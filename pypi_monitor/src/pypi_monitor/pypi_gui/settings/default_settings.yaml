@@ -1,8 +1,12 @@
 background_color: '#454545'
 displays: 
   CPU:
+    enabled: True
     temp: True
     util: True 
+    color: '#454545'
   GPU:
+    enabled: True
     temp: True
     util: True
+    color: '#454545'
