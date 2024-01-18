@@ -1,4 +1,4 @@
-background_color: '#ffffff'
+background_color: '#454545'
 displays: 
   CPU:
     temp: True
