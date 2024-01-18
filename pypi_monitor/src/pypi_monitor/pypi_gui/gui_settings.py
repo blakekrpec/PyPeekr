@@ -41,12 +41,43 @@ class ViewSettingsPage(QWidget):
             self.main_window.settings["background_color"] = color.name() #get hex color code
             gui_utils.set_main_background_color(self.main_window, color) #set main window color
 
+
+#create a CPU tab under displays page
+class CPUPage(QWidget):
+    def __init__(self, main_window, parent=None):
+        super(CPUPage, self).__init__(parent)
+        self.main_window = main_window
+        self.layout = QVBoxLayout(self)
+        self.setLayout(self.layout)
+
+#create a GPU tab under displays page
+class GPUPage(QWidget):
+    def __init__(self, main_window, parent=None):
+        super(GPUPage, self).__init__(parent)
+        self.main_window = main_window
+        self.layout = QVBoxLayout(self)
+        self.setLayout(self.layout)
+
+#the dialog ot run when the displays page is opened
 class DisplaysDialog(QDialog):
     def __init__(self, main_window, parent=None):
         super(DisplaysDialog, self).__init__(parent)
         self.setWindowTitle('Displays')
         self.setGeometry(200, 200, 400, 300)
         self.main_window = main_window
+
+        # Create a tab widget
+        self.tab_widget = QTabWidget()
+
+        # Create and add pages to the tab widget
+        self.file_settings_page = CPUPage(self)
+        self.view_settings_page = GPUPage(main_window, self)  # Pass main_window to ViewSettingsPage
+        self.tab_widget.addTab(self.file_settings_page, 'CPU')
+        self.tab_widget.addTab(self.view_settings_page, 'GPU')
+
+        layout = QVBoxLayout(self)
+        #add in the widgets we defined
+        layout.addWidget(self.tab_widget)
         
 
 #define the settings controller
