@@ -64,6 +64,7 @@ Current design:
 
 
 
-Up next: 
-    get the pane manager working 
-        it will need its own color manager
+Done: 
+    Have a QDialog Window for displays
+Next:
+    Add Toggles to this dialog window to enable certain displays 

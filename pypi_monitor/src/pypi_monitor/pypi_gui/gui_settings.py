@@ -20,10 +20,19 @@ class ViewSettingsPage(QWidget):
         self.layout = QVBoxLayout(self)
         self.setLayout(self.layout)
 
+
         # Add the "Pick Color" button to the View tab and hook into pick_color()
         self.color_button = QPushButton('Pick Color')
         self.color_button.clicked.connect(self.pick_color)
         self.layout.addWidget(self.color_button)
+
+        #init dialog for displays options
+        self.displays_dialog = DisplaysDialog(parent)
+
+        #add displays button 
+        self.displays_button = QPushButton('Displays')
+        self.displays_button.clicked.connect(self.displays_dialog.exec_)
+        self.layout.addWidget(self.displays_button)
 
     #use the built in Qt color selector 
     def pick_color(self):
@@ -32,12 +41,21 @@ class ViewSettingsPage(QWidget):
             self.main_window.settings["background_color"] = color.name() #get hex color code
             gui_utils.set_main_background_color(self.main_window, color) #set main window color
 
+class DisplaysDialog(QDialog):
+    def __init__(self, main_window, parent=None):
+        super(DisplaysDialog, self).__init__(parent)
+        self.setWindowTitle('Displays')
+        self.setGeometry(200, 200, 400, 300)
+        self.main_window = main_window
+        
+
 #define the settings controller
 class SettingsController:
     def __init__(self, parent):
         self.parent = parent
         self.settings_dialog = SettingsDialog(parent)
 
+    #this function is called to open the QDialog settings page
     def open_settings(self):
         self.settings_dialog.exec_()
 

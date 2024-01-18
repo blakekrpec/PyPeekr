@@ -27,8 +27,15 @@ class MainWindow(QMainWindow):
         self.settings_controller = gui_settings.SettingsController(self)
         self.settings_button.clicked.connect(self.settings_controller.open_settings)
 
+
+
         #initial load and update of settings 
         self.settings_controller.settings_dialog.load_settings()
+
+
+        # #setup the pane manaager 
+        self.pane_manager = gui_utils.PaneManager(self)
+
         self.update_settings()
 
     #update all necessary changes
