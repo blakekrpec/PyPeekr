@@ -109,8 +109,6 @@ class SettingsDialog(QDialog):
         script_dir = os.path.dirname(os.path.abspath(__file__))
         settings_file = os.path.join(script_dir, file_path)
         with open(settings_file, 'w') as file:
-            print("trying to yaml dump")
-            print(self.main_window.settings)
             yaml.dump(self.main_window.settings, file, default_flow_style=False)
 
     #reset all settings to defaults 

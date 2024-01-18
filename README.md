@@ -64,8 +64,6 @@ Current design:
 
 
 
-Current status, working on breaking out settings into its own file.
-
-TODO:
-    add an update_settings call to MainWindow
-        we will call this anytime settings are reset, or loaded so that all settings that need to be updated are. Now we just have color but this will be important in the future as we have more settings 
+Up next: 
+    get the pane manager working 
+        it will need its own color manager
