@@ -26,7 +26,7 @@ The client lives in the pypi_monitor pip package. The setup.sh script included w
 
 Run the setup
 ```
-./setup.sh
+./linux)setup.sh
 ```
 Source the python virtual environment
 ```
@@ -34,7 +34,7 @@ source .pypi_monitor/bin/activate
 ```
 Start the client GUI
 ```
-client
+
 ```
 
 On Windows Setup:
@@ -49,8 +49,15 @@ source venv
 ```
 install pypi_monitor 
 ```
-pip install -e \src\pypi_monitor
+pip install -e \pypi_monitor
 ```
 
 Can now run code.
 
+Current design:
+
+- Client will be a RasPi on the LAN with a systemctl service to run the gui on startup.
+
+- Server
+    - On Linux, we will need to write our own server, or get the OpenHardwareMonitor.exe to run on Linux.
+    - On Windows, the OpenHardwareMonitor REST API will be used. We should consider adding an abstraction layer that takes info from OpenHardwareMonitor and then makes it more portable, currently there is a ton of info and really we may only want CPU and GPU. 

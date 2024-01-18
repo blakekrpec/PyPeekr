@@ -3,7 +3,7 @@ name = "pypi_monitor"
 version = "1.0.0"
 description = "Python package that contains server and client for using RasPi as a PC Sysytem Monitor."
 authors = ["Blake Krpec"]
-readme = ["README.md"]
+readme = ["../README.md"]
 
 [tool.poetry.dependencies]
 python = ">=3.6.0"

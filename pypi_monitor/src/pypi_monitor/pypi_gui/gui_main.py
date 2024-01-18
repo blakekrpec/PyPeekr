@@ -8,9 +8,12 @@ from PyQt5.QtGui import QIcon, QColor
 
     #create main window 
 
-    #establish settings dialog and controller 
+    #establish settings dialog and controller classes
 
     #call settings loader from settings dialog to load settings.yaml in 
+
+    #start the client.py class to begin pc stat data stream
+        #the settings object will be an input to the client Class
 
     #def set_background color 
 
