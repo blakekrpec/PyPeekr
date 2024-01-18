@@ -61,3 +61,11 @@ Current design:
 - Server
     - On Linux, we will need to write our own server, or get the OpenHardwareMonitor.exe to run on Linux.
     - On Windows, the OpenHardwareMonitor REST API will be used. We should consider adding an abstraction layer that takes info from OpenHardwareMonitor and then makes it more portable, currently there is a ton of info and really we may only want CPU and GPU. 
+
+
+
+Current status, working on breaking out settings into its own file.
+
+TODO:
+    add an update_settings call to MainWindow
+        we will call this anytime settings are reset, or loaded so that all settings that need to be updated are. Now we just have color but this will be important in the future as we have more settings 

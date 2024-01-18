@@ -1,9 +1,8 @@
-background_color: '#ffffff'
-displays: 
+background_color: '#454545'
+displays:
   CPU:
-    temp: True
-    util: True 
+    temp: true
+    util: true
   GPU:
-    temp:
-    util:
-    
+    temp: true
+    util: true
