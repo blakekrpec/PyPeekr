@@ -68,3 +68,9 @@ Done:
     Have a QDialog Window for displays
 Next:
     Add Toggles to this dialog window to enable certain displays 
+        started on cpu toggle 
+            1 comment code I have
+            2 make the buttons update the global main_window.settings fields as well 
+
+Notes:
+    - In the code all Qt toggle buttons are set to False by default. This is because false state of these buttons is "pressed" which to me should bee "true. Anyways, just be careful because the state of the switch in memory may be different than what it looks like on scree. i.e. a "False/unpressed" button is treated as "True/Enabled/depressed" button for the user. 

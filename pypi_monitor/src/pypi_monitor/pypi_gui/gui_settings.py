@@ -50,6 +50,44 @@ class CPUPage(QWidget):
         self.layout = QVBoxLayout(self)
         self.setLayout(self.layout)
 
+        buttons_layout = QHBoxLayout()
+
+        self.cpu_enable_button = QPushButton("Enable CPU", self)
+        self.cpu_enable_button.setCheckable(False)
+        self.cpu_enable_button.setChecked(True)  
+        self.cpu_enable_button.clicked.connect(lambda: self.cpu_button_logic(self.cpu_enable_button))
+        self.layout.addWidget(self.cpu_enable_button)
+
+        self.cpu_temp_button = QPushButton("CPU Temp", self)
+        self.cpu_temp_button.setCheckable(False)
+        self.cpu_temp_button.setChecked(True) 
+        self.cpu_temp_button.clicked.connect(lambda: self.cpu_button_logic("temp"))
+        self.layout.addWidget(self.cpu_temp_button)
+        
+        self.cpu_util_button = QPushButton("CPU Temp", self)
+        self.cpu_util_button.setCheckable(False)
+        self.cpu_util_button.setChecked(True) 
+        self.cpu_util_button.clicked.connect(lambda: self.cpu_button_logic("temp"))
+        self.layout.addWidget(self.cpu_util_button)
+
+    def cpu_button_logic(self, button):
+        if button == self.cpu_enable_button:
+            if button.isChecked():
+                self.cpu_temp_button.setChecked(False)
+                self.cpu_util_button.setChecked(False)
+
+                #update main.windows.settings
+            else:
+                self.cpu_temp_button.setChecked(True)
+                self.cpu_util_button.setChecked(True)
+                #update main.windows.settings
+        #if cpu temp
+            # if cpu is enabled 
+                #set buttons 
+                #set main_window.settings
+
+
+
 #create a GPU tab under displays page
 class GPUPage(QWidget):
     def __init__(self, main_window, parent=None):
