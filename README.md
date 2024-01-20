@@ -52,7 +52,7 @@ source venv
 ```
 install pypi_monitor 
 ```
-pip install -e \pypi_monitor
+pip install -e .\pypi_monitor
 ```
 run code 
 ```
