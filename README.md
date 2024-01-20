@@ -69,7 +69,7 @@ Current design:
 
 
 
-Done: 
+- Done: 
     - Files separated for readability 
     - Settings functionality done (save and reset)
     - Settings button added to open settings dialog
@@ -79,6 +79,7 @@ Done:
     - Displays dialog done, has cpu and gpu tab
     - CPU and GPU tabs fleshed out, and now update the global settings in memory when interacted with.  
     - Added "gui" command with poetry to run the gui easily
-Next:
+
+- Next:
     - Create the pane manager. Will read from global settings and then spawn the number of panes with correct color, and temp util selections. 
     - Remove the enable button from cpu and gpu pages, but keep the enabled value in settings. It should work where if temp or util is selected for CPU or GPU, then the enabled value in settings is true, if none are selected then set enabled value to false in settings. This will mean we only have to check one value in settings to see if any cpu values are selected, but will remove the enabled button since it is kind of redundant.
