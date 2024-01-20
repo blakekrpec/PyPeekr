@@ -1,6 +1,6 @@
 import os
 import yaml
-from PyQt5.QtWidgets import QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QColorDialog, QTabWidget, QWidget
+from PyQt6.QtWidgets import QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QColorDialog, QTabWidget, QWidget
 
 from pypi_monitor.pypi_gui import gui_utils
 from pypi_monitor.pypi_gui import gui_main
@@ -31,7 +31,7 @@ class ViewSettingsPage(QWidget):
 
         #add displays button 
         self.displays_button = QPushButton('Displays')
-        self.displays_button.clicked.connect(self.displays_dialog.exec_)
+        self.displays_button.clicked.connect(self.displays_dialog.exec)
         self.layout.addWidget(self.displays_button)
 
     #use the built in Qt color selector 
@@ -278,7 +278,7 @@ class SettingsController:
 
     #this function is called to open the QDialog settings page
     def open_settings(self):
-        self.settings_dialog.exec_()
+        self.settings_dialog.exec()
 
 #define the settings dialog as a QDialog 
 class SettingsDialog(QDialog):
