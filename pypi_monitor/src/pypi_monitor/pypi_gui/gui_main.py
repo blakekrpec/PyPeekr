@@ -57,7 +57,7 @@ def run_app():
     app = QApplication(sys.argv)
     main_window = MainWindow()
     main_window.show()
-    sys.exit(app.exec_())    
+    sys.exit(app.exec())    
 
 #run the app
 if __name__ == '__main__':
