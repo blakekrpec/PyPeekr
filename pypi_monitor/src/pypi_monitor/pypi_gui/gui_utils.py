@@ -5,8 +5,8 @@
     #this class will take in the client data and update the display as needed
     #first we will just print the number, but then later we can move on ot more advanced options
 
-from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QWidget
+from PyQt6.QtGui import QColor
+from PyQt6.QtWidgets import QWidget
 
 
 #Set the background color for the main window

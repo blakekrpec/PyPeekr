@@ -1,6 +1,9 @@
 #! /bin/bash
 CODENAME=$(sed -n -e '/DISTRIB_CODENAME/ s/.*\= *//p' /etc/lsb-release)
 
+#weird step needed for qt6 to run on 22.04
+sudo apt install libxcb-cursor0
+
 #check for python3
 if command -v python3 &>/dev/null; then
     echo "Python 3 is already installed."
