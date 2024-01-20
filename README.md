@@ -20,13 +20,16 @@ Launch OpenHardwareMonitor and make the following changes to settings:
     Enable remote access for the web server
 
 ### Client 
-The client is a Qt GUI written in python intended to run on a RaspberryPi. However, being in python, portability to other OS shouldn't be too painful. 
+The client will be written in python and will listen for data from server, and send it to the gui to be displayed. 
 
-The client lives in the pypi_monitor pip package. The setup.sh script included will create a python virtual environment for you, and install pypi_monitor in it.
+### GUI
+The gui is written in python with Qt. It spawns a client to listen to data from server, and displays it in the gui.
+
+The gui, and client live in the pypi_monitor pip package. The linux_setup.sh script included will create a python virtual environment for you, and install pypi_monitor in it.
 
 Run the setup
 ```
-./linux)setup.sh
+./linux_setup.sh
 ```
 Source the python virtual environment
 ```
@@ -34,7 +37,7 @@ source .pypi_monitor/bin/activate
 ```
 Start the client GUI
 ```
-
+gui
 ```
 
 On Windows Setup:
@@ -51,8 +54,10 @@ install pypi_monitor
 ```
 pip install -e \pypi_monitor
 ```
-
-Can now run code.
+run code 
+```
+gui
+```
 
 Current design:
 
@@ -65,12 +70,15 @@ Current design:
 
 
 Done: 
-    Have a QDialog Window for displays
+    - Files separated for readability 
+    - Settings functionality done (save and reset)
+    - Settings button added to open settings dialog
+    - Settings dialog has file and view tabs 
+    - View tab added pick color ability 
+    - View tab added displays button for displays dialog
+    - Displays dialog done, has cpu and gpu tab
+    - CPU and GPU tabs fleshed out, and now update the global settings in memory when interacted with.  
+    - Added "gui" command with poetry to run the gui easily
 Next:
-    Add Toggles to this dialog window to enable certain displays 
-        started on cpu toggle 
-            1 comment code I have
-            2 make the buttons update the global main_window.settings fields as well 
-
-Notes:
-    - In the code all Qt toggle buttons are set to False by default. This is because false state of these buttons is "pressed" which to me should bee "true. Anyways, just be careful because the state of the switch in memory may be different than what it looks like on scree. i.e. a "False/unpressed" button is treated as "True/Enabled/depressed" button for the user. 
+    - Create the pane manager. Will read from global settings and then spawn the number of panes with correct color, and temp util selections. 
+    - Remove the enable button from cpu and gpu pages, but keep the enabled value in settings. It should work where if temp or util is selected for CPU or GPU, then the enabled value in settings is true, if none are selected then set enabled value to false in settings. This will mean we only have to check one value in settings to see if any cpu values are selected, but will remove the enabled button since it is kind of redundant.

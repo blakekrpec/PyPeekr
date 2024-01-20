@@ -3,10 +3,11 @@ import yaml
 from PyQt5.QtWidgets import QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QColorDialog, QTabWidget, QWidget
 
 from pypi_monitor.pypi_gui import gui_utils
+from pypi_monitor.pypi_gui import gui_main
 
 #create a file tab on settings page
 class FileSettingsPage(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, main_window, parent=None):
         super(FileSettingsPage, self).__init__(parent)
         self.layout = QVBoxLayout(self)
         # Add your file settings widgets here
@@ -20,14 +21,13 @@ class ViewSettingsPage(QWidget):
         self.layout = QVBoxLayout(self)
         self.setLayout(self.layout)
 
-
         # Add the "Pick Color" button to the View tab and hook into pick_color()
         self.color_button = QPushButton('Pick Color')
         self.color_button.clicked.connect(self.pick_color)
         self.layout.addWidget(self.color_button)
 
         #init dialog for displays options
-        self.displays_dialog = DisplaysDialog(parent)
+        self.displays_dialog = DisplaysDialog(main_window)
 
         #add displays button 
         self.displays_button = QPushButton('Displays')
@@ -42,7 +42,7 @@ class ViewSettingsPage(QWidget):
             gui_utils.set_main_background_color(self.main_window, color) #set main window color
 
 
-#create a CPU tab under displays page
+#create a CPU tab in displays page
 class CPUPage(QWidget):
     def __init__(self, main_window, parent=None):
         super(CPUPage, self).__init__(parent)
@@ -50,51 +50,203 @@ class CPUPage(QWidget):
         self.layout = QVBoxLayout(self)
         self.setLayout(self.layout)
 
-        buttons_layout = QHBoxLayout()
+        #create button to change color of cpu pannel
+        self.cpu_color_button = QPushButton("CPU Panel Color", self)
+        self.cpu_color_button.setCheckable(False)
+        self.cpu_color_button.clicked.connect(lambda: self.cpu_color()) #link button to color picker fxn
+        self.layout.addWidget(self.cpu_color_button)
 
+        #create button to enable CPU stats 
         self.cpu_enable_button = QPushButton("Enable CPU", self)
-        self.cpu_enable_button.setCheckable(False)
-        self.cpu_enable_button.setChecked(True)  
-        self.cpu_enable_button.clicked.connect(lambda: self.cpu_button_logic(self.cpu_enable_button))
+        self.cpu_enable_button.setCheckable(True)
+        self.cpu_enable_button.setChecked(main_window.settings["displays"]["CPU"]["enabled"])  #set cpu to enabled or disabled based on settings.yaml
+        self.cpu_enable_button.clicked.connect(lambda: self.cpu_button_logic(self.cpu_enable_button)) #link to cpu button fxn
         self.layout.addWidget(self.cpu_enable_button)
 
+        #create button to enable CPU temp stats
         self.cpu_temp_button = QPushButton("CPU Temp", self)
-        self.cpu_temp_button.setCheckable(False)
-        self.cpu_temp_button.setChecked(True) 
-        self.cpu_temp_button.clicked.connect(lambda: self.cpu_button_logic("temp"))
+        self.cpu_temp_button.setCheckable(True)
+        self.cpu_temp_button.setChecked(main_window.settings["displays"]["CPU"]["temp"]) #set cpu temp to enabled or disabled based on settings.yaml
+        self.cpu_temp_button.clicked.connect(lambda: self.cpu_button_logic(self.cpu_temp_button)) #link to cpu button fxn
         self.layout.addWidget(self.cpu_temp_button)
         
+        #create button to enable CPU util stats
         self.cpu_util_button = QPushButton("CPU Temp", self)
-        self.cpu_util_button.setCheckable(False)
-        self.cpu_util_button.setChecked(True) 
-        self.cpu_util_button.clicked.connect(lambda: self.cpu_button_logic("temp"))
+        self.cpu_util_button.setCheckable(True)
+        self.cpu_util_button.setChecked(main_window.settings["displays"]["CPU"]["util"]) #set cpu util to enabled or disabled based on settings.yaml
+        self.cpu_util_button.clicked.connect(lambda: self.cpu_button_logic(self.cpu_util_button))#link to cpu button fxn
         self.layout.addWidget(self.cpu_util_button)
+    
+    #use the built in Qt color selector 
+    def cpu_color(self):
+        color = QColorDialog.getColor()
+        if color.isValid():
+            self.main_window.settings["displays"]["CPU"]["color"] = color.name() #get hex color code and store in global settings
+        #call the settings updater
+        self.main_window.update_settings() 
 
+    #fxn to control the logic behind all cpu buttons 
     def cpu_button_logic(self, button):
+        #if the user clicked enable button
         if button == self.cpu_enable_button:
+            #if it was clicked to true/on
             if button.isChecked():
-                self.cpu_temp_button.setChecked(False)
-                self.cpu_util_button.setChecked(False)
-
-                #update main.windows.settings
-            else:
+                #set temp and stat buttons to true, and update settings to show all cpu settings are now true
                 self.cpu_temp_button.setChecked(True)
+                self.main_window.settings["displays"]["CPU"]["temp"] = True
                 self.cpu_util_button.setChecked(True)
-                #update main.windows.settings
-        #if cpu temp
-            # if cpu is enabled 
-                #set buttons 
-                #set main_window.settings
+                self.main_window.settings["displays"]["CPU"]["util"] = True
+                self.main_window.settings["displays"]["CPU"]["enabled"] = True
+            #if it was clicked to false/off
+            else:
+                #set temp and stat buttons to false, and update settings to show all cpu settings are now false
+                self.cpu_temp_button.setChecked(False)
+                self.main_window.settings["displays"]["CPU"]["temp"] = False
+                self.cpu_util_button.setChecked(False)
+                self.main_window.settings["displays"]["CPU"]["util"] = False
+                self.main_window.settings["displays"]["CPU"]["enabled"] = False
+
+        #if the cpu temp button was pressed
+        if button == self.cpu_temp_button:
+            #if cpu is currently enabled 
+            if self.main_window.settings["displays"]["CPU"]["enabled"] == True:
+                #if button was clicked to true/on
+                if button.isChecked():
+                    #update settings
+                    self.main_window.settings["displays"]["CPU"]["temp"] = True
+                #if button was clicked to false/off
+                else:
+                    #update settings
+                    self.main_window.settings["displays"]["CPU"]["temp"] = False
+            #if cpu is not enabled, ignore request to change state of temp and force it to false
+            else:
+                self.cpu_temp_button.setChecked(False)
+
+        #if the cpu temp button was pressed
+        if button == self.cpu_util_button:
+            #if cpu is currently enabled 
+            if self.main_window.settings["displays"]["CPU"]["enabled"] == True:
+                #if button was clicked to true/on
+                if button.isChecked():
+                    #update settings
+                    self.main_window.settings["displays"]["CPU"]["util"] = True
+                #if button was clicked to false/off
+                else:
+                    #update settings 
+                    self.main_window.settings["displays"]["CPU"]["util"] = False
+            #if cpu is not enabled, ignore request to change state of util and force it to false
+            else:
+                self.cpu_util_button.setChecked(False)
+        #if both temp and util are disabled, then set cpu enabled to false in settings, and set the button to false
+        if self.main_window.settings["displays"]["CPU"]["util"] == False and self.main_window.settings["displays"]["CPU"]["util"] == False:
+            self.main_window.settings["displays"]["CPU"]["enabled"] = False
+            self.cpu_enable_button.setChecked(False)
+        #call the main settings updater
+        self.main_window.update_settings()               
 
 
 
-#create a GPU tab under displays page
+#create a GPU tab in displays page
 class GPUPage(QWidget):
     def __init__(self, main_window, parent=None):
         super(GPUPage, self).__init__(parent)
         self.main_window = main_window
         self.layout = QVBoxLayout(self)
         self.setLayout(self.layout)
+
+        #create button to change color of gpu pannel
+        self.gpu_color_button = QPushButton("GPU Panel Color", self)
+        self.gpu_color_button.setCheckable(False)
+        self.gpu_color_button.clicked.connect(lambda: self.gpu_color()) #link button to color picker fxn
+        self.layout.addWidget(self.gpu_color_button)
+
+        #create button to enable GPU stats 
+        self.gpu_enable_button = QPushButton("Enable GPU", self)
+        self.gpu_enable_button.setCheckable(True)
+        self.gpu_enable_button.setChecked(main_window.settings["displays"]["GPU"]["enabled"])  #set gpu to enabled or disabled based on settings.yaml
+        self.gpu_enable_button.clicked.connect(lambda: self.gpu_button_logic(self.gpu_enable_button)) #link to gpu button fxn
+        self.layout.addWidget(self.gpu_enable_button)
+
+        #create button to enable GPU temp stats
+        self.gpu_temp_button = QPushButton("GPU Temp", self)
+        self.gpu_temp_button.setCheckable(True)
+        self.gpu_temp_button.setChecked(main_window.settings["displays"]["GPU"]["temp"]) #set gpu temp to enabled or disabled based on settings.yaml
+        self.gpu_temp_button.clicked.connect(lambda: self.gpu_button_logic(self.gpu_temp_button)) #link to gpu button fxn
+        self.layout.addWidget(self.gpu_temp_button)
+        
+        #create button to enable GPU util stats
+        self.gpu_util_button = QPushButton("GPU Temp", self)
+        self.gpu_util_button.setCheckable(True)
+        self.gpu_util_button.setChecked(main_window.settings["displays"]["GPU"]["util"]) #set gpu util to enabled or disabled based on settings.yaml
+        self.gpu_util_button.clicked.connect(lambda: self.gpu_button_logic(self.gpu_util_button))#link to gpu button fxn
+        self.layout.addWidget(self.gpu_util_button)
+    
+    #use the built in Qt color selector 
+    def gpu_color(self):
+        color = QColorDialog.getColor()
+        if color.isValid():
+            self.main_window.settings["displays"]["GPU"]["color"] = color.name() #get hex color code and store in global settings
+        #call the settings updater
+        self.main_window.update_settings() 
+
+    #fxn to control the logic behind all gpu buttons 
+    def gpu_button_logic(self, button):
+        #if the user clicked enable button
+        if button == self.gpu_enable_button:
+            #if it was clicked to true/on
+            if button.isChecked():
+                #set temp and stat buttons to true, and update settings to show all gpu settings are now true
+                self.gpu_temp_button.setChecked(True)
+                self.main_window.settings["displays"]["GPU"]["temp"] = True
+                self.gpu_util_button.setChecked(True)
+                self.main_window.settings["displays"]["GPU"]["util"] = True
+                self.main_window.settings["displays"]["GPU"]["enabled"] = True
+            #if it was clicked to false/off
+            else:
+                #set temp and stat buttons to false, and update settings to show all gpu settings are now false
+                self.gpu_temp_button.setChecked(False)
+                self.main_window.settings["displays"]["GPU"]["temp"] = False
+                self.gpu_util_button.setChecked(False)
+                self.main_window.settings["displays"]["GPU"]["util"] = False
+                self.main_window.settings["displays"]["GPU"]["enabled"] = False
+
+        #if the gpu temp button was pressed
+        if button == self.gpu_temp_button:
+            #if gpu is currently enabled 
+            if self.main_window.settings["displays"]["GPU"]["enabled"] == True:
+                #if button was clicked to true/on
+                if button.isChecked():
+                    #update settings
+                    self.main_window.settings["displays"]["GPU"]["temp"] = True
+                #if button was clicked to false/off
+                else:
+                    #update settings
+                    self.main_window.settings["displays"]["GPU"]["temp"] = False
+            #if gpu is not enabled, ignore request to change state of temp and force it to false
+            else:
+                self.gpu_temp_button.setChecked(False)
+
+        #if the gpu temp button was pressed
+        if button == self.gpu_util_button:
+            #if gpu is currently enabled 
+            if self.main_window.settings["displays"]["GPU"]["enabled"] == True:
+                #if button was clicked to true/on
+                if button.isChecked():
+                    #update settings
+                    self.main_window.settings["displays"]["GPU"]["util"] = True
+                #if button was clicked to false/off
+                else:
+                    #update settings 
+                    self.main_window.settings["displays"]["GPU"]["util"] = False
+            #if gpu is not enabled, ignore request to change state of util and force it to false
+            else:
+                self.gpu_util_button.setChecked(False)
+        #if both temp and util are disabled, then set gpu enabled to false in settings, and set the button to false
+        if self.main_window.settings["displays"]["GPU"]["util"] == False and self.main_window.settings["displays"]["GPU"]["util"] == False:
+            self.main_window.settings["displays"]["GPU"]["enabled"] = False
+            self.gpu_enable_button.setChecked(False)
+        #call the main settings updater
+        self.main_window.update_settings() 
 
 #the dialog ot run when the displays page is opened
 class DisplaysDialog(QDialog):
@@ -108,10 +260,10 @@ class DisplaysDialog(QDialog):
         self.tab_widget = QTabWidget()
 
         # Create and add pages to the tab widget
-        self.file_settings_page = CPUPage(self)
-        self.view_settings_page = GPUPage(main_window, self)  # Pass main_window to ViewSettingsPage
-        self.tab_widget.addTab(self.file_settings_page, 'CPU')
-        self.tab_widget.addTab(self.view_settings_page, 'GPU')
+        self.cpu_page = CPUPage(main_window, self)
+        self.gpu_page = GPUPage(main_window, self)
+        self.tab_widget.addTab(self.cpu_page, 'CPU')
+        self.tab_widget.addTab(self.gpu_page, 'GPU')
 
         layout = QVBoxLayout(self)
         #add in the widgets we defined
@@ -140,7 +292,7 @@ class SettingsDialog(QDialog):
         self.tab_widget = QTabWidget()
 
         # Create and add pages to the tab widget
-        self.file_settings_page = FileSettingsPage(self)
+        self.file_settings_page = FileSettingsPage(main_window, self)
         self.view_settings_page = ViewSettingsPage(main_window, self)  # Pass main_window to ViewSettingsPage
         self.tab_widget.addTab(self.file_settings_page, 'File')
         self.tab_widget.addTab(self.view_settings_page, 'View')
@@ -177,16 +329,16 @@ class SettingsDialog(QDialog):
 
     #functions to reset all settings to defaults 
     def reset_settings(self):
-        self.load_settings('settings/default_settings.yaml')
+        load_settings(self.main_window, 'settings/default_settings.yaml')
         self.main_window.update_settings()
 
-    #function to load settings from a yaml file
-    def load_settings(self, file_path='settings/settings.yaml'):
-        # Load settings from the specified file
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        settings_file = os.path.join(script_dir, file_path)
-        if os.path.exists(settings_file):
-            with open(settings_file, 'r') as file:
-                self.main_window.settings = yaml.full_load(file)
+#function to load settings from a yaml file
+def load_settings(main_window, file_path='settings/settings.yaml'):
+    # Load settings from the specified file
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    settings_file = os.path.join(script_dir, file_path)
+    if os.path.exists(settings_file):
+        with open(settings_file, 'r') as file:
+            main_window.settings = yaml.full_load(file)
 
 

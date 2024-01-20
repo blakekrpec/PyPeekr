@@ -27,8 +27,6 @@ class PaneManager:
         self.main_window = parent
         self.panes = {}
         self.create_pane_lists()
-        print(self.panes)
-    
 
     def create_pane_lists(self):
         if self.main_window.settings["displays"]["CPU"]["enabled"] == True:

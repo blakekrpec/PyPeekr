@@ -10,6 +10,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        gui_settings.load_settings(self, 'settings/settings.yaml')
+
         #spawn window
         self.setWindowTitle('Qt GUI Example')
         self.setGeometry(100, 100, 600, 400)
@@ -27,10 +29,8 @@ class MainWindow(QMainWindow):
         self.settings_controller = gui_settings.SettingsController(self)
         self.settings_button.clicked.connect(self.settings_controller.open_settings)
 
-
-
         #initial load and update of settings 
-        self.settings_controller.settings_dialog.load_settings()
+        # self.settings_controller.settings_dialog.load_settings()
 
 
         # #setup the pane manaager 
@@ -38,11 +38,26 @@ class MainWindow(QMainWindow):
 
         self.update_settings()
 
+
+
     #update all necessary changes
     def update_settings(self):
         
         #update background colors
         gui_utils.set_main_background_color(self, self.settings["background_color"])
+        
+        #call the pane manager to update panes as needed
+    
+    #debugging function to see current settings 
+    def print_settings(self):
+        print(self.settings)
+
+#add a function to start the app so poetry can link it to a cmd line verb to run the gui
+def run_app():
+    app = QApplication(sys.argv)
+    main_window = MainWindow()
+    main_window.show()
+    sys.exit(app.exec_())    
 
 #run the app
 if __name__ == '__main__':
