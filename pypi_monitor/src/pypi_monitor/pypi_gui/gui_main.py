@@ -16,6 +16,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Qt GUI Example')
         self.setGeometry(100, 100, 600, 400)
 
+        self.layout = QVBoxLayout()
+
         #get the script's directory and construct the relative path to the gear icon
         script_dir = os.path.dirname(os.path.abspath(__file__))
         icon_path = os.path.join(script_dir, 'imgs/gear.png')  # Use the transparent gear icon
@@ -45,6 +47,7 @@ class MainWindow(QMainWindow):
         
         #update background colors
         gui_utils.set_main_background_color(self, self.settings["background_color"])
+        self.pane_manager.update_panes()
         
         #call the pane manager to update panes as needed
     

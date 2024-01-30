@@ -6,7 +6,7 @@ displays:
     temp: true
     util: true
   GPU:
-    color: '#0055ff'
+    color: '#454545'
     enabled: true
     temp: true
     util: true
