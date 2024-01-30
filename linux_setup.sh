@@ -45,5 +45,12 @@ fi
 #activate the venv
 source .pypi_monitor/bin/activate
 
+#upgrade pip is out of date (less than 23.0.0)
+current_version=$(pip --version | awk '{print $2}')
+if [[ "$(printf '%s\n' "20.0.0" "$current_version" | sort -V | head -n1)" != "23.0.0" ]]; then 
+    echo "Updating pip"
+    pip install --upgrade pip
+fi 
+
 #install pypi_monitor with pip
 pip install -e ./pypi_monitor
