@@ -74,19 +74,24 @@ class PaneManager:
 
         #clear existing panes
         self.panes_controllers = {}
-        self.pane = {}
+        self.panes = {}
         self.panes_status = {}
         print("clear start")
-        for i in reversed(range(self.main_window.layout.count())): 
-            # print(self.main_window.layout.itemAt(i).widget())
-            self.main_window.layout.itemAt(i).widget().setParent(None)
+        while self.main_window.layout.count():
+            widget_item = self.main_window.layout.takeAt(0)
+            if widget_item.widget():
+                widget_item.widget().deleteLater()
         print("clear end")
         print("num widgets after clear: " + str(self.main_window.layout.count()))
+        print(self.panes_status)
+        print(self.panes)
         self.create_pane_lists()
         self.create_panes()
         print(self.panes_status)
         print(self.panes)
         print("num widgets after create_panes(): " + str(self.main_window.layout.count()))
+        print(self.panes_status)
+        print(self.panes)
 
 
 #class that will be used once per each pane. It will be in charge of controlling which panels are displayed inside the pane 
