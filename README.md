@@ -88,5 +88,6 @@ Current design:
 - Next:
     - Implement the PaneController class. 
     - Implement client to read and store data. 
-    - Add a setting for global font color. 
+    - Add a setting for global font color.
+    - Replace pane title QLabels w name (i.e. replace CPU with i7-12700K) if avliable, otherwise keep CPU.  
 
