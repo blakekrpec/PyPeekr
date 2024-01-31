@@ -1,6 +1,8 @@
 import os
+from PyQt6.QtGui import QResizeEvent
 import yaml
-from PyQt6.QtWidgets import QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QColorDialog, QTabWidget, QWidget
+from PyQt6.QtWidgets import QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QColorDialog, QTabWidget, QWidget, QSizePolicy
+from PyQt6.QtCore import Qt
 
 from pypi_monitor.pypi_gui import gui_utils
 from pypi_monitor.pypi_gui import gui_main
@@ -58,7 +60,10 @@ class CPUPage(QWidget):
         self.layout.addWidget(self.cpu_color_button)
 
         #create button to enable CPU stats 
-        self.cpu_enable_button = QPushButton("Enable CPU", self)
+        if main_window.settings["displays"]["CPU"]["enabled"]:
+            self.cpu_enable_button = QPushButton("Disable CPU Stats", self)
+        else:
+            self.cpu_enable_button = QPushButton("Enable CPU Stats", self)          
         self.cpu_enable_button.setCheckable(True)
         self.cpu_enable_button.setChecked(main_window.settings["displays"]["CPU"]["enabled"])  #set cpu to enabled or disabled based on settings.yaml
         self.cpu_enable_button.clicked.connect(lambda: self.cpu_button_logic(self.cpu_enable_button)) #link to cpu button fxn
@@ -69,14 +74,20 @@ class CPUPage(QWidget):
         self.cpu_temp_button.setCheckable(True)
         self.cpu_temp_button.setChecked(main_window.settings["displays"]["CPU"]["temp"]) #set cpu temp to enabled or disabled based on settings.yaml
         self.cpu_temp_button.clicked.connect(lambda: self.cpu_button_logic(self.cpu_temp_button)) #link to cpu button fxn
-        self.layout.addWidget(self.cpu_temp_button)
+        self.layout.addWidget(self.cpu_temp_button, alignment=Qt.AlignmentFlag.AlignHCenter)
         
         #create button to enable CPU util stats
         self.cpu_util_button = QPushButton("CPU Util %", self)
         self.cpu_util_button.setCheckable(True)
         self.cpu_util_button.setChecked(main_window.settings["displays"]["CPU"]["util"]) #set cpu util to enabled or disabled based on settings.yaml
         self.cpu_util_button.clicked.connect(lambda: self.cpu_button_logic(self.cpu_util_button))#link to cpu button fxn
-        self.layout.addWidget(self.cpu_util_button)
+        self.layout.addWidget(self.cpu_util_button, alignment=Qt.AlignmentFlag.AlignHCenter)
+
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.cpu_temp_button.setFixedWidth(self.cpu_enable_button.width() // 2)
+        self.cpu_util_button.setFixedWidth(self.cpu_enable_button.width() // 2)
     
     #use the built in Qt color selector 
     def cpu_color(self):
@@ -98,6 +109,7 @@ class CPUPage(QWidget):
                 self.cpu_util_button.setChecked(True)
                 self.main_window.settings["displays"]["CPU"]["util"] = True
                 self.main_window.settings["displays"]["CPU"]["enabled"] = True
+                self.cpu_enable_button.setText("Disable CPU Stats")
             #if it was clicked to false/off
             else:
                 #set temp and stat buttons to false, and update settings to show all cpu settings are now false
@@ -106,6 +118,7 @@ class CPUPage(QWidget):
                 self.cpu_util_button.setChecked(False)
                 self.main_window.settings["displays"]["CPU"]["util"] = False
                 self.main_window.settings["displays"]["CPU"]["enabled"] = False
+                self.cpu_enable_button.setText("Enable CPU Stats")
 
         #if the cpu temp button was pressed
         if button == self.cpu_temp_button:
@@ -163,7 +176,10 @@ class GPUPage(QWidget):
         self.layout.addWidget(self.gpu_color_button)
 
         #create button to enable GPU stats 
-        self.gpu_enable_button = QPushButton("Enable GPU", self)
+        if main_window.settings["displays"]["GPU"]["enabled"]:
+            self.gpu_enable_button = QPushButton("Disable GPU Stats", self)
+        else:
+            self.gpu_enable_button = QPushButton("Enable GPU Stats", self)  
         self.gpu_enable_button.setCheckable(True)
         self.gpu_enable_button.setChecked(main_window.settings["displays"]["GPU"]["enabled"])  #set gpu to enabled or disabled based on settings.yaml
         self.gpu_enable_button.clicked.connect(lambda: self.gpu_button_logic(self.gpu_enable_button)) #link to gpu button fxn
@@ -174,14 +190,20 @@ class GPUPage(QWidget):
         self.gpu_temp_button.setCheckable(True)
         self.gpu_temp_button.setChecked(main_window.settings["displays"]["GPU"]["temp"]) #set gpu temp to enabled or disabled based on settings.yaml
         self.gpu_temp_button.clicked.connect(lambda: self.gpu_button_logic(self.gpu_temp_button)) #link to gpu button fxn
-        self.layout.addWidget(self.gpu_temp_button)
+        self.layout.addWidget(self.gpu_temp_button, alignment=Qt.AlignmentFlag.AlignHCenter)
         
         #create button to enable GPU util stats
         self.gpu_util_button = QPushButton("GPU Util %", self)
         self.gpu_util_button.setCheckable(True)
         self.gpu_util_button.setChecked(main_window.settings["displays"]["GPU"]["util"]) #set gpu util to enabled or disabled based on settings.yaml
         self.gpu_util_button.clicked.connect(lambda: self.gpu_button_logic(self.gpu_util_button))#link to gpu button fxn
-        self.layout.addWidget(self.gpu_util_button)
+        self.layout.addWidget(self.gpu_util_button, alignment=Qt.AlignmentFlag.AlignHCenter)
+
+    #anytime the displays window is changes, update the temp and util buttons to be half as wide an enable
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.gpu_temp_button.setFixedWidth(self.gpu_enable_button.width() // 2)
+        self.gpu_util_button.setFixedWidth(self.gpu_enable_button.width() // 2)
     
     #use the built in Qt color selector 
     def gpu_color(self):
@@ -203,6 +225,7 @@ class GPUPage(QWidget):
                 self.gpu_util_button.setChecked(True)
                 self.main_window.settings["displays"]["GPU"]["util"] = True
                 self.main_window.settings["displays"]["GPU"]["enabled"] = True
+                self.gpu_enable_button.setText("Disable GPU Stats")
             #if it was clicked to false/off
             else:
                 #set temp and stat buttons to false, and update settings to show all gpu settings are now false
@@ -211,6 +234,7 @@ class GPUPage(QWidget):
                 self.gpu_util_button.setChecked(False)
                 self.main_window.settings["displays"]["GPU"]["util"] = False
                 self.main_window.settings["displays"]["GPU"]["enabled"] = False
+                self.gpu_enable_button.setText("Enable GPU Stats")
 
         #if the gpu temp button was pressed
         if button == self.gpu_temp_button:
@@ -224,7 +248,7 @@ class GPUPage(QWidget):
                 else:
                     #update settings
                     self.main_window.settings["displays"]["GPU"]["temp"] = False
-            #if gpu is not enabled, ignore request to change state of temp and force it to false
+            #if gpu is not enabled, turn on GPU enable and temp
             else:
                 self.gpu_temp_button.setChecked(False)
 
