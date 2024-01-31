@@ -72,7 +72,7 @@ class CPUPage(QWidget):
         self.layout.addWidget(self.cpu_temp_button)
         
         #create button to enable CPU util stats
-        self.cpu_util_button = QPushButton("CPU Temp", self)
+        self.cpu_util_button = QPushButton("CPU Util %", self)
         self.cpu_util_button.setCheckable(True)
         self.cpu_util_button.setChecked(main_window.settings["displays"]["CPU"]["util"]) #set cpu util to enabled or disabled based on settings.yaml
         self.cpu_util_button.clicked.connect(lambda: self.cpu_button_logic(self.cpu_util_button))#link to cpu button fxn
@@ -140,7 +140,7 @@ class CPUPage(QWidget):
                 self.cpu_util_button.setChecked(False)
 
         #if both temp and util are disabled, then set cpu enabled to false in settings, and set the button to false
-        if self.main_window.settings["displays"]["CPU"]["util"] == False and self.main_window.settings["displays"]["CPU"]["util"] == False:
+        if self.main_window.settings["displays"]["CPU"]["temp"] == False and self.main_window.settings["displays"]["CPU"]["util"] == False:
             self.main_window.settings["displays"]["CPU"]["enabled"] = False
             self.cpu_enable_button.setChecked(False)
 
@@ -177,7 +177,7 @@ class GPUPage(QWidget):
         self.layout.addWidget(self.gpu_temp_button)
         
         #create button to enable GPU util stats
-        self.gpu_util_button = QPushButton("GPU Temp", self)
+        self.gpu_util_button = QPushButton("GPU Util %", self)
         self.gpu_util_button.setCheckable(True)
         self.gpu_util_button.setChecked(main_window.settings["displays"]["GPU"]["util"]) #set gpu util to enabled or disabled based on settings.yaml
         self.gpu_util_button.clicked.connect(lambda: self.gpu_button_logic(self.gpu_util_button))#link to gpu button fxn
@@ -245,7 +245,7 @@ class GPUPage(QWidget):
                 self.gpu_util_button.setChecked(False)
 
         #if both temp and util are disabled, then set gpu enabled to false in settings, and set the button to false
-        if self.main_window.settings["displays"]["GPU"]["util"] == False and self.main_window.settings["displays"]["GPU"]["util"] == False:
+        if self.main_window.settings["displays"]["GPU"]["temp"] == False and self.main_window.settings["displays"]["GPU"]["util"] == False:
             self.main_window.settings["displays"]["GPU"]["enabled"] = False
             self.gpu_enable_button.setChecked(False)
 
