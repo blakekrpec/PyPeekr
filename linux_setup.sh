@@ -1,6 +1,9 @@
 #! /bin/bash
 CODENAME=$(sed -n -e '/DISTRIB_CODENAME/ s/.*\= *//p' /etc/lsb-release)
 
+#weird step needed for qt6 to run on 22.04
+sudo apt install libxcb-cursor0
+
 #check for python3
 if command -v python3 &>/dev/null; then
     echo "Python 3 is already installed."
@@ -41,6 +44,13 @@ fi
 
 #activate the venv
 source .pypi_monitor/bin/activate
+
+#upgrade pip is out of date (less than 23.0.0)
+current_version=$(pip --version | awk '{print $2}')
+if [[ "$(printf '%s\n' "20.0.0" "$current_version" | sort -V | head -n1)" != "23.0.0" ]]; then 
+    echo "Updating pip"
+    pip install --upgrade pip
+fi 
 
 #install pypi_monitor with pip
 pip install -e ./pypi_monitor

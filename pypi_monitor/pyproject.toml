@@ -12,7 +12,7 @@ psutil = ">=5.9.0"
 py-cpuinfo = ">8.0.0"
 gputil = ">1.0.0"
 pyyaml ="*"
-PyQt5 ="*"
+pyqt6 ="*"
 
 [tool.poetry.dev-dependencies]
 
@@ -21,3 +21,4 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
+gui = "pypi_monitor.pypi_gui.gui_main:run_app"

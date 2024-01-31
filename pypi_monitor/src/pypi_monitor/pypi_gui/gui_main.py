@@ -1,18 +1,28 @@
 import sys
 import os
-import yaml
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QColorDialog, QTabWidget, QWidget
-from PyQt5.QtGui import QIcon, QColor
+
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QHBoxLayout,  QWidget
+from PyQt6.QtGui import QIcon, QColor
 
 from pypi_monitor.pypi_gui import gui_settings
 from pypi_monitor.pypi_gui import gui_utils
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
-        #spawn window
+        #load the latest settings file 
+        gui_settings.load_settings(self, 'settings/settings.yaml')
+
+        #spawn the main window
         self.setWindowTitle('Qt GUI Example')
         self.setGeometry(100, 100, 600, 400)
+
+        #define central widget, and give it an QHBoxLayout with the top 25 rows being empty so we don't overlap settings button
+        central_widget = QWidget(self)
+        self.setCentralWidget(central_widget)
+        self.layout = QHBoxLayout(central_widget)
+        self.layout.setContentsMargins(0,25,0,0)
 
         #get the script's directory and construct the relative path to the gear icon
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -27,19 +37,29 @@ class MainWindow(QMainWindow):
         self.settings_controller = gui_settings.SettingsController(self)
         self.settings_button.clicked.connect(self.settings_controller.open_settings)
 
-        #initial load and update of settings 
-        self.settings_controller.settings_dialog.load_settings()
+        #setup the pane manager 
+        self.pane_manager = gui_utils.PaneManager(self)
+
+        #call the settings updater
         self.update_settings()
 
     #update all necessary changes
     def update_settings(self):
-        
         #update background colors
         gui_utils.set_main_background_color(self, self.settings["background_color"])
+        self.pane_manager.update_panes()
+    
+    #debugging function to see current settings 
+    def print_settings(self):
+        print(self.settings)
 
-#run the app
-if __name__ == '__main__':
+#add a function to start the app so poetry can link it to a cmd line verb to run the gui
+def run_app():
     app = QApplication(sys.argv)
     main_window = MainWindow()
     main_window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())    
+
+#run the app
+if __name__ == '__main__':
+    run_app()

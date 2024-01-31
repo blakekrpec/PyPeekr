@@ -20,13 +20,16 @@ Launch OpenHardwareMonitor and make the following changes to settings:
     Enable remote access for the web server
 
 ### Client 
-The client is a Qt GUI written in python intended to run on a RaspberryPi. However, being in python, portability to other OS shouldn't be too painful. 
+The client will be written in python and will listen for data from server, and send it to the gui to be displayed. 
 
-The client lives in the pypi_monitor pip package. The setup.sh script included will create a python virtual environment for you, and install pypi_monitor in it.
+### GUI
+The gui is written in python with Qt. It spawns a client to listen to data from server, and displays it in the gui.
 
-Run the setup
+The gui, and client live in the pypi_monitor pip package. The linux_setup.sh script included will create a python virtual environment for you, and install pypi_monitor in it.
+
+#### Linux Setup
 ```
-./linux)setup.sh
+./linux_setup.sh
 ```
 Source the python virtual environment
 ```
@@ -34,10 +37,10 @@ source .pypi_monitor/bin/activate
 ```
 Start the client GUI
 ```
-
+gui
 ```
 
-On Windows Setup:
+#### Windows Setup
 
 create venv
 ```
@@ -49,10 +52,12 @@ source venv
 ```
 install pypi_monitor 
 ```
-pip install -e \pypi_monitor
+pip install -e .\pypi_monitor
 ```
-
-Can now run code.
+run code 
+```
+gui
+```
 
 Current design:
 
@@ -60,12 +65,26 @@ Current design:
 
 - Server
     - On Linux, we will need to write our own server, or get the OpenHardwareMonitor.exe to run on Linux.
-    - On Windows, the OpenHardwareMonitor REST API will be used. We should consider adding an abstraction layer that takes info from OpenHardwareMonitor and then makes it more portable, currently there is a ton of info and really we may only want CPU and GPU. 
+    - On Windows, the OpenHardwareMonitor REST API will be used. We should consider adding an abstraction layer that takes info from OpenHardwareMonitor and then makes it more portable, currently there is a ton of info and really we may only want CPU and GPU. This will also standardize the input data structure into our client which would make the GUI agnostic of OpenHardwareMonitor (Windows) or our own server (Linux).  
 
+- Done: 
+    - Files separated for readability 
+    - Settings functionality done (save and reset)
+    - Settings button added to open settings dialog
+    - Settings dialog has file and view tabs 
+    - View tab added pick color ability 
+    - View tab added displays button for displays dialog
+    - Displays dialog done, has cpu and gpu tab
+    - CPU and GPU tabs fleshed out, and now update the global settings in memory when interacted with.  
+    - Added "gui" command with poetry to run the gui easily.
+    - Added a check to make sure pip is up to date. 
+    - Made "dark mode the default".
+    - Moved to Qt6.
+    - Create the pane manager class. Laid out the PaneController class. 
+    - Display enable buttons text now toggle between enable and disable depending on button state. 
+    - Add a resize event to the display pages so that actual stat buttons are half size.
 
+- Next:
+    - Implement the PaneController class. 
+    - Implement client to read and store data. 
 
-Current status, working on breaking out settings into its own file.
-
-TODO:
-    add an update_settings call to MainWindow
-        we will call this anytime settings are reset, or loaded so that all settings that need to be updated are. Now we just have color but this will be important in the future as we have more settings 
