@@ -1,7 +1,22 @@
-#send curl request to OHM
+import platform
 
-#get current settings from settings.yaml
+class Client():
+    def __init__(self, main_window):
+        #determine if on windows or linux
+        self.os = platform.system()
+        self.main_window = main_window
 
-#grab the respective fields from the curl request
+        if self.os == "Linux":
+            self.main_window.client = LinuxClient()
+        elif self.os =="Windows":
+            self.main_window.client = WindowsClient()
 
-#store data in an object that will be ingested by gui.py
+class WindowsClient():
+    def __init__(self, main_window):
+        self.main_window = main_window
+        dummy = 0
+
+class LinuxClient():
+    def __init__(self, main_window):
+        self.main_window = main_window
+        dummy = 0
