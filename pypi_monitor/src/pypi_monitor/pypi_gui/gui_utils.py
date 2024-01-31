@@ -14,6 +14,9 @@ def set_main_background_color(main_window, color):
     main_window.settings_controller.settings_dialog.setStyleSheet(f'background-color: {q_color.name()};')
     main_window.settings_controller.settings_dialog.view_settings_page.displays_dialog.setStyleSheet(f'background-color: {q_color.name()};')
 
+    #call pane manager to also update pane colors 
+    main_window.pane_manager.update_panes()
+
 #class that creates appropriate number of panes, sizes them, and then keeps panes, and all relevant lists up to date 
     #update_panes() is the only function of this class that should be called externally, it will call all other functions 
 class PaneManager:
@@ -49,7 +52,7 @@ class PaneManager:
         color = self.main_window.settings["displays"][title]["color"]
 
         #define pane stylesheet and apply
-        settings = "background-color: "+color+"; margin:2px; border:2px solid rgb(0, 0, 0); border-radius:20px;"
+        settings = "background-color: "+color+"; margin:2px; border:0px solid rgb(0, 0, 0); border-radius:20px;"
         self.panes[title].setStyleSheet(settings)
 
     #function that recursively calls create pane the necessary amount of times (to create correct number of panes)
@@ -108,7 +111,7 @@ class PaneController():
         color = self.main_window.settings["displays"][self.title]["color"]
 
         #define the style sheet and apply it to the label widget
-        settings = "background-color: "+color+"; margin:2px; border:2px solid rgb(0, 0, 0); border-radius:10px;"
+        settings = "background-color: "+color+"; margin:2px; border:0px solid rgb(0, 0, 0); border-radius:10px;"
         self.label.setStyleSheet(settings)
 
         #make it fixed height 
@@ -131,24 +134,24 @@ class PaneController():
         self.widgets[title].setLayout(self.widgets_layouts[title])
 
         #define pane color
-        color = self.main_window.settings["displays"][self.title]["color"]
+        color = self.main_window.settings["background_color"]
 
         #define pane stylesheet and apply
-        settings = "background-color: "+color+"; margin:0px; border:2px solid rgb(0, 0, 0); border-radius:20px;"
+        settings = "background-color: "+color+"; margin:0px; border:0px solid rgb(0, 0, 0); border-radius:20px;"
         self.widgets[title].setStyleSheet(settings)
 
         #add fixed height title to each widget in the pane, and remove its borders 
         widget_title = QLabel(self.title_resolver(title))
         widget_title.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         widget_title.setFixedHeight(35)
-        widget_title_settings = "background-color: "+color+"; margin:2px; border:1px solid rgb(0, 0, 0); border-radius:5px;"
+        widget_title_settings = "background-color: "+color+"; margin:0px; border:0px solid rgb(0, 0, 0); border-radius:5px;"
         widget_title.setStyleSheet(widget_title_settings)
         self.widgets_layouts[title].addWidget(widget_title)
 
         #add a dummy number for now, later this will be client data 
         dummy_number = QLabel("55")
         dummy_number.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
-        dummy_number_settings = "background-color: "+color+"; margin:0px; border:1px solid rgb(0, 0, 0); font-size:50px; border-radius:20px;"
+        dummy_number_settings = "background-color: "+color+"; margin:0px; border:0px solid rgb(0, 0, 0); font-size:75px; border-radius:20px;"
         dummy_number.setStyleSheet(dummy_number_settings)
         self.widgets_layouts[title].addWidget(dummy_number)
 
