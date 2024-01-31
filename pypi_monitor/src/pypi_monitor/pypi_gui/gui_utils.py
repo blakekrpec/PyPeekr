@@ -49,7 +49,7 @@ class PaneManager:
         color = self.main_window.settings["displays"][title]["color"]
 
         #define pane stylesheet and apply
-        settings = "background-color: "+color+"; margin:5px; border:1px solid rgb(0, 0, 0);"
+        settings = "background-color: "+color+"; margin:2px; border:2px solid rgb(0, 0, 0); border-radius:20px;"
         self.panes[title].setStyleSheet(settings)
 
     #function that recursively calls create pane the necessary amount of times (to create correct number of panes)
@@ -80,14 +80,11 @@ class PaneManager:
         self.create_pane_lists()
         self.create_panes()
 
-        #update all PaneControllers 
-        for i in self.panes_controllers:
-            self.panes_controllers[i].update_pane_controller()
-
 #class that will be used once per each pane. It will be in charge of controlling which panels are displayed inside the pane 
     #update_pane_controller() should be called from outside of the class as it will call all other functions 
-class PaneController:
-    def __init__(self, title, pane_widget, main_window):
+class PaneController(): 
+    def __init__(self, title, pane_widget, main_window, parent=None):
+
         self.title = title
         self.main_window = main_window
 
@@ -100,7 +97,7 @@ class PaneController:
         
         #call the main update function for the PaneController
         self.update_pane_controller()
-    
+
     #adds a title widget to the pane according to pane title 
     def add_pane_title(self):
         #create a QLabel widget and set its alignment to center top 
@@ -111,21 +108,89 @@ class PaneController:
         color = self.main_window.settings["displays"][self.title]["color"]
 
         #define the style sheet and apply it to the label widget
-        settings = "background-color: "+color+"; margin:3px; border:1px solid rgb(0, 0, 0);"
+        settings = "background-color: "+color+"; margin:2px; border:2px solid rgb(0, 0, 0); border-radius:10px;"
         self.label.setStyleSheet(settings)
+
+        #make it fixed height 
+        self.label.setFixedHeight(35)
 
         #add the label widget to pane_widgets layout
         self.layout.addWidget(self.label)
     
+    def create_list_widgets(self):
+        #create list of needed widgets in this pane 
+        if self.title == "CPU" or self.title == "GPU":
+            self.widgets_status["temp"] = self.main_window.settings["displays"][self.title]["temp"]
+            self.widgets_status["util"] = self.main_window.settings["displays"][self.title]["util"]
+
+    #function that adds widgets to the Pane, called recursively by add_widgets()
+    def add_widget(self, title):
+        #create the pane for "title" and store in panes list, store layout so we can access it later to add widgets, and set the layout
+        self.widgets[title] = QWidget(self.pane_widget)
+        self.widgets_layouts[title] = QVBoxLayout()
+        self.widgets[title].setLayout(self.widgets_layouts[title])
+
+        #define pane color
+        color = self.main_window.settings["displays"][self.title]["color"]
+
+        #define pane stylesheet and apply
+        settings = "background-color: "+color+"; margin:0px; border:2px solid rgb(0, 0, 0); border-radius:20px;"
+        self.widgets[title].setStyleSheet(settings)
+
+        #add fixed height title to each widget in the pane, and remove its borders 
+        widget_title = QLabel(self.title_resolver(title))
+        widget_title.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
+        widget_title.setFixedHeight(35)
+        widget_title_settings = "background-color: "+color+"; margin:2px; border:1px solid rgb(0, 0, 0); border-radius:5px;"
+        widget_title.setStyleSheet(widget_title_settings)
+        self.widgets_layouts[title].addWidget(widget_title)
+
+        #add a dummy number for now, later this will be client data 
+        dummy_number = QLabel("55")
+        dummy_number.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        dummy_number_settings = "background-color: "+color+"; margin:0px; border:1px solid rgb(0, 0, 0); font-size:50px; border-radius:20px;"
+        dummy_number.setStyleSheet(dummy_number_settings)
+        self.widgets_layouts[title].addWidget(dummy_number)
+
+    #function to convert the short settings keys into full titles
+    def title_resolver(self, title):
+        if title == "temp":
+            return "Temperature"
+        elif title == "util":
+            return "Utilization"
+        else:
+            return ""
+    
+    #function to loop over the list of widgets, and add any that are enabled
+    def add_widgets(self):
+        #loop over all pane statuses
+        for i in self.widgets_status:
+            #if widget is enabled 
+            if self.widgets_status[i] == True:
+                #create relevant panes, and add them to the central widget layout with title
+                self.add_widget(i)
+                self.layout.addWidget(self.widgets[i])
+    
     #function that wraps all pane controller logic. It will be called when any changes need to be made by the PaneController
     def update_pane_controller(self):
+        self.widgets = {}
+        self.widgets_status = {}
+        self.widgets_layouts = {}
+
         #remove all previous widgets added to the pane_widget
         while self.layout.count():
             widget_item = self.layout.takeAt(0)
             if widget_item.widget():
                 widget_item.widget().deleteLater()
         
-        #add title 
+        #add title for entire pane
         self.add_pane_title()
+
+        #create list of widgets to be added
+        self.create_list_widgets()
+
+        #add widgets according to current state of settings
+        self.add_widgets()
+
 
  
