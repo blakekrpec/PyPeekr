@@ -80,10 +80,6 @@ class PaneManager:
         self.create_pane_lists()
         self.create_panes()
 
-        #update all PaneControllers 
-        for i in self.panes_controllers:
-            self.panes_controllers[i].update_pane_controller()
-
 #class that will be used once per each pane. It will be in charge of controlling which panels are displayed inside the pane 
     #update_pane_controller() should be called from outside of the class as it will call all other functions 
 class PaneController:
@@ -117,15 +113,57 @@ class PaneController:
         #add the label widget to pane_widgets layout
         self.layout.addWidget(self.label)
     
+    def create_list_widgets(self):
+        #create list of needed widgets in this pane 
+        if self.title == "CPU" or self.title == "GPU":
+            self.widgets_status["temp"] = self.main_window.settings["displays"][self.title]["temp"]
+            self.widgets_status["util"] = self.main_window.settings["displays"][self.title]["util"]
+
+    #function that adds widgets to the Pane, called recursively by add_widgets()
+    def add_widget(self, title):
+        #create the pane for "title" and store in panes list, store layout so we can access it later to add widgets, and set the layout
+        self.widgets[title] = QWidget(self.pane_widget)
+
+        #define pane color
+        color = self.main_window.settings["displays"][self.title]["color"]
+
+        #define pane stylesheet and apply
+        settings = "background-color: "+color+"; margin:5px; border:1px solid rgb(0, 0, 0);"
+        self.widgets[title].setStyleSheet(settings)
+        
+    
+    #function to loop over the list of widgets, and add any that are enabled
+    def add_widgets(self):
+        #loop over all pane statuses
+        for i in self.widgets_status:
+            #if widget is enabled 
+            if self.widgets_status[i] == True:
+                #create relevant panes, and add them to the central widget layout with title
+                self.add_widget(i)
+                self.layout.addWidget(self.widgets[i])
+    
     #function that wraps all pane controller logic. It will be called when any changes need to be made by the PaneController
     def update_pane_controller(self):
+        self.widgets = {}
+        self.widgets_status = {}
+
         #remove all previous widgets added to the pane_widget
         while self.layout.count():
             widget_item = self.layout.takeAt(0)
             if widget_item.widget():
                 widget_item.widget().deleteLater()
         
-        #add title 
+        #add title for entire pane
         self.add_pane_title()
+
+        #create list of widgets to be added
+        self.create_list_widgets()
+        if self.title == "CPU":
+            print(self.title)
+            print(self.widgets_status)
+            print("---------------------")
+
+        #add widgets according to current state of settings
+        self.add_widgets()
 
  
