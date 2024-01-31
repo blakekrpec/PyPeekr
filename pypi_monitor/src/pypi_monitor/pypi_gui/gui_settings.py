@@ -45,6 +45,7 @@ class ViewSettingsPage(QWidget):
 #create a CPU tab in displays page
 class CPUPage(QWidget):
     def __init__(self, main_window, parent=None):
+
         super(CPUPage, self).__init__(parent)
         self.main_window = main_window
         self.layout = QVBoxLayout(self)
@@ -128,7 +129,7 @@ class CPUPage(QWidget):
             if self.main_window.settings["displays"]["CPU"]["enabled"] == True:
                 #if button was clicked to true/on
                 if button.isChecked():
-                    #update settings
+                     #update settings
                     self.main_window.settings["displays"]["CPU"]["util"] = True
                 #if button was clicked to false/off
                 else:
@@ -137,18 +138,19 @@ class CPUPage(QWidget):
             #if cpu is not enabled, ignore request to change state of util and force it to false
             else:
                 self.cpu_util_button.setChecked(False)
+
         #if both temp and util are disabled, then set cpu enabled to false in settings, and set the button to false
         if self.main_window.settings["displays"]["CPU"]["util"] == False and self.main_window.settings["displays"]["CPU"]["util"] == False:
             self.main_window.settings["displays"]["CPU"]["enabled"] = False
             self.cpu_enable_button.setChecked(False)
+
         #call the main settings updater
         self.main_window.update_settings()               
-
-
 
 #create a GPU tab in displays page
 class GPUPage(QWidget):
     def __init__(self, main_window, parent=None):
+
         super(GPUPage, self).__init__(parent)
         self.main_window = main_window
         self.layout = QVBoxLayout(self)
@@ -241,10 +243,12 @@ class GPUPage(QWidget):
             #if gpu is not enabled, ignore request to change state of util and force it to false
             else:
                 self.gpu_util_button.setChecked(False)
+
         #if both temp and util are disabled, then set gpu enabled to false in settings, and set the button to false
         if self.main_window.settings["displays"]["GPU"]["util"] == False and self.main_window.settings["displays"]["GPU"]["util"] == False:
             self.main_window.settings["displays"]["GPU"]["enabled"] = False
             self.gpu_enable_button.setChecked(False)
+
         #call the main settings updater
         self.main_window.update_settings() 
 
@@ -278,6 +282,7 @@ class SettingsController:
 
     #this function is called to open the QDialog settings page
     def open_settings(self):
+
         self.settings_dialog.exec()
 
 #define the settings dialog as a QDialog 
