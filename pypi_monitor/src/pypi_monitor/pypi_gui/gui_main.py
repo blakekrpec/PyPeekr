@@ -22,7 +22,7 @@ class MainWindow(QMainWindow):
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
         self.layout = QHBoxLayout(central_widget)
-        self.layout.setContentsMargins(0,25,0,0)
+        self.layout.setContentsMargins(0,14,0,0)
 
         #get the script's directory and construct the relative path to the gear icon
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -31,7 +31,7 @@ class MainWindow(QMainWindow):
         #create settings button 
         self.settings_button = QPushButton(self)
         self.settings_button.setIcon(QIcon(icon_path))
-        self.settings_button.setGeometry(10, 10, 15, 15)
+        self.settings_button.setGeometry(1, 1, 15, 15)
 
         #setup settings controller and connect it to the button 
         self.settings_controller = gui_settings.SettingsController(self)

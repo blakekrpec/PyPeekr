@@ -83,8 +83,10 @@ Current design:
     - Create the pane manager class. Laid out the PaneController class. 
     - Display enable buttons text now toggle between enable and disable depending on button state. 
     - Add a resize event to the display pages so that actual stat buttons are half size.
+    - Cleaned up Styling to new default. 
 
 - Next:
     - Implement the PaneController class. 
     - Implement client to read and store data. 
+    - Add a setting for global font color. 
 

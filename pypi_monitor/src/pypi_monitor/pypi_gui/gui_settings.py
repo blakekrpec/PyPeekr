@@ -142,7 +142,7 @@ class CPUPage(QWidget):
             if self.main_window.settings["displays"]["CPU"]["enabled"] == True:
                 #if button was clicked to true/on
                 if button.isChecked():
-                     #update settings
+                    #update settings
                     self.main_window.settings["displays"]["CPU"]["util"] = True
                 #if button was clicked to false/off
                 else:
