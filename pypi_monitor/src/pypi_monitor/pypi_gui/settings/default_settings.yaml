@@ -10,3 +10,4 @@ displays:
     enabled: true
     temp: true
     util: true
+ip: "0.0.0.0"

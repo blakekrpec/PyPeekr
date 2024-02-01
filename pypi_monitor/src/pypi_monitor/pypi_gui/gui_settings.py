@@ -1,7 +1,7 @@
 import os
 from PyQt6.QtGui import QResizeEvent
 import yaml
-from PyQt6.QtWidgets import QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QColorDialog, QTabWidget, QWidget, QSizePolicy
+from PyQt6.QtWidgets import QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QColorDialog, QTabWidget, QWidget, QLabel, QLineEdit
 from PyQt6.QtCore import Qt
 
 from pypi_monitor.pypi_gui import gui_utils
@@ -14,6 +14,34 @@ class FileSettingsPage(QWidget):
         self.layout = QVBoxLayout(self)
         # Add your file settings widgets here
         self.setLayout(self.layout)
+
+        self.ip_dialog = IPDialog(main_window)
+
+        #button to open IPDialog
+        self.ip_button = QPushButton('IP Address')
+        self.ip_button.clicked.connect(self.ip_dialog.exec)
+        self.layout.addWidget(self.ip_button)
+
+#Dialog that will show the current IP, and allow user to change to a new one
+class IPDialog(QDialog):
+    def __init__(self, main_window, parent=None):
+        super(IPDialog, self).__init__(parent)
+        self.setWindowTitle('IP Address')
+        self.setGeometry(200, 200, 400, 300)
+        self.main_window = main_window
+
+        #define the layout
+        self.layout = QVBoxLayout()
+
+        #show the current IP address in settings 
+        self.current_ip_label = QLabel(self.main_window.settings["ip"])
+        self.layout.addWidget(self.current_ip_label)
+
+        #add option for the user to change the ip in settings 
+        self.change_ip = QLineEdit("Change IP")
+        self.layout.addWidget(self.change_ip)
+
+
 
 #create a views tab on settings page
 class ViewSettingsPage(QWidget):
@@ -43,6 +71,27 @@ class ViewSettingsPage(QWidget):
             self.main_window.settings["background_color"] = color.name() #get hex color code
             gui_utils.set_main_background_color(self.main_window, color) #set main window color
 
+
+#the dialog ot run when the displays page is opened
+class DisplaysDialog(QDialog):
+    def __init__(self, main_window, parent=None):
+        super(DisplaysDialog, self).__init__(parent)
+        self.setWindowTitle('Displays')
+        self.setGeometry(200, 200, 400, 300)
+        self.main_window = main_window
+
+        # Create a tab widget
+        self.tab_widget = QTabWidget()
+
+        # Create and add pages to the tab widget
+        self.cpu_page = CPUPage(main_window, self)
+        self.gpu_page = GPUPage(main_window, self)
+        self.tab_widget.addTab(self.cpu_page, 'CPU')
+        self.tab_widget.addTab(self.gpu_page, 'GPU')
+
+        self.layout = QVBoxLayout(self)
+        #add in the widgets we defined
+        self.layout.addWidget(self.tab_widget)
 
 #create a CPU tab in displays page
 class CPUPage(QWidget):
@@ -274,29 +323,7 @@ class GPUPage(QWidget):
             self.gpu_enable_button.setChecked(False)
 
         #call the main settings updater
-        self.main_window.update_settings() 
-
-#the dialog ot run when the displays page is opened
-class DisplaysDialog(QDialog):
-    def __init__(self, main_window, parent=None):
-        super(DisplaysDialog, self).__init__(parent)
-        self.setWindowTitle('Displays')
-        self.setGeometry(200, 200, 400, 300)
-        self.main_window = main_window
-
-        # Create a tab widget
-        self.tab_widget = QTabWidget()
-
-        # Create and add pages to the tab widget
-        self.cpu_page = CPUPage(main_window, self)
-        self.gpu_page = GPUPage(main_window, self)
-        self.tab_widget.addTab(self.cpu_page, 'CPU')
-        self.tab_widget.addTab(self.gpu_page, 'GPU')
-
-        layout = QVBoxLayout(self)
-        #add in the widgets we defined
-        layout.addWidget(self.tab_widget)
-        
+        self.main_window.update_settings()     
 
 #define the settings controller
 class SettingsController:
@@ -349,9 +376,8 @@ class SettingsDialog(QDialog):
 
     #function to save current settings 
     def save_settings(self):
-        #write self.settings into the yaml 
-        file_path="settings/settings.yaml"
-        script_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = "settings.yaml"
+        script_dir = os.getenv('HOME')+"/.config/pypi_monitor"
         settings_file = os.path.join(script_dir, file_path)
         with open(settings_file, 'w') as file:
             yaml.dump(self.main_window.settings, file, default_flow_style=False)
@@ -362,9 +388,10 @@ class SettingsDialog(QDialog):
         self.main_window.update_settings()
 
 #function to load settings from a yaml file
-def load_settings(main_window, file_path='settings/settings.yaml'):
+def load_settings(main_window):
     # Load settings from the specified file
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = "settings.yaml"
+    script_dir = os.getenv('HOME')+"/.config/pypi_monitor"
     settings_file = os.path.join(script_dir, file_path)
     if os.path.exists(settings_file):
         with open(settings_file, 'r') as file:

@@ -12,7 +12,7 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
 
         #load the latest settings file 
-        gui_settings.load_settings(self, 'settings/settings.yaml')
+        gui_settings.load_settings(self)
 
         #spawn the main window
         self.setWindowTitle('Qt GUI Example')

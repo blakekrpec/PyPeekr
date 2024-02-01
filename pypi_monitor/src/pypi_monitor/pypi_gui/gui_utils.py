@@ -13,6 +13,7 @@ def set_main_background_color(main_window, color):
     main_window.settings_button.setStyleSheet(f'background-color: {q_color.name()};')
     main_window.settings_controller.settings_dialog.setStyleSheet(f'background-color: {q_color.name()};')
     main_window.settings_controller.settings_dialog.view_settings_page.displays_dialog.setStyleSheet(f'background-color: {q_color.name()};')
+    main_window.settings_controller.settings_dialog.file_settings_page.ip_dialog.setStyleSheet(f'background-color: {q_color.name()};')
 
     #call pane manager to also update pane colors 
     main_window.pane_manager.update_panes()
@@ -115,7 +116,7 @@ class PaneController():
         self.label.setStyleSheet(settings)
 
         #make it fixed height 
-        self.label.setFixedHeight(35)
+        self.label.setFixedHeight(25)
 
         #add the label widget to pane_widgets layout
         self.layout.addWidget(self.label)
@@ -143,7 +144,7 @@ class PaneController():
         #add fixed height title to each widget in the pane, and remove its borders 
         widget_title = QLabel(self.title_resolver(title))
         widget_title.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
-        widget_title.setFixedHeight(35)
+        widget_title.setFixedHeight(25)#hardcoded value of 25 pixels, determined by experimentation 
         widget_title_settings = "background-color: "+color+"; margin:0px; border:1px solid rgb(0, 0, 0); border-radius:5px;"
         widget_title.setStyleSheet(widget_title_settings)
         self.widgets_layouts[title].addWidget(widget_title)
