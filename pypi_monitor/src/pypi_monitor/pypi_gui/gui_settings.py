@@ -58,23 +58,24 @@ class SettingsDialog(QDialog):
 
     #function to save current settings 
     def save_settings(self):
-        file = "settings.yaml"
-        script_dir = os.getenv('HOME')+"/.config/pypi_monitor"
-        settings_file = os.path.join(script_dir, file)
-        with open(settings_file, 'w') as file:
+        # file = "settings.yaml"
+        # script_dir = os.getenv('HOME')+"/.config/pypi_monitor"
+        # settings_file = os.path.join(script_dir, file)
+        with open(self.settings_path, 'w') as file:
             yaml.dump(self.main_window.settings, file, default_flow_style=False)
 
     #functions to reset all settings to defaults 
     def reset_settings(self):
-        load_settings(self.main_window, 'default_settings.yaml')
+        load_settings(self.main_window, self.main_window.default_settings_path)
         self.main_window.update_settings()
 
 #function to load settings from a yaml file
-def load_settings(main_window, file="settings.yaml"):
+def load_settings(main_window, settings_file):
     # Load settings from the specified file
     # file_path = "settings.yaml"
-    script_dir = os.getenv('HOME')+"/.config/pypi_monitor"
-    settings_file = os.path.join(script_dir, file)
+    # script_dir = os.getenv('HOME')+"/.config/pypi_monitor"
+    # settings_file = os.path.join(script_dir, file)
+
     if os.path.exists(settings_file):
         with open(settings_file, 'r') as file:
             main_window.settings = yaml.full_load(file)

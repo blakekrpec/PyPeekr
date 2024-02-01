@@ -6,13 +6,17 @@ from PyQt6.QtGui import QIcon, QColor
 
 from pypi_monitor.pypi_gui import gui_settings
 from pypi_monitor.pypi_gui import gui_utils
+from pypi_monitor.utils import set_settings_dirs
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        #set all settings dirs based on OS
+        set_settings_dirs.set_settings_dirs(self)
+
         #load the latest settings file 
-        gui_settings.load_settings(self)
+        gui_settings.load_settings(self, self.settings_path)
 
         #spawn the main window
         self.setWindowTitle('pypi_monitor')
