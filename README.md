@@ -87,8 +87,11 @@ Current design:
     - Pane Controller is implemented. 
     - Started laying out client scripts. 
     - Added ip as a setting, and allow the user to change it. 
+    - Moved settings files out of the git repo to hide user ip addr from git. 
+    - Made the above move of settings work on windows. 
 
 - Next:
     - Finish implementing client to read and store data. 
+    - Change the PaneController to interact with the client and print data as made available. 
     - Add a setting for global font color. 
 

@@ -61,7 +61,7 @@ class SettingsDialog(QDialog):
         # file = "settings.yaml"
         # script_dir = os.getenv('HOME')+"/.config/pypi_monitor"
         # settings_file = os.path.join(script_dir, file)
-        with open(self.settings_path, 'w') as file:
+        with open(self.main_window.settings_path, 'w') as file:
             yaml.dump(self.main_window.settings, file, default_flow_style=False)
 
     #functions to reset all settings to defaults 
