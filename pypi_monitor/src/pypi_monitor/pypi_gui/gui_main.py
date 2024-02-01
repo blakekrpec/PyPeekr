@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
         gui_settings.load_settings(self)
 
         #spawn the main window
-        self.setWindowTitle('Qt GUI Example')
+        self.setWindowTitle('pypi_monitor')
         self.setGeometry(100, 100, 600, 400)
 
         #define central widget, and give it an QHBoxLayout with the top 25 rows being empty so we don't overlap settings button

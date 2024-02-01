@@ -195,6 +195,3 @@ class PaneController():
 
         #add widgets according to current state of settings
         self.add_widgets()
-
-
- 

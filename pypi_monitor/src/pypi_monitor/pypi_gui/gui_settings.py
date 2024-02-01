@@ -140,14 +140,24 @@ class IPDialog(QDialog):
         if self.change_ip.text() != "Change IP Here...":
             #check that the ip is valid
             if self.check_ip(self.change_ip.text()):
-                ip_obj = ipaddress.ip_address(self.change_ip.text())
-                #update the new IP entered in settings
+                #create update message that we will later show user
+                msg_string = "IP address updated from " + self.main_window.settings["ip"] + " to " + self.change_ip.text() + "."
+
+                #update the new IP entered in settings and update label to show now current ip
                 self.main_window.settings["ip"]=self.change_ip.text()
-                #update the label to show current ip in settings
                 self.current_ip_label.setText(self.make_ip_label())
+
+                #give success message
+                success_msg = QMessageBox(self)
+                success_msg.setIcon(QMessageBox.Icon.Information)
+                success_msg.setText("IP Address Updated")
+                success_msg.setInformativeText(msg_string)
+                success_msg.exec()
+
                 #update the QLineEdit with prompt again
                 self.change_ip.setText("Change IP Here...")
-            #warn user if the ip is not valid
+
+            #warn user if the ip is not valid and reset prompt
             else:
                 error_msg = QMessageBox(self)
                 error_msg.setIcon(QMessageBox.Icon.Warning)
@@ -157,24 +167,22 @@ class IPDialog(QDialog):
                 error_msg.exec()
                 self.change_ip.setText("Change IP Here...")
 
-    
+    #check if user provided ip is valid
     def check_ip(self, ip):
+        #split the ip and make sure it has 4 parts
         parts = ip.split(".")
         if len(parts) != 4:
             return False
+        
+        #check that each part is an int, and 0<int<255
         for part in parts:
-            if not isinstance(int(part, int)):
+            if not isinstance(int(part), int):
                 return False
-
             elif int(part) < 0 or int(part) > 255:
                 return False
             else:
                 return True
                 
-
-        
-
-
 #create a views tab on settings page
 class ViewSettingsPage(QWidget):
     def __init__(self, main_window, parent=None):
