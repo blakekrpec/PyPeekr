@@ -1,16 +1,91 @@
 import os
-from PyQt6.QtGui import QResizeEvent
+import ipaddress
 import yaml
-from PyQt6.QtWidgets import QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QColorDialog, QTabWidget, QWidget, QLabel, QLineEdit
+from PyQt6.QtWidgets import QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QColorDialog, QTabWidget, QWidget, QLabel, QLineEdit, QMessageBox
 from PyQt6.QtCore import Qt
 
 from pypi_monitor.pypi_gui import gui_utils
 from pypi_monitor.pypi_gui import gui_main
 
+#define the settings controller
+class SettingsController:
+    def __init__(self, parent):
+        self.parent = parent
+        self.settings_dialog = SettingsDialog(parent)
+
+    #this function is called to open the QDialog settings page
+    def open_settings(self):
+
+        self.settings_dialog.exec()
+
+#define the settings dialog as a QDialog 
+class SettingsDialog(QDialog):
+    def __init__(self, main_window, parent=None):
+        super(SettingsDialog, self).__init__(parent)
+        self.setWindowTitle('Settings')
+        self.setGeometry(200, 200, 400, 300)
+        self.main_window = main_window
+
+        # Create a tab widget
+        self.tab_widget = QTabWidget()
+
+        # Create and add pages to the tab widget
+        self.file_settings_page = FileSettingsPage(main_window, self)
+        self.view_settings_page = ViewSettingsPage(main_window, self)  # Pass main_window to ViewSettingsPage
+        self.tab_widget.addTab(self.file_settings_page, 'File')
+        self.tab_widget.addTab(self.view_settings_page, 'View')
+
+        # Create the "Save" button and hook into save_resettings()
+        self.save_button = QPushButton('Save')
+        self.save_button.clicked.connect(self.save_settings)
+
+        # Create the "Reset" button and hook into reset_settings()
+        self.reset_button = QPushButton('Reset')
+        self.reset_button.clicked.connect(self.reset_settings)
+
+        # Create the main layout for the settings QDialog
+        self.layout = QVBoxLayout(self)
+
+        # Create a horizontal layout for the buttons
+        self.button_layout = QHBoxLayout()
+        self.button_layout.addWidget(self.save_button)
+        self.button_layout.addWidget(self.reset_button)
+
+        #add in the widgets we defined
+        self.layout.addWidget(self.tab_widget)
+        self.layout.addLayout(self.button_layout)
+        self.setLayout(self.layout)
+
+    #function to save current settings 
+    def save_settings(self):
+        file = "settings.yaml"
+        script_dir = os.getenv('HOME')+"/.config/pypi_monitor"
+        settings_file = os.path.join(script_dir, file)
+        with open(settings_file, 'w') as file:
+            yaml.dump(self.main_window.settings, file, default_flow_style=False)
+
+    #functions to reset all settings to defaults 
+    def reset_settings(self):
+        load_settings(self.main_window, 'default_settings.yaml')
+        self.main_window.update_settings()
+
+#function to load settings from a yaml file
+def load_settings(main_window, file="settings.yaml"):
+    # Load settings from the specified file
+    # file_path = "settings.yaml"
+    script_dir = os.getenv('HOME')+"/.config/pypi_monitor"
+    settings_file = os.path.join(script_dir, file)
+    if os.path.exists(settings_file):
+        with open(settings_file, 'r') as file:
+            main_window.settings = yaml.full_load(file)
+
 #create a file tab on settings page
 class FileSettingsPage(QWidget):
     def __init__(self, main_window, parent=None):
         super(FileSettingsPage, self).__init__(parent)
+
+        self.main_window = main_window
+
         self.layout = QVBoxLayout(self)
         # Add your file settings widgets here
         self.setLayout(self.layout)
@@ -19,28 +94,85 @@ class FileSettingsPage(QWidget):
 
         #button to open IPDialog
         self.ip_button = QPushButton('IP Address')
-        self.ip_button.clicked.connect(self.ip_dialog.exec)
+        self.ip_button.clicked.connect(self.ip_pressed)
         self.layout.addWidget(self.ip_button)
+    
+    #function for when the the IP Address button is pressed
+    def ip_pressed(self):
+        #update the current ip label in the ip dialog since it is defined once when the dialog is init above, we have to manually update it here
+        self.ip_dialog.current_ip_label.setText(self.ip_dialog.make_ip_label())
+        #start the dialog
+        self.ip_dialog.exec()
+
 
 #Dialog that will show the current IP, and allow user to change to a new one
 class IPDialog(QDialog):
     def __init__(self, main_window, parent=None):
         super(IPDialog, self).__init__(parent)
         self.setWindowTitle('IP Address')
-        self.setGeometry(200, 200, 400, 300)
+        self.setGeometry(200, 200, 250, 130)
         self.main_window = main_window
 
-        #define the layout
-        self.layout = QVBoxLayout()
+        #create layout
+        self.layout = QVBoxLayout(self)
 
         #show the current IP address in settings 
-        self.current_ip_label = QLabel(self.main_window.settings["ip"])
-        self.layout.addWidget(self.current_ip_label)
+        self.current_ip_label = QLabel(self.make_ip_label())
+        self.layout.addWidget(self.current_ip_label, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
 
         #add option for the user to change the ip in settings 
-        self.change_ip = QLineEdit("Change IP")
+        self.change_ip = QLineEdit("Change IP Here...")
         self.layout.addWidget(self.change_ip)
 
+        #button to save the new ip 
+        self.save_ip_button = QPushButton('Save IP Address', self)
+        self.save_ip_button.clicked.connect(self.save_ip)
+        self.layout.addWidget(self.save_ip_button)
+    
+    #simple function that will grab the current ip and make a string to it
+    def make_ip_label(self):
+        label = "Current IP Address: " + self.main_window.settings["ip"]
+        return label
+
+    #function for when the save ip button is pressed
+    def save_ip(self):
+        #make sure the user didn't hit save ip without entering anything 
+        if self.change_ip.text() != "Change IP Here...":
+            #check that the ip is valid
+            if self.check_ip(self.change_ip.text()):
+                ip_obj = ipaddress.ip_address(self.change_ip.text())
+                #update the new IP entered in settings
+                self.main_window.settings["ip"]=self.change_ip.text()
+                #update the label to show current ip in settings
+                self.current_ip_label.setText(self.make_ip_label())
+                #update the QLineEdit with prompt again
+                self.change_ip.setText("Change IP Here...")
+            #warn user if the ip is not valid
+            else:
+                error_msg = QMessageBox(self)
+                error_msg.setIcon(QMessageBox.Icon.Warning)
+                error_msg.setText("Invalid IP Address")
+                error_msg.setInformativeText("The entered address is not a valid IPv4 address.")
+                error_msg.setWindowTitle("Error")
+                error_msg.exec()
+                self.change_ip.setText("Change IP Here...")
+
+    
+    def check_ip(self, ip):
+        parts = ip.split(".")
+        if len(parts) != 4:
+            return False
+        for part in parts:
+            if not isinstance(int(part, int)):
+                return False
+
+            elif int(part) < 0 or int(part) > 255:
+                return False
+            else:
+                return True
+                
+
+        
 
 
 #create a views tab on settings page
@@ -70,7 +202,6 @@ class ViewSettingsPage(QWidget):
         if color.isValid():
             self.main_window.settings["background_color"] = color.name() #get hex color code
             gui_utils.set_main_background_color(self.main_window, color) #set main window color
-
 
 #the dialog ot run when the displays page is opened
 class DisplaysDialog(QDialog):
@@ -324,77 +455,3 @@ class GPUPage(QWidget):
 
         #call the main settings updater
         self.main_window.update_settings()     
-
-#define the settings controller
-class SettingsController:
-    def __init__(self, parent):
-        self.parent = parent
-        self.settings_dialog = SettingsDialog(parent)
-
-    #this function is called to open the QDialog settings page
-    def open_settings(self):
-
-        self.settings_dialog.exec()
-
-#define the settings dialog as a QDialog 
-class SettingsDialog(QDialog):
-    def __init__(self, main_window, parent=None):
-        super(SettingsDialog, self).__init__(parent)
-        self.setWindowTitle('Settings')
-        self.setGeometry(200, 200, 400, 300)
-        self.main_window = main_window
-
-        # Create a tab widget
-        self.tab_widget = QTabWidget()
-
-        # Create and add pages to the tab widget
-        self.file_settings_page = FileSettingsPage(main_window, self)
-        self.view_settings_page = ViewSettingsPage(main_window, self)  # Pass main_window to ViewSettingsPage
-        self.tab_widget.addTab(self.file_settings_page, 'File')
-        self.tab_widget.addTab(self.view_settings_page, 'View')
-
-        # Create the "Save" button and hook into save_resettings()
-        self.save_button = QPushButton('Save')
-        self.save_button.clicked.connect(self.save_settings)
-
-        # Create the "Reset" button and hook into reset_settings()
-        self.reset_button = QPushButton('Reset')
-        self.reset_button.clicked.connect(self.reset_settings)
-
-        # Create the main layout for the settings QDialog
-        layout = QVBoxLayout(self)
-
-        # Create a horizontal layout for the buttons
-        button_layout = QHBoxLayout()
-        button_layout.addWidget(self.save_button)
-        button_layout.addWidget(self.reset_button)
-
-        #add in the widgets we defined
-        layout.addWidget(self.tab_widget)
-        layout.addLayout(button_layout)
-        self.setLayout(layout)
-
-    #function to save current settings 
-    def save_settings(self):
-        file_path = "settings.yaml"
-        script_dir = os.getenv('HOME')+"/.config/pypi_monitor"
-        settings_file = os.path.join(script_dir, file_path)
-        with open(settings_file, 'w') as file:
-            yaml.dump(self.main_window.settings, file, default_flow_style=False)
-
-    #functions to reset all settings to defaults 
-    def reset_settings(self):
-        load_settings(self.main_window, 'settings/default_settings.yaml')
-        self.main_window.update_settings()
-
-#function to load settings from a yaml file
-def load_settings(main_window):
-    # Load settings from the specified file
-    file_path = "settings.yaml"
-    script_dir = os.getenv('HOME')+"/.config/pypi_monitor"
-    settings_file = os.path.join(script_dir, file_path)
-    if os.path.exists(settings_file):
-        with open(settings_file, 'r') as file:
-            main_window.settings = yaml.full_load(file)
-
-

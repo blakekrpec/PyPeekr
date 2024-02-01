@@ -18,9 +18,11 @@ def create_config_dir():
 
     #construct file path to where we want to save settings 
     settings_file = config_dir + "/settings.yaml"
+    default_file = config_dir + "/default_settings.yaml" 
 
     #copy default_settings into config dir as settings.yaml
     shutil.copy(default_settings, settings_file)
+    shutil.copy(default_settings, default_file)
     
 if __name__ == "__main__": 
     create_config_dir()
