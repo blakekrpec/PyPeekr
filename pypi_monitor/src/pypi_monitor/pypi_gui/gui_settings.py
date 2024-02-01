@@ -58,9 +58,7 @@ class SettingsDialog(QDialog):
 
     #function to save current settings 
     def save_settings(self):
-        # file = "settings.yaml"
-        # script_dir = os.getenv('HOME')+"/.config/pypi_monitor"
-        # settings_file = os.path.join(script_dir, file)
+        #dump current global settings object into a yaml
         with open(self.main_window.settings_path, 'w') as file:
             yaml.dump(self.main_window.settings, file, default_flow_style=False)
 
@@ -71,11 +69,7 @@ class SettingsDialog(QDialog):
 
 #function to load settings from a yaml file
 def load_settings(main_window, settings_file):
-    # Load settings from the specified file
-    # file_path = "settings.yaml"
-    # script_dir = os.getenv('HOME')+"/.config/pypi_monitor"
-    # settings_file = os.path.join(script_dir, file)
-
+    #open passed settings if it exists and then store them into global settings object
     if os.path.exists(settings_file):
         with open(settings_file, 'r') as file:
             main_window.settings = yaml.full_load(file)
@@ -152,6 +146,7 @@ class IPDialog(QDialog):
                 success_msg = QMessageBox(self)
                 success_msg.setIcon(QMessageBox.Icon.Information)
                 success_msg.setText("IP Address Updated")
+                success_msg.setWindowTitle("IP Address")
                 success_msg.setInformativeText(msg_string)
                 success_msg.exec()
 

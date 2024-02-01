@@ -6,7 +6,7 @@ from PyQt6.QtGui import QIcon, QColor
 
 from pypi_monitor.pypi_gui import gui_settings
 from pypi_monitor.pypi_gui import gui_utils
-from pypi_monitor.utils import set_settings_dirs
+from pypi_monitor.pypi_utils import set_settings_dirs
 
 class MainWindow(QMainWindow):
     def __init__(self):
