@@ -501,7 +501,7 @@ class GPUPage(QWidget):
         if self.main_window.settings["displays"]["GPU"]["temp"] == False and self.main_window.settings["displays"]["GPU"]["util"] == False:
             self.main_window.settings["displays"]["GPU"]["enabled"] = False
             self.gpu_enable_button.setChecked(False)
-            self.cpu_enable_button.setText("Enable GPU Stats")
+            self.gpu_enable_button.setText("Enable GPU Stats")
 
         #call the main settings updater
         self.main_window.update_settings()     

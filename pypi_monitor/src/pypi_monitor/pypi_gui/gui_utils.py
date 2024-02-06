@@ -112,7 +112,7 @@ class PaneController():
         color = self.main_window.settings["displays"][self.title]["color"]
 
         #define the style sheet and apply it to the label widget
-        settings = "background-color: "+color+"; margin:2px; border:1px solid rgb(0, 0, 0); border-radius:10px;"
+        settings = "background-color: "+color+"; margin:2px; border:0px solid rgb(0, 0, 0); border-radius:10px;"
         self.label.setStyleSheet(settings)
 
         #make it fixed height 
