@@ -11,7 +11,7 @@ git clone git@github.com:blakekrpec/pypi_monitor.git
 ### Server
 [OpenHardwareMonitor](https://github.com/hexagon-oss/openhardwaremonitor) project as the server on Windows to host the pc information over the web. Future work aims to implement a Linux server as well, although this will likely be a custom implementation that mimics the data structure hosted by OpenHardwareMonitor.
 
-To install OpenHardwareMonitor, grab the latest release [here](https://github.com/hexagon-oss/openhardwaremonitor/releases). Then follow the setup guide to complete installation. 
+To install OpenHardwareMonitor, grab the latest release [here](https://github.com/hexagon-oss/openhardwaremonitor/releases). Then follow the setup guide to complete installation. The http endpoints available are "/api/available" (returns "true" or an error if not), "/api/version" (returns the version of the server), "/api/rootnode" (returns a json with the sensor tree and all the values), "/api/nodes/{NodeId}" (returns a json with just the information for the given node).
 
 Launch OpenHardwareMonitor and make the following changes to settings:
 
@@ -89,9 +89,10 @@ Current design:
     - Added ip as a setting, and allow the user to change it. 
     - Moved settings files out of the git repo to hide user ip addr from git. 
     - Made the above move of settings work on windows. 
+    - Added port option to the settings so user can change it. 
 
 - Next:
     - Finish implementing client to read and store data. 
     - Change the PaneController to interact with the client and print data as made available. 
     - Add a setting for global font color. 
-
+    - Add an logger to log errors and progress. Then add a button in settings where the user can print the log.

@@ -1,11 +1,13 @@
 import sys
 import os
+import threading
 
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QHBoxLayout,  QWidget
 from PyQt6.QtGui import QIcon, QColor
 
 from pypi_monitor.pypi_gui import gui_settings
 from pypi_monitor.pypi_gui import gui_utils
+from pypi_monitor.pypi_client import client
 from pypi_monitor.pypi_utils import set_settings_dirs
 
 class MainWindow(QMainWindow):
@@ -17,6 +19,9 @@ class MainWindow(QMainWindow):
 
         #load the latest settings file 
         gui_settings.load_settings(self, self.settings_path)
+
+        #start the client
+        self.client = client.Client(self)
 
         #spawn the main window
         self.setWindowTitle('pypi_monitor')

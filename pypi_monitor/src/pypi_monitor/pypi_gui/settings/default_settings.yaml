@@ -13,3 +13,4 @@ displays:
 ip: "0.0.0.0"
 port: "8080"
 is_running: true
+update_rate: 1

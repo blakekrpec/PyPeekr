@@ -137,7 +137,6 @@ class IPDialog(QDialog):
     def save_ip_and_port(self):
         #make sure the user didn't hit save without entering anything 
         if self.change_ip.text() != "Change IP Address Here...":
-            print("changing ip")
             #check that the ip is valid
             if self.check_ip(self.change_ip.text()):
                 #create update message that we will later show user
@@ -170,8 +169,6 @@ class IPDialog(QDialog):
 
         #make sure the user didn't hit save without entering anything 
         if self.change_port.text() != "Change Port Here...":
-            print("changing port")
-
             #check that the port is valid
             if self.check_port(self.change_port.text()):
                 #create update message that we will later show user
