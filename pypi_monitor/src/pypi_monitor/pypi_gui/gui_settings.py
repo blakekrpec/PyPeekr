@@ -137,7 +137,6 @@ class IPDialog(QDialog):
     def save_ip_and_port(self):
         #make sure the user didn't hit save without entering anything 
         if self.change_ip.text() != "Change IP Address Here...":
-            print("changing ip")
             #check that the ip is valid
             if self.check_ip(self.change_ip.text()):
                 #create update message that we will later show user
@@ -147,19 +146,14 @@ class IPDialog(QDialog):
                 self.main_window.settings["ip"]=self.change_ip.text()
                 self.current_ip_label.setText(self.make_ip_label())
 
-                #give success message
-                success_msg = QMessageBox(self)
-                success_msg.setIcon(QMessageBox.Icon.Information)
-                success_msg.setText("IP Address Updated")
-                success_msg.setWindowTitle("IP Address")
-                success_msg.setInformativeText(msg_string)
-                success_msg.exec()
-
                 #call the clients data_client request updater
                 self.main_window.client.data_client.queue.update_request_settings()
 
                 #update the QLineEdit with prompt again
                 self.change_ip.setText("Change IP Address Here...")
+
+                #call the saving function to dump current settings into settings.yaml
+                self.main_window.settings_controller.settings_dialog.save_settings()
 
             #warn user if the ip is not valid and reset prompt
             else:
@@ -173,7 +167,6 @@ class IPDialog(QDialog):
 
         #make sure the user didn't hit save without entering anything 
         if self.change_port.text() != "Change Port Here...":
-            print("changing ip")
             #check that the port is valid
             if self.check_port(self.change_port.text()):
                 #create update message that we will later show user
@@ -183,19 +176,14 @@ class IPDialog(QDialog):
                 self.main_window.settings["port"]=self.change_port.text()
                 self.current_ip_label.setText(self.make_ip_label())
 
-                #give success message
-                success_msg = QMessageBox(self)
-                success_msg.setIcon(QMessageBox.Icon.Information)
-                success_msg.setText("Port Updated")
-                success_msg.setWindowTitle("Port")
-                success_msg.setInformativeText(msg_string)
-                success_msg.exec()
-
                 #call the clients data_client request updater
                 self.main_window.client.data_client.queue.update_request_settings()
 
                 #update the QLineEdit with prompt again
                 self.change_port.setText("Change Port Here...")
+
+                #call the saving function to dump current settings into settings.yaml
+                self.main_window.settings_controller.settings_dialog.save_settings()
 
             #warn user if the ip is not valid and reset prompt
             else:
