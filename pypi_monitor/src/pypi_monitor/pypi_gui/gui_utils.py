@@ -155,7 +155,7 @@ class PaneController():
 
         #add a dummy number for now, later this will be client data 
         dummy_number = QLabel("55")
-        dummy_number.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        dummy_number.setAlignment(Qt.AlignmentFlag.AlignCenter)
         dummy_number_settings = "background-color: "+color+"; margin:0px; border:1px solid rgb(0, 0, 0); font-size:75px; border-radius:5px;"
         dummy_number.setStyleSheet(dummy_number_settings)
         #add data to secondary Hbox layout
