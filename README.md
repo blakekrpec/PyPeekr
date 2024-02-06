@@ -92,7 +92,9 @@ Current design:
     - Added port option to the settings so user can change it. 
 
 - Next:
-    - Finish implementing client to read and store data. 
+    - Finish implementing client to read and store data.
+    - Add button to settings to pause and resume (will just call the stop threads function.)
+    - Add QLineEdit dialog in File settings page for changing update rate. 
     - Change the PaneController to interact with the client and print data as made available. 
     - Add a setting for global font color. 
-    - Add an logger to log errors and progress. Then add a button in settings where the user can print the log.
+    - Add an logger to log errors and progress. Then add a button in settings where the user can print/view the log.

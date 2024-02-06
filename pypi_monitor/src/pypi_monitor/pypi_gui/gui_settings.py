@@ -116,7 +116,7 @@ class IPDialog(QDialog):
         self.layout.addWidget(self.current_ip_label, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
 
         #add option for the user to change the ip in settings 
-        self.change_ip = QLineEdit("Change IP Here...")
+        self.change_ip = QLineEdit("Change IP Address Here...")
         self.layout.addWidget(self.change_ip)
 
         #add option for the user to change the ip in settings 
@@ -137,6 +137,7 @@ class IPDialog(QDialog):
     def save_ip_and_port(self):
         #make sure the user didn't hit save without entering anything 
         if self.change_ip.text() != "Change IP Address Here...":
+            print("changing ip")
             #check that the ip is valid
             if self.check_ip(self.change_ip.text()):
                 #create update message that we will later show user
@@ -154,6 +155,9 @@ class IPDialog(QDialog):
                 success_msg.setInformativeText(msg_string)
                 success_msg.exec()
 
+                #call the clients data_client request updater
+                self.main_window.client.data_client.queue.update_request_settings()
+
                 #update the QLineEdit with prompt again
                 self.change_ip.setText("Change IP Address Here...")
 
@@ -169,6 +173,7 @@ class IPDialog(QDialog):
 
         #make sure the user didn't hit save without entering anything 
         if self.change_port.text() != "Change Port Here...":
+            print("changing ip")
             #check that the port is valid
             if self.check_port(self.change_port.text()):
                 #create update message that we will later show user
@@ -185,6 +190,9 @@ class IPDialog(QDialog):
                 success_msg.setWindowTitle("Port")
                 success_msg.setInformativeText(msg_string)
                 success_msg.exec()
+
+                #call the clients data_client request updater
+                self.main_window.client.data_client.queue.update_request_settings()
 
                 #update the QLineEdit with prompt again
                 self.change_port.setText("Change Port Here...")
