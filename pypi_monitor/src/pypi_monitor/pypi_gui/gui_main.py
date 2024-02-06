@@ -57,6 +57,7 @@ class MainWindow(QMainWindow):
         #update background colors
         gui_utils.set_main_background_color(self, self.settings["background_color"])
         self.pane_manager.update_panes()
+        self.client.data_client.queue.update_request_settings()
     
     #debugging function to see current settings 
     def print_settings(self):

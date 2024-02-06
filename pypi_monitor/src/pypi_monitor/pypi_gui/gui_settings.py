@@ -64,8 +64,12 @@ class SettingsDialog(QDialog):
 
     #functions to reset all settings to defaults 
     def reset_settings(self):
-        load_settings(self.main_window, self.main_window.default_settings_path)
-        self.main_window.update_settings()
+        question_prompt = QMessageBox(self)
+        question_prompt.setText("This will reset all settings back to defaults. Are you sure you want to continue?")
+        question_prompt.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        if question_prompt.exec() == QMessageBox.StandardButton.Yes:
+            load_settings(self.main_window, self.main_window.default_settings_path)
+            self.main_window.update_settings()
 
 #function to load settings from a yaml file
 def load_settings(main_window, settings_file):
@@ -498,7 +502,6 @@ class GPUPage(QWidget):
             self.main_window.settings["displays"]["GPU"]["enabled"] = False
             self.gpu_enable_button.setChecked(False)
             self.cpu_enable_button.setText("Enable GPU Stats")
-
 
         #call the main settings updater
         self.main_window.update_settings()     

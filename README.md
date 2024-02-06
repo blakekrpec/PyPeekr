@@ -92,11 +92,15 @@ Current design:
     - Added port option to the settings so user can change it. 
     - Save IP Address button now writes IP settings to settings.yaml.
     - Added the stats (min, max, avg) to the panes.
+    - Added a warning prompt when resetting that requires user to confirm before resetting. 
 
 - Next:
     - Finish implementing client to read and store data.
-    - Add button to settings to pause and resume (will just call the stop threads function.)
+    - Add button to settings to pause and resume (will just call the stop threads function).
     - Add QLineEdit dialog in File settings page for changing update rate. 
     - Change the PaneController to interact with the client and print data as made available. 
     - Add a setting for global font color. 
     - Add an logger to log errors and progress. Then add a button in settings where the user can print/view the log.
+
+- Bugs:
+    - If you use the reset button, the DataQueue() loop stops running. It never makes it 

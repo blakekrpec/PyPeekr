@@ -23,7 +23,6 @@ class DataQueue():
         self.port = self.main_window.settings["port"]
         self.is_running = self.main_window.settings["is_running"]
         self.url = "http://" + self.ip + ":" + self.port + "/api/rootnode"
-        print(self.url)
     
         #function for starting a data_request() loop in a thread so that gui_main.py is able to continue executing past when this is called
     def start_request_loop(self):

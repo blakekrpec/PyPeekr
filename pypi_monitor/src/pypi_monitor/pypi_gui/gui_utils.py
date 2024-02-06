@@ -183,9 +183,6 @@ class PaneController():
         self.widgets_main_layouts[title].addLayout(self.widgets_secondary_layouts[title])
         self.widgets[title].setLayout(self.widgets_main_layouts[title])
 
-
-
-
     #function to convert the short settings keys into full titles
     def title_resolver(self, title):
         if title == "temp":
