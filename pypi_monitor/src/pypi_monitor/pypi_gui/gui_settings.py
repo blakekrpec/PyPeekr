@@ -124,7 +124,7 @@ class IPDialog(QDialog):
         self.layout.addWidget(self.change_port)
 
         #button to save the new ip and or port
-        self.save_ip_button = QPushButton('Save', self)
+        self.save_ip_button = QPushButton('Save IP Address', self)
         self.save_ip_button.clicked.connect(self.save_ip_and_port)
         self.layout.addWidget(self.save_ip_button)
     
@@ -136,12 +136,12 @@ class IPDialog(QDialog):
     #function for when the save ip button is pressed
     def save_ip_and_port(self):
         #make sure the user didn't hit save without entering anything 
-        if self.change_ip.text() != "Change IP Here...":
+        if self.change_ip.text() != "Change IP Address Here...":
             print("changing ip")
             #check that the ip is valid
             if self.check_ip(self.change_ip.text()):
                 #create update message that we will later show user
-                msg_string = "IP address updated from " + self.main_window.settings["ip"] + ":" + self.main_window.settings["port"] + "to " + self.change_ip.text() + ":" + self.main_window.settings["port"] + "."
+                msg_string = "IP address updated from " + self.main_window.settings["ip"] + ":" + self.main_window.settings["port"] + " to " + self.change_ip.text() + ":" + self.main_window.settings["port"] + "."
 
                 #update the new IP entered in settings and update label to show now current ip
                 self.main_window.settings["ip"]=self.change_ip.text()
@@ -156,7 +156,7 @@ class IPDialog(QDialog):
                 success_msg.exec()
 
                 #update the QLineEdit with prompt again
-                self.change_ip.setText("Change IP Here...")
+                self.change_ip.setText("Change IP Address Here...")
 
             #warn user if the ip is not valid and reset prompt
             else:
@@ -166,7 +166,7 @@ class IPDialog(QDialog):
                 error_msg.setInformativeText("The entered address is not a valid IPv4 address.")
                 error_msg.setWindowTitle("Error")
                 error_msg.exec()
-                self.change_ip.setText("Change Port Here...")
+                self.change_ip.setText("Change IP Address Here...")
 
         #make sure the user didn't hit save without entering anything 
         if self.change_port.text() != "Change Port Here...":
@@ -387,6 +387,7 @@ class CPUPage(QWidget):
         if self.main_window.settings["displays"]["CPU"]["temp"] == False and self.main_window.settings["displays"]["CPU"]["util"] == False:
             self.main_window.settings["displays"]["CPU"]["enabled"] = False
             self.cpu_enable_button.setChecked(False)
+            self.cpu_enable_button.setText("Enable CPU Stats")
 
         #call the main settings updater
         self.main_window.update_settings()               
@@ -503,6 +504,8 @@ class GPUPage(QWidget):
         if self.main_window.settings["displays"]["GPU"]["temp"] == False and self.main_window.settings["displays"]["GPU"]["util"] == False:
             self.main_window.settings["displays"]["GPU"]["enabled"] = False
             self.gpu_enable_button.setChecked(False)
+            self.cpu_enable_button.setText("Enable GPU Stats")
+
 
         #call the main settings updater
         self.main_window.update_settings()     
