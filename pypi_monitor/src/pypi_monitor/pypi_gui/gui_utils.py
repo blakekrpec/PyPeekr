@@ -100,6 +100,7 @@ class PaneController():
         self.pane_widget.setLayout(self.layout)
         
         #call the main update function for the PaneController
+        print("init pane controller")
         self.update_pane_controller()
 
     #adds a title widget to the pane according to pane title 
@@ -153,14 +154,13 @@ class PaneController():
         #add the tile label to the main VBox layout
         self.widgets_main_layouts[title].addWidget(widget_title)
 
-        #add a dummy number for now, later this will be client data 
+        # add a dummy number for now, later this will be client data 
         dummy_number = QLabel("55")
         dummy_number.setAlignment(Qt.AlignmentFlag.AlignCenter)
         dummy_number_settings = "background-color: "+color+"; margin:0px; border:1px solid rgb(0, 0, 0); font-size:75px; border-radius:5px;"
         dummy_number.setStyleSheet(dummy_number_settings)
         #add data to secondary Hbox layout
         self.widgets_secondary_layouts[title].addWidget(dummy_number)
-
 
         #add a dummy number for now, later this will be client data 
         dummy_number1 = QLabel("Min: 55")
@@ -224,3 +224,5 @@ class PaneController():
 
         #add widgets according to current state of settings
         self.add_widgets()
+
+        print("updated panes")

@@ -1,9 +1,11 @@
 import sys
 import os
-import threading
+from datetime import datetime
+import time
 
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QHBoxLayout,  QWidget
-from PyQt6.QtGui import QIcon, QColor
+from PyQt6.QtGui import QIcon, QResizeEvent
+from PyQt6.QtCore import Qt, QTimer
 
 from pypi_monitor.pypi_gui import gui_settings
 from pypi_monitor.pypi_gui import gui_utils
@@ -26,6 +28,7 @@ class MainWindow(QMainWindow):
         #spawn the main window
         self.setWindowTitle('pypi_monitor')
         self.setGeometry(100, 100, 600, 400)
+        # self.setWindowFlag(Qt.WindowType.FramelessWindowHint) # this will make the window frameless
 
         #define central widget, and give it an QHBoxLayout with the top 25 rows being empty so we don't overlap settings button
         central_widget = QWidget(self)
@@ -49,26 +52,38 @@ class MainWindow(QMainWindow):
         #setup the pane manager 
         self.pane_manager = gui_utils.PaneManager(self)
 
-        #call the settings updater
-        self.update_settings()
+
+        #__init__ complete, allow the resizeEvent to run (which it will do when allowed to)
+        time.sleep(3) #sleep just to debug and make sure everything inits before resizeEvent is allowed to run
+        self.resize_update_flag = True
 
     #update all necessary changes
     def update_settings(self):
-        #update background colors
-        gui_utils.set_main_background_color(self, self.settings["background_color"])
-        self.pane_manager.update_panes()
-        self.client.data_client.queue.update_request_settings()
-        self.settings_controller.settings_dialog.file_settings_page.update_rate_slider()
-    
+        gui_utils.set_main_background_color(self, self.settings["background_color"]) #background color
+        self.pane_manager.update_panes() #panes
+        self.client.data_client.queue.update_request_settings() #http request settings 
+        self.settings_controller.settings_dialog.file_settings_page.update_rate_slider() #update rate
+
+    #resizeEvent, but it users a flag to make sure we don't call update_settings() more than once every 0.5 seconds (resizeEvent happens many times very fast)
+    def resizeEvent(self, event):
+        if self.resize_update_flag:
+            print("resizing and updating")
+            self.resize_update_flag = False
+            self.update_settings()
+            QTimer.singleShot(500, lambda: setattr(self, "resize_update_flag", True))#do not set resize_update_flag back to false until 0.5 seconds has passed 
+        super().resizeEvent(event)
+
+
     #debugging function to see current settings 
     def print_settings(self):
+
         print(self.settings)
 
 #add a function to start the app so poetry can link it to a cmd line verb to run the gui
 def run_app():
     app = QApplication(sys.argv)
     main_window = MainWindow()
-    main_window.show()
+    main_window.show()#showMaximized() will make the window full screen
     sys.exit(app.exec())    
 
 #run the app

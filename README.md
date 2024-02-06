@@ -103,3 +103,7 @@ Current design:
     - Add a logger to log errors and progress. Then add a button in settings where the user can print/view the log.
 
 - Bugs:
+    - QLayout: Attempting to add QLayout "" to FileSettingsPage "", which already has a layout
+        - This seems to be related to the nested layouts on the file settings page. The Mane panes have nested layouts with no issues so we should look there for help. 
+    - When resizeEvent is allowed to call update_settings() it creates panes behind the settings button. 
+        - The top pane here it titled GPU, so I think it is somehow calling the update_panes() function in a broken way. 
