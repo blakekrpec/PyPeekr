@@ -90,7 +90,8 @@ Current design:
     - Moved settings files out of the git repo to hide user ip addr from git. 
     - Made the above move of settings work on windows. 
     - Added port option to the settings so user can change it. 
-    - Save IP Address button now writes IP settings to settings.yaml
+    - Save IP Address button now writes IP settings to settings.yaml.
+    - Added the stats (min, max, avg) to the panes.
 
 - Next:
     - Finish implementing client to read and store data.

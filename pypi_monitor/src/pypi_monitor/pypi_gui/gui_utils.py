@@ -131,8 +131,11 @@ class PaneController():
     def add_widget(self, title):
         #create the pane for "title" and store in panes list, store layout so we can access it later to add widgets, and set the layout
         self.widgets[title] = QWidget(self.pane_widget)
-        self.widgets_layouts[title] = QVBoxLayout()
-        self.widgets[title].setLayout(self.widgets_layouts[title])
+
+        #create three layouts that will be nested. Main layout will be a VBox with title, and data layout. Data layout is an h box that has current data, and stats, stats is a VBox containing min, max, avg
+        self.widgets_main_layouts[title] = QVBoxLayout()
+        self.widgets_secondary_layouts[title] = QHBoxLayout()
+        self.widgets_tertiary_layouts[title] = QVBoxLayout()
 
         #define pane color
         color = self.main_window.settings["background_color"]
@@ -147,14 +150,41 @@ class PaneController():
         widget_title.setFixedHeight(25)#hardcoded value of 25 pixels, determined by experimentation 
         widget_title_settings = "background-color: "+color+"; margin:0px; border:1px solid rgb(0, 0, 0); border-radius:5px;"
         widget_title.setStyleSheet(widget_title_settings)
-        self.widgets_layouts[title].addWidget(widget_title)
+        #add the tile label to the main VBox layout
+        self.widgets_main_layouts[title].addWidget(widget_title)
 
         #add a dummy number for now, later this will be client data 
         dummy_number = QLabel("55")
         dummy_number.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
-        dummy_number_settings = "background-color: "+color+"; margin:0px; border:1px solid rgb(0, 0, 0); font-size:75px; border-radius:20px;"
+        dummy_number_settings = "background-color: "+color+"; margin:0px; border:1px solid rgb(0, 0, 0); font-size:75px; border-radius:5px;"
         dummy_number.setStyleSheet(dummy_number_settings)
-        self.widgets_layouts[title].addWidget(dummy_number)
+        #add data to secondary Hbox layout
+        self.widgets_secondary_layouts[title].addWidget(dummy_number)
+
+
+        #add a dummy number for now, later this will be client data 
+        dummy_number1 = QLabel("Min: 55")
+        dummy_number2 = QLabel("Max: 55")
+        dummy_number3 = QLabel("Avg: 55")
+        dummy_number1.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        dummy_number2.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        dummy_number3.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        dummy_number_n_settings =  "background-color: "+color+"; margin:0px; border:1px solid rgb(0, 0, 0); border-radius:5px;"
+        dummy_number1.setStyleSheet(dummy_number_n_settings)
+        dummy_number2.setStyleSheet(dummy_number_n_settings)
+        dummy_number3.setStyleSheet(dummy_number_n_settings)
+        #add data to the tertiary Vbox layout
+        self.widgets_tertiary_layouts[title].addWidget(dummy_number1)
+        self.widgets_tertiary_layouts[title].addWidget(dummy_number2)
+        self.widgets_tertiary_layouts[title].addWidget(dummy_number3)
+
+        #nest all the layouts and set main layout
+        self.widgets_secondary_layouts[title].addLayout(self.widgets_tertiary_layouts[title])
+        self.widgets_main_layouts[title].addLayout(self.widgets_secondary_layouts[title])
+        self.widgets[title].setLayout(self.widgets_main_layouts[title])
+
+
+
 
     #function to convert the short settings keys into full titles
     def title_resolver(self, title):
@@ -179,7 +209,9 @@ class PaneController():
     def update_pane_controller(self):
         self.widgets = {}
         self.widgets_status = {}
-        self.widgets_layouts = {}
+        self.widgets_main_layouts = {}
+        self.widgets_secondary_layouts = {}
+        self.widgets_tertiary_layouts = {}
 
         #remove all previous widgets added to the pane_widget
         while self.layout.count():
