@@ -5,7 +5,7 @@ import time
 
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QHBoxLayout,  QWidget
 from PyQt6.QtGui import QIcon, QResizeEvent
-from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtCore import QEvent, QObject, Qt, QTimer
 
 from pypi_monitor.pypi_gui import gui_settings
 from pypi_monitor.pypi_gui import gui_utils
@@ -52,9 +52,10 @@ class MainWindow(QMainWindow):
         #setup the pane manager 
         self.pane_manager = gui_utils.PaneManager(self)
 
+        self.installEventFilter(self)
 
         #__init__ complete, allow the resizeEvent to run (which it will do when allowed to)
-        time.sleep(3) #sleep just to debug and make sure everything inits before resizeEvent is allowed to run
+        # time.sleep(3) #sleep just to debug and make sure everything inits before resizeEvent is allowed to run
         self.resize_update_flag = True
 
     #update all necessary changes
@@ -65,16 +66,22 @@ class MainWindow(QMainWindow):
         self.settings_controller.settings_dialog.file_settings_page.update_rate_slider() #update rate
 
     #resizeEvent, but it users a flag to make sure we don't call update_settings() more than once every 0.5 seconds (resizeEvent happens many times very fast)
-    def resizeEvent(self, event):
-        if self.resize_update_flag:
-            print("resizing and updating")
-            self.resize_update_flag = False
+    # def resizeEvent(self, event):
+    #     if self.resize_update_flag:
+    #         print("resizing and updating")
+    #         self.resize_update_flag = False
+    #         self.update_settings()
+    #         QTimer.singleShot(500, lambda: setattr(self, "resize_update_flag", True))#do not set resize_update_flag back to false until 0.5 seconds has passed 
+    #     super().resizeEvent(event)
+    
+    #tried this way to see why calling update_settings() here is broken, still breaks
+    def eventFilter(self, a0: QObject | None, a1: QEvent | None) -> bool:
+        if a1.type() == QEvent.Type.Move or a1.type() == QEvent.Type.WindowStateChange:
             self.update_settings()
-            QTimer.singleShot(500, lambda: setattr(self, "resize_update_flag", True))#do not set resize_update_flag back to false until 0.5 seconds has passed 
-        super().resizeEvent(event)
+        return super().eventFilter(a0, a1)
 
 
-    #debugging function to see current settings 
+    #debugging function to see current settings :
     def print_settings(self):
 
         print(self.settings)
