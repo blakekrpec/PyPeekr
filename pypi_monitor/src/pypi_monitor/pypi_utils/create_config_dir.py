@@ -4,7 +4,7 @@ import shutil
 import platform
 from pathlib import Path
 
-#create location to store settings
+#create location to store settings if it doesn't exist
 def create_config_dir():
 
     #create directory outside the project where we will store settings. This will protect users IP from the git repo
@@ -24,7 +24,7 @@ def create_config_dir():
         settings_file = config_dir + "\\settings.yaml"
         default_file = config_dir + "\\default_settings.yaml" 
 
-        #copy default_settings into config dir as settings.yaml
+        #copy default settings twice. once to settings.yaml and once to default_settings.yaml
         shutil.copy(default_settings, settings_file)
         shutil.copy(default_settings, default_file) 
 
@@ -44,7 +44,7 @@ def create_config_dir():
         settings_file = config_dir + "/settings.yaml"
         default_file = config_dir + "/default_settings.yaml" 
 
-        #copy default_settings into config dir as settings.yaml
+        #copy default settings twice. once to settings.yaml and once to default_settings.yaml
         shutil.copy(default_settings, settings_file)
         shutil.copy(default_settings, default_file)
     

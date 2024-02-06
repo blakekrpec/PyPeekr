@@ -8,7 +8,7 @@ def set_main_background_color(main_window, color):
     #convert hex to QColor
     q_color = QColor(color)
 
-    # Set the background color for main window, settings page, and button
+    # Set the background color for main window, and other pages/dialogs/widgets etc.
     main_window.setStyleSheet(f'background-color: {q_color.name()};')
     main_window.settings_button.setStyleSheet(f'background-color: {q_color.name()};')
     main_window.settings_controller.settings_dialog.setStyleSheet(f'background-color: {q_color.name()};')
@@ -32,9 +32,9 @@ class PaneManager:
         self.panes_status = {}
         #update panes_status list according to current settings 
         if self.main_window.settings["displays"]["CPU"]["enabled"] == True:
-            self.panes_status["CPU"] = True
+            self.panes_status["CPU"] = True 
         else:
-            self.panes_status["CPU"] = False   
+            self.panes_status["CPU"] = False  
  
         if self.main_window.settings["displays"]["GPU"]["enabled"] == True:
             self.panes_status["GPU"] = True
@@ -85,7 +85,7 @@ class PaneManager:
         self.create_panes()
 
 #class that will be used once per each pane. It will be in charge of controlling which panels are displayed inside the pane 
-    #update_pane_controller() should be called from outside of the class as it will call all other functions 
+    #update_pane_controller() is the only function of this class that should be called externally, it will call all other functions 
 class PaneController(): 
     def __init__(self, title, pane_widget, main_window, parent=None):
 

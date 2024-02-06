@@ -2,7 +2,6 @@ import platform
 from pathlib import Path
 
 def set_settings_dirs(self):
-    # self.main_window = main_window
     #if windows set paths to settings, and default_settings
     if platform.platform().split('-')[0] == 'Windows':
         config_dir = str(Path.home())+"\\.config\\pypi_monitor"
