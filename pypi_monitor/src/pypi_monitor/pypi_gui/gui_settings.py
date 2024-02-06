@@ -1,7 +1,7 @@
 import os
 import ipaddress
 import yaml
-from PyQt6.QtWidgets import QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QColorDialog, QTabWidget, QWidget, QLabel, QLineEdit, QMessageBox
+from PyQt6.QtWidgets import QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QColorDialog, QTabWidget, QWidget, QLabel, QLineEdit, QMessageBox, QSlider
 from PyQt6.QtCore import Qt
 
 from pypi_monitor.pypi_gui import gui_utils
@@ -83,18 +83,46 @@ class FileSettingsPage(QWidget):
     def __init__(self, main_window, parent=None):
         super(FileSettingsPage, self).__init__(parent)
 
+        #init to save main window, and set main layout for the file settings page
         self.main_window = main_window
-
         self.layout = QVBoxLayout(self)
+
         # Add your file settings widgets here
         self.setLayout(self.layout)
 
+        #spawn an IPDialog obj
         self.ip_dialog = IPDialog(main_window)
 
         #button to open IPDialog
         self.ip_button = QPushButton('IP Address')
-        self.ip_button.clicked.connect(self.ip_pressed)
+        self.ip_button.clicked.connect(self.ip_pressed)  
         self.layout.addWidget(self.ip_button)
+
+        #create layout that will contain our slider and slider label 
+        self.slider_layout = QHBoxLayout(self)
+
+        #create the slider, init its value, and set properties
+        self.rate_slider = QSlider(Qt.Orientation.Horizontal, self)
+        self.rate_slider.setValue(self.main_window.settings["update_rate"])
+        self.rate_slider.setMinimum(1)
+        self.rate_slider.setMaximum(5)
+        self.rate_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
+
+        #connect the slider event to a function below 
+        self.rate_slider.valueChanged.connect(self.slider_moved)
+
+        #add the slider to the slider layout
+        self.slider_layout.addWidget(self.rate_slider, stretch=3)
+
+        #create slider label and add it to slider layout
+        self.slider_label = QLabel(self)
+        self.slider_label.setText("Rate (secs): " + str(self.rate_slider.value()))
+        self.slider_label.setFixedHeight(self.rate_slider.height())
+        self.slider_layout.addWidget(self.slider_label, stretch=1)
+
+        #add slider layout to main File Page layout 
+        self.layout.addLayout(self.slider_layout)
+
     
     #function for when the the IP Address button is pressed
     def ip_pressed(self):
@@ -102,6 +130,12 @@ class FileSettingsPage(QWidget):
         self.ip_dialog.current_ip_label.setText(self.ip_dialog.make_ip_label())
         #start the dialog
         self.ip_dialog.exec()
+
+    def slider_moved(self):
+        self.slider_label.setText("Rate (secs): " + str(self.rate_slider.value()))
+        self.main_window.settings["update_rate"] = self.rate_slider.value()
+        self.main_window.update_settings()
+    
 
 
 #Dialog that will show the current IP, and allow user to change to a new one
