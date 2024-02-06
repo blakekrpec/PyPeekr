@@ -122,7 +122,6 @@ class FileSettingsPage(QWidget):
 
         #add slider layout to main File Page layout 
         self.layout.addLayout(self.slider_layout)
-
     
     #function for when the the IP Address button is pressed
     def ip_pressed(self):
@@ -131,14 +130,19 @@ class FileSettingsPage(QWidget):
         #start the dialog
         self.ip_dialog.exec()
 
+    #function to handle when the user slides the slider to change rate 
     def slider_moved(self):
         self.slider_label.setText("Rate (secs): " + str(self.rate_slider.value()))
         self.main_window.settings["update_rate"] = self.rate_slider.value()
-        self.main_window.update_settings()
+        self.main_window.client.data_client.queue.update_request_settings()
     
-
-
-#Dialog that will show the current IP, and allow user to change to a new one
+    #function for resetting slider externally (e.g. when reset_settings is called)
+    def update_rate_slider(self):
+        self.rate_slider.setValue(self.main_window.settings["update_rate"])
+        self.slider_label.setText("Rate (secs): " + str(self.rate_slider.value()))
+        self.main_window.client.data_client.queue.update_request_settings()
+    
+#QDialog that will show the current IP, and allow user to change to a new one
 class IPDialog(QDialog):
     def __init__(self, main_window, parent=None):
         super(IPDialog, self).__init__(parent)
