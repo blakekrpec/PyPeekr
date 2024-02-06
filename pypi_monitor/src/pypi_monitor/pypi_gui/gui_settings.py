@@ -40,7 +40,7 @@ class SettingsDialog(QDialog):
         self.save_button.clicked.connect(self.save_settings)
 
         # Create the "Reset" button and hook into reset_settings()
-        self.reset_button = QPushButton('Reset')
+        self.reset_button = QPushButton('Restore Defaults')
         self.reset_button.clicked.connect(self.reset_settings)
 
         # Create the main layout for the settings QDialog
@@ -66,8 +66,8 @@ class SettingsDialog(QDialog):
     def reset_settings(self):
         question_prompt = QMessageBox(self)
         question_prompt.setText("This will reset all settings back to defaults. Are you sure you want to continue?")
-        question_prompt.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        if question_prompt.exec() == QMessageBox.StandardButton.Yes:
+        question_prompt.setStandardButtons(QMessageBox.StandardButton.RestoreDefaults | QMessageBox.StandardButton.Cancel) 
+        if question_prompt.exec() == QMessageBox.StandardButton.RestoreDefaults:
             load_settings(self.main_window, self.main_window.default_settings_path)
             self.main_window.update_settings()
 
