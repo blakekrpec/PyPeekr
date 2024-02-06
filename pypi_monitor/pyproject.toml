@@ -21,4 +21,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 gui = "pypi_monitor.pypi_gui.gui_main:run_app"
-create_config_dir = "pypi_monitor.utils.create_config_dir:create_config_dir"
+create_config_dir = "pypi_monitor.pypi_utils.create_config_dir:create_config_dir"

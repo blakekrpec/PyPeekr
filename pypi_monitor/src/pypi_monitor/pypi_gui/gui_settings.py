@@ -119,24 +119,29 @@ class IPDialog(QDialog):
         self.change_ip = QLineEdit("Change IP Here...")
         self.layout.addWidget(self.change_ip)
 
-        #button to save the new ip 
-        self.save_ip_button = QPushButton('Save IP Address', self)
-        self.save_ip_button.clicked.connect(self.save_ip)
+        #add option for the user to change the ip in settings 
+        self.change_port = QLineEdit("Change Port Here...")
+        self.layout.addWidget(self.change_port)
+
+        #button to save the new ip and or port
+        self.save_ip_button = QPushButton('Save', self)
+        self.save_ip_button.clicked.connect(self.save_ip_and_port)
         self.layout.addWidget(self.save_ip_button)
     
     #simple function that will grab the current ip and make a string to it
     def make_ip_label(self):
-        label = "Current IP Address: " + self.main_window.settings["ip"]
+        label = "Current IP Address: " + self.main_window.settings["ip"] + ":" + self.main_window.settings["port"]
         return label
 
     #function for when the save ip button is pressed
-    def save_ip(self):
-        #make sure the user didn't hit save ip without entering anything 
+    def save_ip_and_port(self):
+        #make sure the user didn't hit save without entering anything 
         if self.change_ip.text() != "Change IP Here...":
+            print("changing ip")
             #check that the ip is valid
             if self.check_ip(self.change_ip.text()):
                 #create update message that we will later show user
-                msg_string = "IP address updated from " + self.main_window.settings["ip"] + " to " + self.change_ip.text() + "."
+                msg_string = "IP address updated from " + self.main_window.settings["ip"] + ":" + self.main_window.settings["port"] + "to " + self.change_ip.text() + ":" + self.main_window.settings["port"] + "."
 
                 #update the new IP entered in settings and update label to show now current ip
                 self.main_window.settings["ip"]=self.change_ip.text()
@@ -161,7 +166,41 @@ class IPDialog(QDialog):
                 error_msg.setInformativeText("The entered address is not a valid IPv4 address.")
                 error_msg.setWindowTitle("Error")
                 error_msg.exec()
-                self.change_ip.setText("Change IP Here...")
+                self.change_ip.setText("Change Port Here...")
+
+        #make sure the user didn't hit save without entering anything 
+        if self.change_port.text() != "Change Port Here...":
+            print("changing port")
+
+            #check that the port is valid
+            if self.check_port(self.change_port.text()):
+                #create update message that we will later show user
+                msg_string = "IP address updated from " + self.main_window.settings["ip"] + ":" + self.main_window.settings["port"] + " to " + self.main_window.settings["ip"] + ":" + self.change_port.text() + "."
+
+                #update the new port entered in settings and update label to show now current ip
+                self.main_window.settings["port"]=self.change_port.text()
+                self.current_ip_label.setText(self.make_ip_label())
+
+                #give success message
+                success_msg = QMessageBox(self)
+                success_msg.setIcon(QMessageBox.Icon.Information)
+                success_msg.setText("Port Updated")
+                success_msg.setWindowTitle("Port")
+                success_msg.setInformativeText(msg_string)
+                success_msg.exec()
+
+                #update the QLineEdit with prompt again
+                self.change_port.setText("Change Port Here...")
+
+            #warn user if the ip is not valid and reset prompt
+            else:
+                error_msg = QMessageBox(self)
+                error_msg.setIcon(QMessageBox.Icon.Warning)
+                error_msg.setText("Invalid Port")
+                error_msg.setInformativeText("The entered port is not valid.")
+                error_msg.setWindowTitle("Error")
+                error_msg.exec()
+                self.change_port.setText("Change Port Here...")
 
     #check if user provided ip is valid
     def check_ip(self, ip):
@@ -178,6 +217,14 @@ class IPDialog(QDialog):
                 return False
             else:
                 return True
+            
+    def check_port(self, port):
+        if not port.isdigit():
+            return False
+        elif 0 > int(port) > 65535:
+            return False
+        else:
+            return True
                 
 #create a views tab on settings page
 class ViewSettingsPage(QWidget):
