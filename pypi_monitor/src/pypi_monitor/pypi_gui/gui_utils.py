@@ -3,184 +3,246 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
 from PyQt6.QtCore import Qt
 
 
-#Set the background color for the main window
+# Set the background color for the main window
 def set_main_background_color(main_window, color):
-    #convert hex to QColor
+    # convert hex to QColor
     q_color = QColor(color)
 
-    # Set the background color for main window, and other pages/dialogs/widgets etc.
-    main_window.setStyleSheet(f'background-color: {q_color.name()};')
-    main_window.settings_button.setStyleSheet(f'background-color: {q_color.name()};')
-    main_window.settings_controller.settings_dialog.setStyleSheet(f'background-color: {q_color.name()};')
-    main_window.settings_controller.settings_dialog.view_settings_page.displays_dialog.setStyleSheet(f'background-color: {q_color.name()};')
-    main_window.settings_controller.settings_dialog.file_settings_page.ip_dialog.setStyleSheet(f'background-color: {q_color.name()};')
+    main_window.setStyleSheet(
+        f'background-color: {q_color.name()};')
 
-    #call pane manager to also update pane colors 
+    main_window.settings_button.setStyleSheet(
+        f'background-color: {q_color.name()};')
+
+    main_window.settings_controller.settings_dialog.setStyleSheet(
+        f'background-color: {q_color.name()};')
+
+    main_window.settings_controller.settings_dialog.view_settings_page \
+        .displays_dialog.setStyleSheet(
+            f'background-color: {q_color.name()};')
+
+    main_window.settings_controller.settings_dialog.file_settings_page \
+        .ip_dialog.setStyleSheet(
+            f'background-color: {q_color.name()};')
+
+    # call pane manager to also update pane colors
     main_window.pane_manager.update_panes()
 
-#class that creates appropriate number of panes, sizes them, and then keeps panes, and all relevant lists up to date 
-    #update_panes() is the only function of this class that should be called externally, it will call all other functions 
+
+# class that creates a pane for each enabled display
+# it also keeps all relevant lists regarding panes, up to date
+# update_pane_controller() is only function to call externally
 class PaneManager:
     def __init__(self, main_window):
-        #define main window, and call update_panes() on startup
+        # define main window, and call update_panes() on startup
         self.main_window = main_window
         self.update_panes()
 
-    #function in charge of listening to main.window.settings and keeping panes and panes_list up to date 
+    # listens to main.window.settings to update list of enabled panes
     def create_pane_lists(self):
-        #update panes_status list according to current settings 
-        if self.main_window.settings["displays"]["CPU"]["enabled"] == True:
-            self.panes_status["CPU"] = True 
+        # update panes_status list according to current setting
+        if self.main_window.settings["displays"]["CPU"]["enabled"] is True:
+            self.panes_status["CPU"] = True
         else:
-            self.panes_status["CPU"] = False  
- 
-        if self.main_window.settings["displays"]["GPU"]["enabled"] == True:
+            self.panes_status["CPU"] = False
+
+        if self.main_window.settings["displays"]["GPU"]["enabled"] is True:
             self.panes_status["GPU"] = True
         else:
             self.panes_status["GPU"] = False
 
-    #function that creates a simple pane with correct title
+    # function that creates a simple pane with correct title
     def create_pane(self, title):
-        #create the pane for "title" and store in panes list, store layout so we can access it later to add widgets, and set the layout
+        # create the pane for "title" and store in panes list
         self.panes[title] = QWidget(self.main_window)
 
-        #Spawn a PaneController for this new pane, and store it in panes_controllers list
-        self.panes_controllers[title] = PaneController(title, self.panes[title], self.main_window)
+        # Spawn a PaneController for this new pane, and store it in list
+        self.panes_controllers[title] = (
+            PaneController(title, self.panes[title], self.main_window))
 
-        #define pane color
+        # define pane color
         color = self.main_window.settings["displays"][title]["color"]
 
-        #define pane stylesheet and apply
-        settings = "background-color: "+color+"; margin:2px; border:0px solid rgb(0, 0, 0); border-radius:20px;"
+        # define pane stylesheet and apply
+        settings = (
+            "background-color: {}; "
+            "margin:2px; "
+            "border:0px solid rgb(0, 0, 0); "
+            "border-radius:20px;"
+        ).format(color)
         self.panes[title].setStyleSheet(settings)
 
-    #function that recursively calls create pane the necessary amount of times (to create correct number of panes)
+    # function that recursively calls create_pane()
     def create_panes(self):
-        #loop over all pane statuses
+        # loop over all pane statuses
         for i in self.panes_status:
-            #if pane is enabled 
-            if self.panes_status[i] == True:
-                #create relevant panes, and add them to the central widget layout with title
+            # if pane is enabled
+            if self.panes_status[i] is True:
+                # create panes for enabled displays
                 self.create_pane(i)
+                # add enabled displays pane to central widget layout
                 self.main_window.layout.addWidget(self.panes[i])
-    
-    #function that wraps all pane management logic. It will be called when any changes need to be made by the PaneManager
+
+    # function that wraps all pane management logic.
+    # can be called externally when panes need updating
     def update_panes(self):
-        #clear existing variable pertaining to panes
+        # clear existing variable pertaining to panes
         self.panes_controllers = {}
         self.panes = {}
         self.panes_status = {}
 
-        #remove all previous panes (which are QWidgets)
+        # remove all previous panes (which are QWidgets)
         while self.main_window.layout.count():
             widget_item = self.main_window.layout.takeAt(0)
             if widget_item.widget():
                 widget_item.widget().deleteLater()
 
-        #create new list of panes and create them 
+        # create new list of panes and create them \
         self.create_pane_lists()
         self.create_panes()
 
-#class that will be used once per each pane. It will be in charge of controlling which panels are displayed inside the pane 
-    #update_pane_controller() is the only function of this class that should be called externally, it will call all other functions 
-class PaneController(): 
+
+# class that will be used once per each pane
+# It will control which panels are displayed inside the pane
+# update_pane_controller() is only function to call externally
+class PaneController():
     def __init__(self, title, pane_widget, main_window, parent=None):
 
         self.title = title
         self.main_window = main_window
 
-        #pane_widget is the main widget created by Pane Manager, all label and data widgets will be created inside pane_widget
+        # pane_widget is the main widget created by Pane Manager
+        # all label and data widgets will be created inside pane_widget
         self.pane_widget = pane_widget
 
-        #define the layout of this pane widget to be vertical 
+        # define the layout of this pane widget to be vertical
         self.layout = QVBoxLayout()
         self.pane_widget.setLayout(self.layout)
-        
-        #call the main update function for the PaneController
+
+        # all the main update function for the PaneController
         self.update_pane_controller()
 
-    #adds a title widget to the pane according to pane title 
+    # adds a title widget to the pane according to pane title
     def add_pane_title(self):
-        #create a QLabel widget and set its alignment to center top 
+        # create a QLabel widget and set its alignment to center top
         self.label = QLabel(self.title)
-        self.label.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
+        self.label.setAlignment(
+            Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
 
-        #get its color from CPU color settings 
+        # get its color from CPU color settings
         color = self.main_window.settings["displays"][self.title]["color"]
 
-        #define the style sheet and apply it to the label widget
-        settings = "background-color: "+color+"; margin:2px; border:0px solid rgb(0, 0, 0); border-radius:10px;"
+        # define the style sheet and apply it to the label widget
+        settings = (
+            "background-color: {}; "
+            "margin:2px; "
+            "border:0px solid rgb(0, 0, 0); "
+            "border-radius:5px; "
+        ).format(color)
         self.label.setStyleSheet(settings)
 
-        #make it fixed height 
+        # make it fixed height
         self.label.setFixedHeight(25)
 
-        #add the label widget to pane_widgets layout
+        # add the label widget to pane_widgets layout
         self.layout.addWidget(self.label)
-    
-    def create_list_widgets(self):
-        #create list of needed widgets in this pane 
-        if self.title == "CPU" or self.title == "GPU":
-            self.widgets_status["temp"] = self.main_window.settings["displays"][self.title]["temp"]
-            self.widgets_status["util"] = self.main_window.settings["displays"][self.title]["util"]
 
-    #function that adds widgets to the Pane, called recursively by add_widgets()
-    def add_widget(self, title):
-        #create the pane for "title" and store in panes list, store layout so we can access it later to add widgets, and set the layout
+    def create_list_widgets(self):
+        # create list of needed widgets in this pane
+        if self.title == "CPU" or self.title == "GPU":
+            self.widgets_status["temp"] = (
+                self.main_window.settings["displays"][self.title]["temp"])
+            self.widgets_status["util"] = (
+                self.main_window.settings["displays"][self.title]["util"])
+
+    # function that creates the data and stat widgets to the Pane
+    # create_stat_widget will be called recursively by add_widgets()
+    def create_data_widget(self, title):
+        # create the pane for "title" and store in panes list
         self.widgets[title] = QWidget(self.pane_widget)
 
-        #create three layouts that will be nested. Main layout will be a VBox with title, and data layout. Data layout is an h box that has current data, and stats, stats is a VBox containing min, max, avg
+        # create three layouts that will be nested
+        # main_layout=main_layout, secondary_layout=data, tertiary_layout=stats
+        # main layout will be a VBox with title, and secondary (data) layout
         self.widgets_main_layouts[title] = QVBoxLayout()
+        # secondary layout is an HBox that has current data, tertiary layout
         self.widgets_secondary_layouts[title] = QHBoxLayout()
+        # tertiary layout (stats) is a VBox containing min, max, avg
         self.widgets_tertiary_layouts[title] = QVBoxLayout()
 
-        #define pane color
+        # define pane color
         color = self.main_window.settings["background_color"]
 
-        #define pane stylesheet and apply
-        settings = "background-color: "+color+"; margin:0px; border:1px solid rgb(0, 0, 0); border-radius:20px;"
+        # define pane stylesheet and apply
+        settings = (
+            "background-color: {}; "
+            "margin:2px; "
+            "border:1px solid rgb(0, 0, 0); "
+            "border-radius:10px;"
+        ).format(color)
         self.widgets[title].setStyleSheet(settings)
 
-        #add fixed height title to each widget in the pane, and remove its borders 
+        # add fixed height title to each widget in the pane, remove its borders
         widget_title = QLabel(self.title_resolver(title))
-        widget_title.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
-        widget_title.setFixedHeight(25)#hardcoded value of 25 pixels, determined by experimentation 
-        widget_title_settings = "background-color: "+color+"; margin:0px; border:1px solid rgb(0, 0, 0); border-radius:5px;"
-        widget_title.setStyleSheet(widget_title_settings)
-        #add the tile label to the main VBox layout
+        widget_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # set fixed height (determined experimentally)
+        widget_title.setFixedHeight(25)
+        # set title settings and apply
+        # define pane stylesheet and apply
+        title_settings = (
+            "background-color: {}; "
+            "margin:2px; "
+            "border:1px solid rgb(0, 0, 0); "
+            "border-radius:5px;"
+        ).format(color)
+        widget_title.setStyleSheet(title_settings)
+        # add the tile label to the main VBox layout
         self.widgets_main_layouts[title].addWidget(widget_title)
 
-        # add a dummy number for now, later this will be client data 
+        # add a dummy number for now, later this will be client data
         dummy_number = QLabel("55")
         dummy_number.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        dummy_number_settings = "background-color: "+color+"; margin:0px; border:1px solid rgb(0, 0, 0); font-size:75px; border-radius:5px;"
+        dummy_number_settings = (
+            "background-color: {}; "
+            "margin:0px; "
+            "border:1px solid rgb(0, 0, 0); "
+            "border-radius:5px;"
+            "font:75px;"
+        ).format(color)
         dummy_number.setStyleSheet(dummy_number_settings)
-        #add data to secondary Hbox layout
+        # add data to secondary HBox layout
         self.widgets_secondary_layouts[title].addWidget(dummy_number)
 
-        #add a dummy number for now, later this will be client data 
+        # add a dummy number for now, later this will be client data
         dummy_number1 = QLabel("Min: 55")
         dummy_number2 = QLabel("Max: 55")
         dummy_number3 = QLabel("Avg: 55")
         dummy_number1.setAlignment(Qt.AlignmentFlag.AlignCenter)
         dummy_number2.setAlignment(Qt.AlignmentFlag.AlignCenter)
         dummy_number3.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        dummy_number_n_settings =  "background-color: "+color+"; margin:0px; border:1px solid rgb(0, 0, 0); border-radius:5px;"
+        dummy_number_n_settings = (
+            "background-color: {}; "
+            "margin:2px; "
+            "border:1px solid rgb(0, 0, 0); "
+            "border-radius:5px;"
+        ).format(color)
         dummy_number1.setStyleSheet(dummy_number_n_settings)
         dummy_number2.setStyleSheet(dummy_number_n_settings)
         dummy_number3.setStyleSheet(dummy_number_n_settings)
 
-        #add data to the tertiary Vbox layout
+        # add data to the tertiary Vbox layout
         self.widgets_tertiary_layouts[title].addWidget(dummy_number1)
         self.widgets_tertiary_layouts[title].addWidget(dummy_number2)
         self.widgets_tertiary_layouts[title].addWidget(dummy_number3)
 
-        #nest all the layouts and set main layout
-        self.widgets_secondary_layouts[title].addLayout(self.widgets_tertiary_layouts[title])
-        self.widgets_main_layouts[title].addLayout(self.widgets_secondary_layouts[title])
+        # nest all the layouts and set main layout
+        self.widgets_secondary_layouts[title].addLayout(
+            self.widgets_tertiary_layouts[title])
+        self.widgets_main_layouts[title].addLayout(
+            self.widgets_secondary_layouts[title])
         self.widgets[title].setLayout(self.widgets_main_layouts[title])
 
-    #function to convert the short settings keys into full titles
+    # function to convert the short settings keys into full titles
     def title_resolver(self, title):
         if title == "temp":
             return "Temperature (C)"
@@ -188,18 +250,20 @@ class PaneController():
             return "Utilization (%)"
         else:
             return ""
-    
-    #function to loop over the list of widgets, and add any that are enabled
+
+    # function to loop over the list of widgets, and add any that are enabled
     def add_widgets(self):
-        #loop over all pane statuses
+        # loop over all pane statuses
         for i in self.widgets_status:
-            #if widget is enabled 
-            if self.widgets_status[i] == True:
-                #create relevant panes, and add them to the central widget layout with title
-                self.add_widget(i)
+            # if widget is enabled
+            if self.widgets_status[i] is True:
+                # create each enabled stat widget (temp, gpu, etc...)
+                self.create_data_widget(i)
+                # add the new stat widget to layout
                 self.layout.addWidget(self.widgets[i])
-    
-    #function that wraps all pane controller logic. It will be called when any changes need to be made by the PaneController
+
+    # function that wraps all pane controller logic.
+    # can be called externally when pane controllers need updating
     def update_pane_controller(self):
         self.widgets = {}
         self.widgets_status = {}
@@ -207,17 +271,17 @@ class PaneController():
         self.widgets_secondary_layouts = {}
         self.widgets_tertiary_layouts = {}
 
-        #remove all previous widgets added to the pane_widget
+        # remove all previous widgets added to the pane_widget
         while self.layout.count():
             widget_item = self.layout.takeAt(0)
             if widget_item.widget():
                 widget_item.widget().deleteLater()
-        
-        #add title for entire pane
+
+        # add title for entire pane
         self.add_pane_title()
 
-        #create list of widgets to be added
+        # create list of widgets to be added
         self.create_list_widgets()
 
-        #add widgets according to current state of settings
+        # add widgets according to current state of settings
         self.add_widgets()
