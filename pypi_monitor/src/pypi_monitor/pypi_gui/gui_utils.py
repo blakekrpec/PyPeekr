@@ -65,23 +65,23 @@ class PaneManager:
 
         # define pane stylesheet and apply
         settings = (
-            "background-color: {}; "
+            f"background-color: {color}; "
             "margin:2px; "
             "border:0px solid rgb(0, 0, 0); "
             "border-radius:20px;"
-        ).format(color)
+        )
         self.panes[title].setStyleSheet(settings)
 
     # function that recursively calls create_pane()
     def create_panes(self):
         # loop over all pane statuses
-        for i in self.panes_status:
+        for pane_name, is_enabled in self.panes_status.items():
             # if pane is enabled
-            if self.panes_status[i] is True:
+            if is_enabled:
                 # create panes for enabled displays
-                self.create_pane(i)
+                self.create_pane(pane_name)
                 # add enabled displays pane to central widget layout
-                self.main_window.layout.addWidget(self.panes[i])
+                self.main_window.layout.addWidget(self.panes[pane_name])
 
     # function that wraps all pane management logic.
     # can be called externally when panes need updating
@@ -106,7 +106,7 @@ class PaneManager:
 # It will control which panels are displayed inside the pane
 # update_pane_controller() is only function to call externally
 class PaneController():
-    def __init__(self, title, pane_widget, main_window, parent=None):
+    def __init__(self, title, pane_widget, main_window):
 
         self.title = title
         self.main_window = main_window
@@ -134,11 +134,11 @@ class PaneController():
 
         # define the style sheet and apply it to the label widget
         settings = (
-            "background-color: {}; "
+            f"background-color: {color}; "
             "margin:0px; "
             "border:0px solid rgb(0, 0, 0); "
             "border-radius:5px; "
-        ).format(color)
+        )
         self.label.setStyleSheet(settings)
 
         # make it fixed height
@@ -175,11 +175,11 @@ class PaneController():
 
         # define pane stylesheet and apply
         settings = (
-            "background-color: {}; "
+            f"background-color: {color}; "
             "margin:0px; "
             "border:1px solid rgb(0, 0, 0); "
             "border-radius:10px;"
-        ).format(color)
+        )
         self.widgets[title].setStyleSheet(settings)
 
         # add fixed height title to each widget in the pane, remove its borders
@@ -190,11 +190,11 @@ class PaneController():
         # set title settings and apply
         # define pane stylesheet and apply
         title_settings = (
-            "background-color: {}; "
+            f"background-color: {color}; "
             "margin:2px; "
             "border:1px solid rgb(0, 0, 0); "
             "border-radius:5px;"
-        ).format(color)
+        )
         widget_title.setStyleSheet(title_settings)
         # add the tile label to the main VBox layout
         self.widgets_main_layouts[title].addWidget(widget_title)
@@ -203,12 +203,12 @@ class PaneController():
         dummy_number = QLabel("55")
         dummy_number.setAlignment(Qt.AlignmentFlag.AlignCenter)
         dummy_number_settings = (
-            "background-color: {}; "
+            f"background-color: {color}; "
             "margin:0px; "
             "border:1px solid rgb(0, 0, 0); "
             "border-radius:5px;"
             "font:75px;"
-        ).format(color)
+        )
         dummy_number.setStyleSheet(dummy_number_settings)
         # add data to secondary HBox layout
         self.widgets_secondary_layouts[title].addWidget(dummy_number)
@@ -221,11 +221,11 @@ class PaneController():
         dummy_number2.setAlignment(Qt.AlignmentFlag.AlignCenter)
         dummy_number3.setAlignment(Qt.AlignmentFlag.AlignCenter)
         dummy_number_n_settings = (
-            "background-color: {}; "
+            f"background-color: {color}; "
             "margin:2px; "
             "border:1px solid rgb(0, 0, 0); "
             "border-radius:5px;"
-        ).format(color)
+        )
         dummy_number1.setStyleSheet(dummy_number_n_settings)
         dummy_number2.setStyleSheet(dummy_number_n_settings)
         dummy_number3.setStyleSheet(dummy_number_n_settings)
@@ -253,14 +253,14 @@ class PaneController():
 
     # function to loop over the list of widgets, and add any that are enabled
     def add_widgets(self):
-        # loop over all pane statuses
-        for i in self.widgets_status:
+        # loop over the widgets_status list
+        for widget_name, is_enabled in self.widgets_status.items():
             # if widget is enabled
-            if self.widgets_status[i] is True:
+            if is_enabled:
                 # create each enabled stat widget (temp, gpu, etc...)
-                self.create_data_widget(i)
+                self.create_data_widget(widget_name)
                 # add the new stat widget to layout
-                self.layout.addWidget(self.widgets[i])
+                self.layout.addWidget(self.widgets[widget_name])
 
     # function that wraps all pane controller logic.
     # can be called externally when pane controllers need updating

@@ -59,7 +59,7 @@ class DataQueue():
     def data_request(self):
         while self.is_running:
             try:
-                self.main_window.data = requests.get(self.url)
+                self.main_window.data = requests.get(self.url, timeout=2)
                 print(self.main_window.data)
                 # in the future call the data_dumper function
             except requests.RequestException as e:

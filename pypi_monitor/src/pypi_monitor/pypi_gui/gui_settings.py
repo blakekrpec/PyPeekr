@@ -61,7 +61,8 @@ class SettingsDialog(QDialog):
     # function to save current settings
     def save_settings(self):
         # dump current global settings object into a yaml
-        with open(self.main_window.settings_path, 'w') as file:
+        with open(self.main_window.settings_path, 'w',
+                  encoding='utf-8') as file:
             yaml.dump(self.main_window.settings,
                       file, default_flow_style=False)
 
@@ -86,7 +87,7 @@ def load_settings(main_window, settings_file):
     # open passed in settings if it exists
     # then store them into global settings object
     if os.path.exists(settings_file):
-        with open(settings_file, 'r') as file:
+        with open(settings_file, 'r', encoding='utf-8') as file:
             main_window.settings = yaml.full_load(file)
 
 
