@@ -61,6 +61,8 @@ gui
 
 Current design:
 
+- All python files in pypi_monitor should abide by Flake8 formatting guidelines. 
+
 - Client will be a RasPi on the LAN with a systemctl service to run the gui on startup.
 
 - Server
@@ -97,6 +99,7 @@ Current design:
     - Fixed bug where eventResize was creating panes behind the settings button. 
         - Issue was resizeEvent was called on startup (which calls update_settings), and causing a race condition with the MainWindow__ init __  call of update_settings(). To fix added a delay where resizeEvent is ignored until the GUI has been up for 0.5 seconds. Should probably find a better way to do this. 
     - Fixed bug where on startup saw: "QLayout: Attempting to add QLayout "" to FileSettingsPage "", which already has a layout". Fixed because "self.slider_layout = QHBoxLayout(self)" needed to be "self.slider_layout = QHBoxLayout()" since self here is the FileSettingsPage QWidget, which is not what we were trying to apply self.slider_layout to. 
+    - Python files now formatted to Flake8 formatting guidelines, and will continue to do so from now on. 
 
 - Next:
     - Finish implementing client to read and store data.
