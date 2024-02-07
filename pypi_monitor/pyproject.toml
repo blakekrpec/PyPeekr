@@ -12,6 +12,7 @@ psutil = ">=5.9.0"
 pyyaml ="*"
 pyqt6 ="*"
 requests ="*"
+flake8 ="*"
 
 [tool.poetry.dev-dependencies]
 
@@ -22,3 +23,4 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 gui = "pypi_monitor.pypi_gui.gui_main:run_app"
 create_config_dir = "pypi_monitor.pypi_utils.create_config_dir:create_config_dir"
+lint_pypi ="pypi_monitor.pypi_utils.pypi_linter:linter"

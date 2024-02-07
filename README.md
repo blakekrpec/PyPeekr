@@ -61,7 +61,7 @@ gui
 
 Current design:
 
-- All python files in pypi_monitor should abide by Flake8 formatting guidelines. 
+- All python files in pypi_monitor should abide by Flake8 formatting guidelines. The linter should be run before all commits are made. Run the linter with `lint_pypi` from within the sourced .pypi_monitor vent. 
 
 - Client will be a RasPi on the LAN with a systemctl service to run the gui on startup.
 
@@ -101,6 +101,7 @@ Current design:
     - Fixed bug where on startup saw: "QLayout: Attempting to add QLayout "" to FileSettingsPage "", which already has a layout". Fixed because "self.slider_layout = QHBoxLayout(self)" needed to be "self.slider_layout = QHBoxLayout()" since self here is the FileSettingsPage QWidget, which is not what we were trying to apply self.slider_layout to. 
     - Python files now formatted to Flake8 formatting guidelines, and will continue to do so from now on. 
     - Added pause button to stop and start client threads. Also removed is_running from settings. Seemed unnecessary as the client should always start up on init, negating the need to save a false value for is_running. 
+    - Added command to run the linter.
 
 - Next:
     - Finish implementing client to read and store data.
