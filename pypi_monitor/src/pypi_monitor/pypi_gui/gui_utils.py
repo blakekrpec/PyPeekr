@@ -28,8 +28,6 @@ class PaneManager:
 
     #function in charge of listening to main.window.settings and keeping panes and panes_list up to date 
     def create_pane_lists(self):
-        #empty previous panes_status list
-        self.panes_status = {}
         #update panes_status list according to current settings 
         if self.main_window.settings["displays"]["CPU"]["enabled"] == True:
             self.panes_status["CPU"] = True 
@@ -72,7 +70,6 @@ class PaneManager:
         self.panes_controllers = {}
         self.panes = {}
         self.panes_status = {}
-        self.panes_layouts = {}
 
         #remove all previous panes (which are QWidgets)
         while self.main_window.layout.count():
@@ -100,7 +97,6 @@ class PaneController():
         self.pane_widget.setLayout(self.layout)
         
         #call the main update function for the PaneController
-        print("init pane controller")
         self.update_pane_controller()
 
     #adds a title widget to the pane according to pane title 
@@ -173,6 +169,7 @@ class PaneController():
         dummy_number1.setStyleSheet(dummy_number_n_settings)
         dummy_number2.setStyleSheet(dummy_number_n_settings)
         dummy_number3.setStyleSheet(dummy_number_n_settings)
+
         #add data to the tertiary Vbox layout
         self.widgets_tertiary_layouts[title].addWidget(dummy_number1)
         self.widgets_tertiary_layouts[title].addWidget(dummy_number2)
@@ -224,5 +221,3 @@ class PaneController():
 
         #add widgets according to current state of settings
         self.add_widgets()
-
-        print("updated panes")

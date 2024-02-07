@@ -94,6 +94,9 @@ Current design:
     - Added the stats (min, max, avg) to the panes.
     - Added a warning prompt when resetting that requires user to confirm before resetting. 
     - Added a slider for the user to change update rate in seconds. 
+    - Fixed bug where eventResize was creating panes behind the settings button. 
+        - Issue was resizeEvent was called on startup (which calls update_settings), and causing a race condition with the MainWindow__ init __  call of update_settings(). To fix added a delay where resizeEvent is ignored until the GUI has been up for 0.5 seconds. Should probably find a better way to do this. 
+    - Fixed bug where on startup saw: "QLayout: Attempting to add QLayout "" to FileSettingsPage "", which already has a layout". Fixed because "self.slider_layout = QHBoxLayout(self)" needed to be "self.slider_layout = QHBoxLayout()" since self here is the FileSettingsPage QWidget, which is not what we were trying to apply self.slider_layout to. 
 
 - Next:
     - Finish implementing client to read and store data.
@@ -103,7 +106,3 @@ Current design:
     - Add a logger to log errors and progress. Then add a button in settings where the user can print/view the log.
 
 - Bugs:
-    - QLayout: Attempting to add QLayout "" to FileSettingsPage "", which already has a layout
-        - This seems to be related to the nested layouts on the file settings page. The Mane panes have nested layouts with no issues so we should look there for help. 
-    - When resizeEvent is allowed to call update_settings() it creates panes behind the settings button. 
-        - The top pane here it titled GPU, so I think it is somehow calling the update_panes() function in a broken way. 

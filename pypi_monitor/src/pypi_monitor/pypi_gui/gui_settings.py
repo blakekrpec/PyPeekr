@@ -5,7 +5,6 @@ from PyQt6.QtWidgets import QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QCol
 from PyQt6.QtCore import Qt
 
 from pypi_monitor.pypi_gui import gui_utils
-from pypi_monitor.pypi_gui import gui_main
 
 #define the settings controller
 class SettingsController:
@@ -85,10 +84,12 @@ class FileSettingsPage(QWidget):
 
         #init to save main window, and set main layout for the file settings page
         self.main_window = main_window
+
+        #main layout for file settings page
         self.layout = QVBoxLayout(self)
 
-        # Add your file settings widgets here
-        self.setLayout(self.layout)
+        #create layout that will contain our slider and slider label 
+        self.slider_layout = QHBoxLayout()
 
         #spawn an IPDialog obj
         self.ip_dialog = IPDialog(main_window)
@@ -97,9 +98,6 @@ class FileSettingsPage(QWidget):
         self.ip_button = QPushButton('IP Address')
         self.ip_button.clicked.connect(self.ip_pressed)  
         self.layout.addWidget(self.ip_button)
-
-        #create layout that will contain our slider and slider label 
-        self.slider_layout = QHBoxLayout(self)
 
         #create the slider, init its value, and set properties
         self.rate_slider = QSlider(Qt.Orientation.Horizontal, self)
@@ -112,7 +110,7 @@ class FileSettingsPage(QWidget):
         self.rate_slider.valueChanged.connect(self.slider_moved)
 
         #add the slider to the slider layout
-        self.slider_layout.addWidget(self.rate_slider, stretch=3)
+        self.slider_layout.addWidget(self.rate_slider, stretch=4)
 
         #create slider label and add it to slider layout
         self.slider_label = QLabel(self)
@@ -120,8 +118,11 @@ class FileSettingsPage(QWidget):
         self.slider_label.setFixedHeight(self.rate_slider.height())
         self.slider_layout.addWidget(self.slider_label, stretch=1)
 
-        #add slider layout to main File Page layout 
+        #add slider layout to main file page layout 
         self.layout.addLayout(self.slider_layout)
+
+        #set the main file page layout as the layout for FileSettingsPage widget
+        self.setLayout(self.layout)
     
     #function for when the the IP Address button is pressed
     def ip_pressed(self):

@@ -1,12 +1,14 @@
 import requests
 import time
 import threading
+
+#main data client class 
 class DataClient():
     def __init__(self, main_window):
         self.main_window = main_window
         self.queue = DataQueue(self.main_window)
 
-
+#queue for grabbing incoming data
 class DataQueue():
     def __init__(self, main_window):
         #init loop and start it
