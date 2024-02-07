@@ -1,5 +1,4 @@
 import os
-import ipaddress
 import yaml
 from PyQt6.QtWidgets import QPushButton, QDialog, QVBoxLayout, QHBoxLayout, QColorDialog, QTabWidget, QWidget, QLabel, QLineEdit, QMessageBox, QSlider
 from PyQt6.QtCore import Qt
@@ -182,9 +181,6 @@ class IPDialog(QDialog):
         if self.change_ip.text() != "Change IP Address Here...":
             #check that the ip is valid
             if self.check_ip(self.change_ip.text()):
-                #create update message that we will later show user
-                msg_string = "IP address updated from " + self.main_window.settings["ip"] + ":" + self.main_window.settings["port"] + " to " + self.change_ip.text() + ":" + self.main_window.settings["port"] + "."
-
                 #update the new IP entered in settings and update label to show now current ip
                 self.main_window.settings["ip"]=self.change_ip.text()
                 self.current_ip_label.setText(self.make_ip_label())
@@ -212,9 +208,6 @@ class IPDialog(QDialog):
         if self.change_port.text() != "Change Port Here...":
             #check that the port is valid
             if self.check_port(self.change_port.text()):
-                #create update message that we will later show user
-                msg_string = "IP address updated from " + self.main_window.settings["ip"] + ":" + self.main_window.settings["port"] + " to " + self.main_window.settings["ip"] + ":" + self.change_port.text() + "."
-
                 #update the new port entered in settings and update label to show now current ip
                 self.main_window.settings["port"]=self.change_port.text()
                 self.current_ip_label.setText(self.make_ip_label())
