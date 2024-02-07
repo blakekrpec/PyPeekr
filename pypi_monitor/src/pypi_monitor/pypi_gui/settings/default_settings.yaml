@@ -12,5 +12,4 @@ displays:
     util: true
 ip: "0.0.0.0"
 port: "0000"
-is_running: true
 update_rate: 1

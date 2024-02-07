@@ -100,10 +100,10 @@ Current design:
         - Issue was resizeEvent was called on startup (which calls update_settings), and causing a race condition with the MainWindow__ init __  call of update_settings(). To fix added a delay where resizeEvent is ignored until the GUI has been up for 0.5 seconds. Should probably find a better way to do this. 
     - Fixed bug where on startup saw: "QLayout: Attempting to add QLayout "" to FileSettingsPage "", which already has a layout". Fixed because "self.slider_layout = QHBoxLayout(self)" needed to be "self.slider_layout = QHBoxLayout()" since self here is the FileSettingsPage QWidget, which is not what we were trying to apply self.slider_layout to. 
     - Python files now formatted to Flake8 formatting guidelines, and will continue to do so from now on. 
+    - Added pause button to stop and start client threads. Also removed is_running from settings. Seemed unnecessary as the client should always start up on init, negating the need to save a false value for is_running. 
 
 - Next:
     - Finish implementing client to read and store data.
-    - Add button to settings to pause and resume (will just call the stop threads function).
     - Change the PaneController to interact with the client and print data as made available. 
     - Add a setting for global font color. 
     - Add a logger to log errors and progress. Then add a button in settings where the user can print/view the log.

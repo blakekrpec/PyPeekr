@@ -16,6 +16,9 @@ class DataQueue():
         # init loop and start it
         self.main_window = main_window
         self.main_window.data = {}
+
+        # start on init
+        self.is_running = True
         self.update_request_settings()
         self.start_request_loop()
 
@@ -26,23 +29,31 @@ class DataQueue():
         self.update_rate = int(self.main_window.settings["update_rate"])
         self.ip = self.main_window.settings["ip"]
         self.port = self.main_window.settings["port"]
-        self.is_running = self.main_window.settings["is_running"]
         self.url = "http://" + self.ip + ":" + self.port + "/api/rootnode"
+
+    # handle pause requests from the pause button
+    def handle_pause_resume(self, action):
+        if action == "pause":
+            self.is_running = False
+            self.stop_request_loop()
+        else:
+            self.is_running = True
+            self.start_request_loop()
 
     # function that starts the client data queue in a thread
     def start_request_loop(self):
-        self.is_running = True
+        # self.is_running = True
         # daemon thread so thread dies when the script that started it dies
         # in this case the script that starts it is (gui_main.py)
         self.thread = threading.Thread(target=self.data_request, daemon=True)
         self.thread.start()
 
-    # function that stops the client data queue thread
+    # function that stops the client data queue thread, shouldn't need ever
     def stop_request_loop(self):
-        self.is_running = False
+        # self.is_running = False
         if self.thread:
-            # wait 5 seconds for thread to finish then kill it
-            self.thread.join(5)
+            # kill the thread
+            self.thread.join(0)
 
     # main loop that will send out the https requests to cather data
     def data_request(self):

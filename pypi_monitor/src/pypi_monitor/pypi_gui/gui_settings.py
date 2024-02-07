@@ -110,6 +110,12 @@ class FileSettingsPage(QWidget):
         self.ip_button.clicked.connect(self.ip_pressed)
         self.layout.addWidget(self.ip_button)
 
+        # add a pause button
+        self.pause_button = QPushButton()
+        self.pause_button.setText("Pause")
+        self.pause_button.clicked.connect(self.pause_button_pressed)
+        self.layout.addWidget(self.pause_button)
+
         # create the slider, init its value, and set properties
         self.rate_slider = QSlider(Qt.Orientation.Horizontal, self)
         self.rate_slider.setValue(self.main_window.settings["update_rate"])
@@ -143,6 +149,21 @@ class FileSettingsPage(QWidget):
 
         # start the ip dialog
         self.ip_dialog.exec()
+
+    # function to handle if the pause/resume button is pressed
+    def pause_button_pressed(self):
+        # if is_running, then client needs to be paused
+        if self.main_window.client.data_client.queue.is_running:
+            # set button text, then call client queue updater
+            self.pause_button.setText("Resume")
+            self.main_window.client.data_client.queue\
+                .handle_pause_resume("pause")
+        # else if not is_running, then client needs to be resumed
+        else:
+            # set button text, and call client queue updater
+            self.pause_button.setText("Pause")
+            self.main_window.client.data_client.queue\
+                .handle_pause_resume("resume")
 
     # function to handle when the user slides the slider to change rate
     def slider_moved(self):
