@@ -135,14 +135,14 @@ class PaneController():
         # define the style sheet and apply it to the label widget
         settings = (
             "background-color: {}; "
-            "margin:2px; "
+            "margin:0px; "
             "border:0px solid rgb(0, 0, 0); "
             "border-radius:5px; "
         ).format(color)
         self.label.setStyleSheet(settings)
 
         # make it fixed height
-        self.label.setFixedHeight(25)
+        self.label.setFixedHeight(15)
 
         # add the label widget to pane_widgets layout
         self.layout.addWidget(self.label)
@@ -176,7 +176,7 @@ class PaneController():
         # define pane stylesheet and apply
         settings = (
             "background-color: {}; "
-            "margin:2px; "
+            "margin:0px; "
             "border:1px solid rgb(0, 0, 0); "
             "border-radius:10px;"
         ).format(color)
