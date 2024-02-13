@@ -167,7 +167,7 @@ class FileSettingsPage(QWidget):
     # function to handle when the user slides the slider to change rate
     def slider_moved(self):
         self.slider_label.setText(
-            "Rate (secs): " + str(self.rate_slider.value()))
+            "Refresh (secs): " + str(self.rate_slider.value()))
         self.main_window.settings["update_rate"] = self.rate_slider.value()
         self.main_window.client.data_client.queue.update_request_settings()
 
