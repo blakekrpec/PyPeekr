@@ -16,17 +16,15 @@ class SettingsController:
 
     #  this function is called to open the QDialog settings page
     def open_settings(self):
-
         self.settings_dialog.exec()
 
 
 # define the settings dialog as a QDialog
 class SettingsDialog(QDialog):
-    def __init__(self, main_window, parent=None):
-        super(SettingsDialog, self).__init__(parent)
+    def __init__(self, main_window):
+        super().__init__()
         self.setWindowTitle('Settings')
         self.setGeometry(200, 200, 400, 300)
-        self.main_window = main_window
 
         #  Create a tab widget
         self.tab_widget = QTabWidget()
@@ -177,7 +175,7 @@ class FileSettingsPage(QWidget):
     def update_rate_slider(self):
         self.rate_slider.setValue(self.main_window.settings["update_rate"])
         self.slider_label.setText(
-            "Rate (secs): " + str(self.rate_slider.value()))
+            "Refresh (secs): " + str(self.rate_slider.value()))
         self.main_window.client.data_client.queue.update_request_settings()
 
 
