@@ -23,6 +23,8 @@ class SettingsController:
 class SettingsDialog(QDialog):
     def __init__(self, main_window):
         super().__init__()
+        self.main_window = main_window
+
         self.setWindowTitle('Settings')
         self.setGeometry(200, 200, 400, 300)
 

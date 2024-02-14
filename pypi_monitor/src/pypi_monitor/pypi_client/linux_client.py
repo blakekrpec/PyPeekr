@@ -29,7 +29,7 @@ class DataQueue():
         self.update_rate = int(self.main_window.settings["update_rate"])
         self.ip = self.main_window.settings["ip"]
         self.port = self.main_window.settings["port"]
-        self.url = "http://" + self.ip + ":" + self.port + "/api/rootnode"
+        self.url = "http://" + self.ip + ":" + self.port + "/data"
 
     # handle pause requests from the pause button
     def handle_pause_resume(self, action):
@@ -57,18 +57,17 @@ class DataQueue():
 
     # main loop that will send out the https requests to cather data
     def data_request(self):
-        while self.is_running:
+        while True:
             try:
-                self.main_window.data = requests.get(self.url, timeout=2)
-                # print(self.main_window.data)
-                # in the future call the data_dumper function
+                # get data from request and pass to data dumper
+                response = requests.get(self.url, timeout=2)
+                self.data_dumper(response)
             except requests.RequestException as e:
                 print(f"Error: {e}")
 
             time.sleep(self.update_rate)
 
     # function to dump the requests data out into json, then into dicts
-    # def data_dumper(self):
-        # self.main_window.data["CPU"] = cpu data from request
-        # after data is dumped and stored, call update pane_manager
-            # pane manager will grab client data and display it
+    def data_dumper(self, response):
+        self.main_window.data["CPU"] = response.json()["CPU"]
+        self.main_window.data["GPU"] = response.json()["GPU"]
