@@ -102,10 +102,17 @@ Current design:
     - Python files now formatted to Flake8 formatting guidelines, and will continue to do so from now on. 
     - Added pause button to stop and start client threads. Also removed is_running from settings. Seemed unnecessary as the client should always start up on init, negating the need to save a false value for is_running. 
     - Added command to run the linter.
+    - Added linux server, and poetry command to run it.
+    - Linux server now also hosts, min, max, and avg values. The Windows client data dumper should structure things in a similar fashion so that the GUI can expect a common stat/data structure. 
+    - Moved the logic to maintain min, max, and avg stats into the client, to separate from server. This will likely be more similar to how Windows data will need to be read, organized, and stored. 
+    - Added a reset button. 
+    - Linux client is now working and listening to linux server. 
 
 - Next:
-    - Finish implementing client to read and store data.
+    - Finish linux server to display data in the actual gui instead of just printing. 
+    - Finish implementing windows client to read and store data.
     - Change the PaneController to interact with the client and print data as made available. 
+    - Go change name util/utilzn/utilization to load throughout the project.
     - Add a setting for global font color. 
     - Add a logger to log errors and progress. Then add a button in settings where the user can print/view the log.
 

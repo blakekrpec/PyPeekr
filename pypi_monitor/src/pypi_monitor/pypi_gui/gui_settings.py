@@ -117,6 +117,13 @@ class FileSettingsPage(QWidget):
         self.pause_button.clicked.connect(self.pause_button_pressed)
         self.layout.addWidget(self.pause_button)
 
+        # add reset data button
+        self.reset_data_button = QPushButton()
+        self.reset_data_button.setText("Reset Data")
+        self.reset_data_button.clicked.connect(
+            self.main_window.client.data_client.queue.handle_data_reset)
+        self.layout.addWidget(self.reset_data_button)
+
         # create the slider, init its value, and set properties
         self.rate_slider = QSlider(Qt.Orientation.Horizontal, self)
         self.rate_slider.setValue(self.main_window.settings["update_rate"])

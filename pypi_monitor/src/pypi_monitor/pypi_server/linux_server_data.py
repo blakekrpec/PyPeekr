@@ -8,17 +8,17 @@ class LinuxCPUData():
         self.cpu_data = {}
         self.cpu_name = None
         self.cpu_temp = None
-        self.cpu_utilzn = None
+        self.cpu_util = None
         self.update_cpu_data()
 
     # main update fxm that calls all others
     def update_cpu_data(self):
         self.get_cpu_name()
         self.get_cpu_temp()
-        self.get_cpu_utilzn()
+        self.get_cpu_util()
         self.cpu_data["name"] = self.cpu_name
         self.cpu_data["temp"] = self.cpu_temp
-        self.cpu_data["utilzn"] = self.cpu_utilzn
+        self.cpu_data["util"] = self.cpu_util
 
     # get cpu name
     def get_cpu_name(self):
@@ -42,9 +42,9 @@ class LinuxCPUData():
         self.cpu_temp = cpu_temp
 
     #get cpu utilzation with psutil
-    def get_cpu_utilzn(self):
+    def get_cpu_util(self):
         cpu_utilization = psutil.cpu_percent(interval=None)
-        self.cpu_utilzn = cpu_utilization
+        self.cpu_util = cpu_utilization
 
 
 # class to get GPU info on Linux
@@ -65,15 +65,15 @@ class LinuxGPUData():
         for gpu in nvidia_gpus:
             info = {
                 'name': gpu.name,
-                'temperature': gpu.temperature,
-                'utilzn': gpu.load * 100
+                'temp': gpu.temperature,
+                'util': gpu.load * 100
             }
             gpus.update(info)
 
         self.gpu_data = gpus
 
 
-# main server that calls data from all components
+# class to serve as the main data server
 class LinuxDataServer():
     def __init__(self) -> None:
         self.server_data = {}
@@ -81,10 +81,12 @@ class LinuxDataServer():
         self.server_cpu_data = None
         self.gpu_data_obj = LinuxGPUData()
         self.server_gpu_data = None
+        self.last_n_samples = {}
         self.update_linux_data_server()
 
-    # fxn to update all values, will be called during http request
+    # function to update all values, will be called during HTTP request
     def update_linux_data_server(self):
         self.cpu_data_obj.update_cpu_data()
+        self.gpu_data_obj.update_gpu_data()
         self.server_data["CPU"] = self.cpu_data_obj.cpu_data
         self.server_data["GPU"] = self.gpu_data_obj.gpu_data

@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 from datetime import datetime, timedelta
 
 from PyQt6.QtWidgets import (QApplication, QMainWindow,
@@ -27,6 +28,8 @@ class MainWindow(QMainWindow):
 
         # start the client
         self.client = client.Client(self)
+        # wait for client to call and thus start the server
+        time.sleep(0.25)
 
         # spawn the main window
         self.setWindowTitle('pypi_monitor')

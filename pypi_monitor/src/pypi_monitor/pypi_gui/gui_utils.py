@@ -108,8 +108,9 @@ class PaneManager:
 class PaneController():
     def __init__(self, title, pane_widget, main_window):
 
-        self.title = title
         self.main_window = main_window
+        self.title = title
+        # self.name = self.main_window.data[title]["name"]
 
         # pane_widget is the main widget created by Pane Manager
         # all label and data widgets will be created inside pane_widget
