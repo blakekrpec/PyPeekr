@@ -41,7 +41,7 @@ class LinuxCPUData():
                 cpu_temp = temps['coretemp'][0].current
         self.cpu_temp = cpu_temp
 
-    #get cpu utilzation with psutil
+    # get cpu utilzation with psutil
     def get_cpu_util(self):
         cpu_utilization = psutil.cpu_percent(interval=None)
         self.cpu_util = cpu_utilization
@@ -56,7 +56,7 @@ class LinuxGPUData():
         self.gpu_utilzn = None
         self.update_gpu_data()
 
-    # single fxn that gets all nvidia gpu info 
+    # single fxn that gets all nvidia gpu info
     # can handle multiple gpus
     def update_gpu_data(self):
         gpus = {}

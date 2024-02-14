@@ -109,7 +109,10 @@ Current design:
     - Linux client is now working and listening to linux server. 
 
 - Next:
+    - Pause isn't working. 
+    - Make sure all values stat values are limited to only 1 dec place. 
     - Finish linux server to display data in the actual gui instead of just printing. 
+        - Tried to do this. Calling udpate_panes() form client is causing: QObject::setParent: Cannot set parent, new parent is in a different thread.
     - Finish implementing windows client to read and store data.
     - Change the PaneController to interact with the client and print data as made available. 
     - Go change name util/utilzn/utilization to load throughout the project.

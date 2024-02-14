@@ -1,7 +1,7 @@
 import requests
 import time
 import threading
-from collections import defaultdict
+from PyQt6.QtCore import QObject, pyqtSignal
 
 
 # main data client class
@@ -12,18 +12,41 @@ class DataClient():
 
 
 # queue for grabbing incoming data
-class DataQueue():
+class DataQueue(QObject):
+
+    # this signal will call the update panes function in pane manager
+    # cannot call function directly from the threaded while loop below
+    updatePaneSignal = pyqtSignal()
+
     def __init__(self, main_window):
+        super().__init__()
+
         # init loop and start it
         self.main_window = main_window
-        # init list to be at least two layers deep
+        # init list with 0s to avoid crashes if server isn't reached
         # other indices under CPU/GPu etc will be added later dynamically
         self.main_window.data = {
          "CPU": {
-                "name": ""
+                "name": "",
+                "temp": 0,
+                "min_temp": 0,
+                "max_temp": 0,
+                "avg_temp": 0,
+                "util": 0,
+                "min_util": 0,
+                "max_util": 0,
+                "avg_util": 0
             },
          "GPU": {
-                "name": ""
+                "name": "",
+                "temp": 0,
+                "min_temp": 0,
+                "max_temp": 0,
+                "avg_temp": 0,
+                "util": 0,
+                "min_util": 0,
+                "max_util": 0,
+                "avg_util": 0
             }
         }
 
@@ -78,6 +101,11 @@ class DataQueue():
                 # get data from request and pass to data dumper
                 response = requests.get(self.url, timeout=2)
                 self.data_dumper(response)
+
+                # can't call pane manager until it spawns
+                # if self.main_window.pane_manager_spawned:
+                self.updatePaneSignal.emit()
+
             except requests.RequestException as e:
                 print(f"Error: {e}")
 
@@ -85,45 +113,71 @@ class DataQueue():
 
     # function to dump the requests data out into json, then into dicts
     def data_dumper(self, response):
+        # grab names
         self.main_window.data["CPU"]["name"] = response.json()["CPU"]["name"]
         self.main_window.data["GPU"]["name"] = response.json()["GPU"]["name"]
 
+        # call the function below to maintain stats
         self.update_handler("CPU", "temp", response)
         self.update_handler("CPU", "util", response)
         self.update_handler("GPU", "temp", response)
         self.update_handler("GPU", "util", response)
 
-        print("main data")
-        print(self.main_window.data)
-
     # handles the updating of min, max, and averages on update
     def update_handler(self, title, key, response):
-
+        # grab main data of [key]
         self.main_window.data[title][key] = response.json()[title][key]
+
+        # create other stat keys
         min_key = "min_" + key
         max_key = "max_" + key
         avg_key = "avg_" + key
 
+        # if title or key are missing from last_n_datums add them
         if title not in self.last_n_datums:
             self.last_n_datums[title] = {}
-
         if key not in self.last_n_datums[title]:
             self.last_n_datums[title][key] = []
 
+        # if first time, init last_n_dataum to current vals and append
         if len(self.last_n_datums[title][key]) == 0:
-            self.main_window.data[title][min_key] = self.main_window.data[title][key]
-            self.main_window.data[title][max_key] = self.main_window.data[title][key]
-            self.main_window.data[title][avg_key] = self.main_window.data[title][key]
-            self.last_n_datums[title][key].append(self.main_window.data[title][key])
 
+            self.main_window.data[title][min_key] = \
+                self.main_window.data[title][key]
+
+            self.main_window.data[title][max_key] = \
+                self.main_window.data[title][key]
+
+            self.main_window.data[title][avg_key] = \
+                self.main_window.data[title][key]
+
+            self.last_n_datums[title][key].append(
+                self.main_window.data[title][key])
+
+        # if not yet 10 datums, append and keep going
         if len(self.last_n_datums[title][key]) < 10:
-            self.last_n_datums[title][key].append(self.main_window.data[title][key])
-        else:
-            self.last_n_datums[title][key].pop(0)
-            self.last_n_datums[title][key].append(self.main_window.data[title][key])
-            self.main_window.data[title][avg_key] = round(sum(self.last_n_datums[title][key]) / len(self.last_n_datums[title][key]), 1)
+            self.last_n_datums[title][key].append(
+                self.main_window.data[title][key])
 
-        if self.main_window.data[title][key] < self.main_window.data[title][min_key]:
-            self.main_window.data[title][min_key] = self.main_window.data[title][key]
-        if self.main_window.data[title][key] > self.main_window.data[title][max_key]:
-            self.main_window.data[title][max_key] = self.main_window.data[title][key]
+        # if 10 datums update avg
+        else:
+            # remove oldest datum
+            self.last_n_datums[title][key].pop(0)
+            # add newest datum
+            self.last_n_datums[title][key].append(
+                self.main_window.data[title][key])
+
+            # update avg
+            self.main_window.data[title][avg_key] = \
+                round(sum(self.last_n_datums[title][key]) /
+                      len(self.last_n_datums[title][key]), 1)
+        # update min if needed
+        if self.main_window.data[title][key] > \
+           self.main_window.data[title][min_key]:
+            self.main_window.data[title][min_key] = \
+                self.main_window.data[title][key]
+        # update max if needed
+        if self.main_window.data[title][key] > \
+           self.main_window.data[title][max_key]:
+            self.main_window.data[title][max_key] = \
+                self.main_window.data[title][key]

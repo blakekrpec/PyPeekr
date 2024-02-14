@@ -1,6 +1,5 @@
 import sys
 import os
-import time
 from datetime import datetime, timedelta
 
 from PyQt6.QtWidgets import (QApplication, QMainWindow,
@@ -27,9 +26,8 @@ class MainWindow(QMainWindow):
         gui_settings.load_settings(self, self.settings_path)
 
         # start the client
+        # client signal to update pane manager will be connected later
         self.client = client.Client(self)
-        # wait for client to call and thus start the server
-        time.sleep(0.25)
 
         # spawn the main window
         self.setWindowTitle('pypi_monitor')
@@ -62,6 +60,10 @@ class MainWindow(QMainWindow):
 
         # setup the pane manager
         self.pane_manager = gui_utils.PaneManager(self)
+
+        # connect client signal now that pane manager is spawned
+        self.client.data_client.queue.updatePaneSignal.connect(
+            self.pane_manager.update_panes)
 
         # update settings
         self.update_settings()

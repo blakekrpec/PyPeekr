@@ -200,41 +200,45 @@ class PaneController():
         # add the tile label to the main VBox layout
         self.widgets_main_layouts[title].addWidget(widget_title)
 
-        # add a dummy number for now, later this will be client data
-        dummy_number = QLabel("55")
-        dummy_number.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        dummy_number_settings = (
+        # grab the main data of [title] and make label of it
+        main_data = str(int(self.main_window.data[self.title][title]))
+        main_label = QLabel(main_data)
+        main_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        main_label_settings = (
             f"background-color: {color}; "
             "margin:0px; "
             "border:1px solid rgb(0, 0, 0); "
             "border-radius:5px;"
-            "font:75px;"
+            "font:60px;"
         )
-        dummy_number.setStyleSheet(dummy_number_settings)
+        main_label.setStyleSheet(main_label_settings)
         # add data to secondary HBox layout
-        self.widgets_secondary_layouts[title].addWidget(dummy_number)
+        self.widgets_secondary_layouts[title].addWidget(main_label)
 
-        # add a dummy number for now, later this will be client data
-        dummy_number1 = QLabel("Min: 55")
-        dummy_number2 = QLabel("Max: 55")
-        dummy_number3 = QLabel("Avg: 55")
-        dummy_number1.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        dummy_number2.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        dummy_number3.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        dummy_number_n_settings = (
+        # grab the min, max, and avg data of [title] and make label of it
+        min_data = str((self.main_window.data[self.title]["min_"+title]))
+        min_label = QLabel(min_data)
+        max_data = str((self.main_window.data[self.title]["max_"+title]))
+        max_label = QLabel(max_data)
+        avg_data = str((self.main_window.data[self.title]["avg_"+title]))
+        avg_label = QLabel(avg_data)
+        min_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        max_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        avg_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        stats_label = (
             f"background-color: {color}; "
             "margin:2px; "
             "border:1px solid rgb(0, 0, 0); "
             "border-radius:5px;"
         )
-        dummy_number1.setStyleSheet(dummy_number_n_settings)
-        dummy_number2.setStyleSheet(dummy_number_n_settings)
-        dummy_number3.setStyleSheet(dummy_number_n_settings)
+        min_label.setStyleSheet(stats_label)
+        max_label.setStyleSheet(stats_label)
+        avg_label.setStyleSheet(stats_label)
 
         # add data to the tertiary Vbox layout
-        self.widgets_tertiary_layouts[title].addWidget(dummy_number1)
-        self.widgets_tertiary_layouts[title].addWidget(dummy_number2)
-        self.widgets_tertiary_layouts[title].addWidget(dummy_number3)
+        self.widgets_tertiary_layouts[title].addWidget(min_label)
+        self.widgets_tertiary_layouts[title].addWidget(max_label)
+        self.widgets_tertiary_layouts[title].addWidget(avg_label)
 
         # nest all the layouts and set main layout
         self.widgets_secondary_layouts[title].addLayout(
