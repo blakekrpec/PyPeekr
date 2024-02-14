@@ -107,13 +107,13 @@ Current design:
     - Moved the logic to maintain min, max, and avg stats into the client, to separate from server. This will likely be more similar to how Windows data will need to be read, organized, and stored. 
     - Added a reset button. 
     - Linux client is now working and listening to linux server. 
+    - Linux client is now displaying values in the gui.
 
 - Next:
-    - Pause isn't working. 
+    - Pause isn't working correctly. 
     - Make sure all values stat values are limited to only 1 dec place. 
-    - Finish linux server to display data in the actual gui instead of just printing. 
-        - Tried to do this. Calling udpate_panes() form client is causing: QObject::setParent: Cannot set parent, new parent is in a different thread.
     - Finish implementing windows client to read and store data.
+        - At least get a sample of /api/rootnode so we can begin loading it as a json and trying to parse it. 
     - Change the PaneController to interact with the client and print data as made available. 
     - Go change name util/utilzn/utilization to load throughout the project.
     - Add a setting for global font color. 
