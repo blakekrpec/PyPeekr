@@ -43,6 +43,7 @@ In a separate terminal start the client GUI
 ```
 gui
 ```
+In the GUI you will need to enter the IP of the server. If running server on your machine, localhost port 8000 should work (127.0.0.1:8000).
 
 #### Windows Setup (Windows GUI Not Complete Yet)
 
