@@ -308,7 +308,7 @@ class PaneController():
     # function to convert the short settings keys into full titles
     def title_resolver(self, title):
         if title == "temp":
-            return "Temperature (C)"
+            return "Temperature (\u00B0C)"
         elif title == "util":
             return "Utilization (%)"
         else:
