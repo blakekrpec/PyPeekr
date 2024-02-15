@@ -9,10 +9,11 @@ readme = ["../README.md"]
 python = ">=3.6.0"
 flask = ">=2.0.0"
 psutil = ">=5.9.0"
-py-cpuinfo = ">8.0.0"
-gputil = ">1.0.0"
 pyyaml ="*"
 pyqt6 ="*"
+requests ="*"
+flake8 ="*"
+gputil ="*"
 
 [tool.poetry.dev-dependencies]
 
@@ -22,3 +23,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 gui = "pypi_monitor.pypi_gui.gui_main:run_app"
+create_config_dir = "pypi_monitor.pypi_utils.create_config_dir:create_config_dir"
+lint_pypi ="pypi_monitor.pypi_utils.pypi_linter:linter"
+run_linux_server = "pypi_monitor.pypi_server.linux_server_app:run_linux_server_app"

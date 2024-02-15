@@ -25,6 +25,9 @@ else
     echo "python3-venv installed successfully."
 fi
 
+#creating settings location on host
+
+
 # Check if the directory .test exists
 echo "activating .pypi_monitor venv"
 if [ -d .pypi_monitor ]; then
@@ -54,3 +57,6 @@ fi
 
 #install pypi_monitor with pip
 pip install -e ./pypi_monitor
+
+#create the config dir 
+create_config_dir
