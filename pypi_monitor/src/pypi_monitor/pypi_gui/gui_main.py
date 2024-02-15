@@ -65,6 +65,9 @@ class MainWindow(QMainWindow):
         self.client.data_client.queue.updatePaneSignal.connect(
             self.pane_manager.update_panes)
 
+        for child in self.findChildren(QWidget):
+            child.setStyleSheet("color: black;")
+
         # update settings
         self.update_settings()
 
