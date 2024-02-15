@@ -1,4 +1,5 @@
 .pypi_monitor
+.vscode
 
 #ignore .VSCodeCounter dir
 .VSCodeCounter
