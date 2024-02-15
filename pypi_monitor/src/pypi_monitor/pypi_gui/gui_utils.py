@@ -3,29 +3,79 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
 from PyQt6.QtCore import Qt
 
 
-# Set the background color for the main window
+# Set the background color for the main window (and other windows as needed)
 def set_main_background_color(main_window, color):
     # convert hex to QColor
     q_color = QColor(color)
 
-    main_window.setStyleSheet(
-        f'background-color: {q_color.name()};')
+    # grab the current stylesheets, and append with new color
+    main_window.setStyleSheet(main_window.styleSheet() +
+                              f'background-color: {q_color.name()};')
 
     main_window.settings_button.setStyleSheet(
+        main_window.settings_button.styleSheet() +
         f'background-color: {q_color.name()};')
 
     main_window.settings_controller.settings_dialog.setStyleSheet(
+        main_window.settings_controller.settings_dialog.styleSheet() +
         f'background-color: {q_color.name()};')
 
-    main_window.settings_controller.settings_dialog.view_settings_page \
-        .displays_dialog.setStyleSheet(
+    main_window.settings_controller.settings_dialog.view_settings_page. \
+        displays_dialog.setStyleSheet(
+            main_window.settings_controller.
+            settings_dialog.view_settings_page.
+            displays_dialog.styleSheet() +
             f'background-color: {q_color.name()};')
 
     main_window.settings_controller.settings_dialog.file_settings_page \
         .ip_dialog.setStyleSheet(
+            main_window.settings_controller.settings_dialog.file_settings_page.
+            ip_dialog.styleSheet() +
             f'background-color: {q_color.name()};')
 
     # call pane manager to also update pane colors
+    main_window.pane_manager.update_panes()
+
+
+# Set the font color for entire app
+def set_main_font_color(main_window, color):
+    # convert hex to QColor
+    q_color = QColor(color)
+
+    # first update fonts whose stylesheets of all widgets we know will exist
+    # (things that can't be disabled/toggled on/off)
+    # grab the current style sheets, and append with new color
+    main_window.setStyleSheet(main_window.styleSheet() +
+                              f'color: {q_color.name()};')
+
+    main_window.settings_button.setStyleSheet(
+        main_window.settings_button.styleSheet() +
+        f'color: {q_color.name()};')
+
+    main_window.settings_controller.settings_dialog.setStyleSheet(
+        main_window.settings_controller.settings_dialog.styleSheet() +
+        f'color: {q_color.name()};')
+
+    main_window.settings_controller.settings_dialog.view_settings_page. \
+        displays_dialog.setStyleSheet(
+            main_window.settings_controller.
+            settings_dialog.view_settings_page.
+            displays_dialog.styleSheet() +
+            f'color: {q_color.name()};')
+
+    main_window.settings_controller.settings_dialog.file_settings_page \
+        .ip_dialog.setStyleSheet(
+            main_window.settings_controller.settings_dialog.file_settings_page.
+            ip_dialog.styleSheet() +
+            f'color: {q_color.name()};')
+
+    # for the actual data panes we just save as a setting and then grab that
+    # setting when constructing their style sheets
+    # this is because that seemed easier than using logic to see which panes
+    # were running, and then updating the appropriate panes
+    main_window.settings["font-color"] = q_color.name()
+
+    # # call pane manager to also update pane colors
     main_window.pane_manager.update_panes()
 
 

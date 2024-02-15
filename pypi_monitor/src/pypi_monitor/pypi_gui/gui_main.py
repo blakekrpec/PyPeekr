@@ -31,7 +31,7 @@ class MainWindow(QMainWindow):
 
         # spawn the main window
         self.setWindowTitle('pypi_monitor')
-        self.setGeometry(100, 100, 600, 400)
+        self.setGeometry(100, 100, 450, 300)
 
         # this will make the window frameless
         # self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
@@ -73,6 +73,8 @@ class MainWindow(QMainWindow):
         # update main color (which also calls update_panes())
         gui_utils.set_main_background_color(
             self, self.settings["background_color"])
+        gui_utils.set_main_font_color(
+            self, self.settings["font_color"])
         # http request settings
         self.client.data_client.queue.update_request_settings()
         # update rate
