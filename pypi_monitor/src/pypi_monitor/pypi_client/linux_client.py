@@ -69,10 +69,8 @@ class DataQueue(QObject):
     # handle pause requests from the pause button
     def handle_pause_resume(self, action):
         if action == "pause":
-            self.is_running = False
             self.stop_request_loop()
-        else:
-            self.is_running = True
+        elif action == "resume":
             self.start_request_loop()
 
     # function that will reset the stat values (min/max/avg)
@@ -81,7 +79,7 @@ class DataQueue(QObject):
 
     # function that starts the client data queue in a thread
     def start_request_loop(self):
-        # self.is_running = True
+        self.is_running = True
         # daemon thread so thread dies when the script that started it dies
         # in this case the script that starts it is (gui_main.py)
         self.thread = threading.Thread(target=self.data_request, daemon=True)
@@ -89,14 +87,14 @@ class DataQueue(QObject):
 
     # function that stops the client data queue thread, shouldn't need ever
     def stop_request_loop(self):
-        # self.is_running = False
+        self.is_running = False
         if self.thread:
             # kill the thread
-            self.thread.join(0)
+            self.thread.join()
 
     # main loop that will send out the https requests to cather data
     def data_request(self):
-        while True:
+        while self.is_running:
             try:
                 # get data from request and pass to data dumper
                 response = requests.get(self.url, timeout=2)
@@ -167,12 +165,12 @@ class DataQueue(QObject):
             self.last_n_datums[title][key].append(
                 self.main_window.data[title][key])
 
-            # update avg
-            self.main_window.data[title][avg_key] = \
-                round(sum(self.last_n_datums[title][key]) /
-                      len(self.last_n_datums[title][key]), 1)
+        # update avg
+        self.main_window.data[title][avg_key] = \
+            round(sum(self.last_n_datums[title][key]) /
+                  len(self.last_n_datums[title][key]), 1)
         # update min if needed
-        if self.main_window.data[title][key] > \
+        if self.main_window.data[title][key] < \
            self.main_window.data[title][min_key]:
             self.main_window.data[title][min_key] = \
                 self.main_window.data[title][key]

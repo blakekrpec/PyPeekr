@@ -216,11 +216,17 @@ class PaneController():
         self.widgets_secondary_layouts[title].addWidget(main_label)
 
         # grab the min, max, and avg data of [title] and make label of it
-        min_data = str((self.main_window.data[self.title]["min_"+title]))
+        min_data = (
+            f"Min: {self.main_window.data[self.title]['min_' + title]:.1f}"
+        )
         min_label = QLabel(min_data)
-        max_data = str((self.main_window.data[self.title]["max_"+title]))
+        max_data = (
+            f"Max: {self.main_window.data[self.title]['max_' + title]:.1f}"
+        )
         max_label = QLabel(max_data)
-        avg_data = str((self.main_window.data[self.title]["avg_"+title]))
+        avg_data = (
+            f"Avg: {self.main_window.data[self.title]['avg_' + title]:.1f}"
+        )
         avg_label = QLabel(avg_data)
         min_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         max_label.setAlignment(Qt.AlignmentFlag.AlignCenter)

@@ -108,13 +108,13 @@ Current design:
     - Added a reset button. 
     - Linux client is now working and listening to linux server. 
     - Linux client is now displaying values in the gui.
+    - Fixed pause not working (thread wasn't being killed properly.)
+    - Limited stats to 1 decimal place, and added labels (min/max/avg).
+    - PaneController now reads in data from main_window.data, instead of fake numbers. 
 
 - Next:
-    - Pause isn't working correctly. 
-    - Make sure all values stat values are limited to only 1 dec place. 
     - Finish implementing windows client to read and store data.
-        - At least get a sample of /api/rootnode so we can begin loading it as a json and trying to parse it. 
-    - Change the PaneController to interact with the client and print data as made available. 
+        - At least get a sample of /api/rootnode so we can begin loading it as a json and start trying to parse it. 
     - Go change name util/utilzn/utilization to load throughout the project.
     - Add a setting for global font color. 
     - Add a logger to log errors and progress. Then add a button in settings where the user can print/view the log.
