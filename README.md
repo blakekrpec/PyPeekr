@@ -39,8 +39,9 @@ Start the Linux server
 ```
 run_linux_server
 ```
-In a separate terminal start the client GUI
+In a separate terminal source venv and start the client GUI
 ```
+source .pypi_monitor/bin/activate
 gui
 ```
 In the GUI you will need to enter the IP of the server. If running server on your machine, localhost port 8000 should work (127.0.0.1:8000).
