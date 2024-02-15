@@ -35,12 +35,16 @@ Source the python virtual environment
 ```
 source .pypi_monitor/bin/activate
 ```
-Start the client GUI
+Start the Linux server 
+```
+run_linux_server
+```
+In a separate terminal start the client GUI
 ```
 gui
 ```
 
-#### Windows Setup
+#### Windows Setup (Windows GUI Not Complete Yet)
 
 create venv
 ```
@@ -66,8 +70,8 @@ Current design:
 - Client will be a RasPi on the LAN with a systemctl service to run the gui on startup.
 
 - Server
-    - On Linux, we will need to write our own server, or get the OpenHardwareMonitor.exe to run on Linux.
-    - On Windows, the OpenHardwareMonitor REST API will be used. We should consider adding an abstraction layer that takes info from OpenHardwareMonitor and then makes it more portable, currently there is a ton of info and really we may only want CPU and GPU. This will also standardize the input data structure into our client which would make the GUI agnostic of OpenHardwareMonitor (Windows) or our own server (Linux).  
+    - On Linux, the server is custom.
+    - On Windows, the OpenHardwareMonitor REST API will be used. Data from OpenHardwareMonitor is stored in a structure identical to what the Linux server creates so that the GUI is agnostic of where the data is coming from. 
 
 - Done: 
     - Files separated for readability 
@@ -115,7 +119,7 @@ Current design:
 - Next:
     - Finish implementing windows client to read and store data.
         - At least get a sample of /api/rootnode so we can begin loading it as a json and start trying to parse it. 
-    - Go change name util/utilzn/utilization to load throughout the project.
+    - Change name util/utilzn/utilization to load throughout the project.
     - Add a setting for global font color. 
     - Add a logger to log errors and progress. Then add a button in settings where the user can print/view the log.
 
