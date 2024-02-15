@@ -300,9 +300,11 @@ class IPDialog(QDialog):
             if not isinstance(int(part), int):
                 return False
             elif int(part) < 0 or int(part) > 255:
+                print(part)
                 return False
             else:
-                return True
+                continue
+        return True
 
     def check_port(self, port):
         if not port.isdigit():

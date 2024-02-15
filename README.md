@@ -120,6 +120,7 @@ Current design:
     - Fixed tick marks not showing.
     - Added setting for main font color.
     - Changing font color now changes font across entire app.  
+    - Fixed bug where IP checker wasn't checking all 4 parts of the address. 
 
 - Next:
     - Finish implementing windows client to read and store data.
