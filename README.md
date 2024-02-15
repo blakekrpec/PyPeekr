@@ -117,6 +117,7 @@ Current design:
     - Fixed pause not working (thread wasn't being killed properly.)
     - Limited stats to 1 decimal place, and added labels (min/max/avg).
     - PaneController now reads in data from main_window.data, instead of fake numbers. 
+    - Fixed tick marks not showing.
 
 - Next:
     - Finish implementing windows client to read and store data.

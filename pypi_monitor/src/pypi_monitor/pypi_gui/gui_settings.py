@@ -129,6 +129,7 @@ class FileSettingsPage(QWidget):
         self.rate_slider.setValue(self.main_window.settings["update_rate"])
         self.rate_slider.setMinimum(1)
         self.rate_slider.setMaximum(5)
+        self.rate_slider.setTickInterval(1)
         self.rate_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
 
         # connect the slider event to a function below
