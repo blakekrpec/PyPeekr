@@ -3,7 +3,7 @@ import os
 from datetime import datetime, timedelta
 
 from PyQt6.QtWidgets import (QApplication, QMainWindow,
-                             QPushButton, QHBoxLayout,  QWidget)
+                             QPushButton, QHBoxLayout, QWidget)
 from PyQt6.QtGui import QIcon
 
 from pypi_monitor.pypi_gui import gui_settings
@@ -64,9 +64,6 @@ class MainWindow(QMainWindow):
         # connect client signal now that pane manager is spawned
         self.client.data_client.queue.updatePaneSignal.connect(
             self.pane_manager.update_panes)
-
-        for child in self.findChildren(QWidget):
-            child.setStyleSheet("color: black;")
 
         # update settings
         self.update_settings()
