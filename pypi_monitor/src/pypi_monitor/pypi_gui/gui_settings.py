@@ -297,10 +297,11 @@ class IPDialog(QDialog):
 
         # check that each part is an int, and 0<int<255
         for part in parts:
-            if not isinstance(int(part), int):
+            try:
+                int(part)
+            except ValueError:
                 return False
-            elif int(part) < 0 or int(part) > 255:
-                print(part)
+            if int(part) < 0 or int(part) > 255:
                 return False
             else:
                 continue
