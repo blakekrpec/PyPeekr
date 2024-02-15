@@ -118,12 +118,13 @@ Current design:
     - Limited stats to 1 decimal place, and added labels (min/max/avg).
     - PaneController now reads in data from main_window.data, instead of fake numbers. 
     - Fixed tick marks not showing.
+    - Add setting for main font color. 
 
 - Next:
     - Finish implementing windows client to read and store data.
         - At least get a sample of /api/rootnode so we can begin loading it as a json and start trying to parse it. 
     - Change name util/utilzn/utilization to load throughout the project.
-    - Add a setting for global font color. 
+    - Make the font color change font in all settings as well, not just main page. 
     - Add a logger to log errors and progress. Then add a button in settings where the user can print/view the log.
 
 - Bugs:

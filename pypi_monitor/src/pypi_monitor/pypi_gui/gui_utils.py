@@ -62,6 +62,7 @@ class PaneManager:
 
         # define pane color
         color = self.main_window.settings["displays"][title]["color"]
+        font_color = self.main_window.settings["font_color"]
 
         # define pane stylesheet and apply
         settings = (
@@ -69,6 +70,7 @@ class PaneManager:
             "margin:2px; "
             "border:0px solid rgb(0, 0, 0); "
             "border-radius:20px;"
+            f"color: {font_color};"
         )
         self.panes[title].setStyleSheet(settings)
 
