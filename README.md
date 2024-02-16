@@ -124,6 +124,7 @@ Current design:
     - 
 
 - Next: 
+    - Currently only works for Intel CPU, and Nvidia GPU. Maybe should add these to settings as toggles for the user to change from intelcpu to amdcpu, and same for gpu. 
     - Change name util/utilzn/utilization to load throughout the project.
     - Add a logger to log errors and progress. Then add a button in settings where the user can print/view the log.
 
