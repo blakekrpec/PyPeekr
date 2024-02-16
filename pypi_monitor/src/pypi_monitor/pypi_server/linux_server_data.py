@@ -62,13 +62,22 @@ class LinuxGPUData():
         gpus = {}
 
         nvidia_gpus = GPUtil.getGPUs()
-        for gpu in nvidia_gpus:
-            info = {
-                'name': gpu.name,
-                'temp': gpu.temperature,
-                'util': gpu.load * 100
-            }
-            gpus.update(info)
+        print(nvidia_gpus)
+        if nvidia_gpus:
+            for gpu in nvidia_gpus:
+                info = {
+                    'name': gpu.name,
+                    'temp': gpu.temperature,
+                    'util': gpu.load * 100
+                }
+                gpus.update(info)
+        else:
+                info = {
+                    'name': "",
+                    'temp': 0,
+                    'util': 0
+                }
+                gpus.update(info)
 
         self.gpu_data = gpus
 

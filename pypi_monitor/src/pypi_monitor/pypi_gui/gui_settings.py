@@ -5,8 +5,6 @@ from PyQt6.QtWidgets import (QPushButton, QDialog, QVBoxLayout, QHBoxLayout,
                              QLineEdit, QMessageBox, QSlider)
 from PyQt6.QtCore import Qt
 
-from pypi_monitor.pypi_gui import gui_utils
-
 
 # define the settings controller
 class SettingsController:
@@ -129,6 +127,7 @@ class FileSettingsPage(QWidget):
         self.rate_slider.setValue(self.main_window.settings["update_rate"])
         self.rate_slider.setMinimum(1)
         self.rate_slider.setMaximum(5)
+        self.rate_slider.setTickInterval(1)
         self.rate_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
 
         # connect the slider event to a function below
@@ -298,12 +297,15 @@ class IPDialog(QDialog):
 
         # check that each part is an int, and 0<int<255
         for part in parts:
-            if not isinstance(int(part), int):
+            try:
+                int(part)
+            except ValueError:
                 return False
-            elif int(part) < 0 or int(part) > 255:
+            if int(part) < 0 or int(part) > 255:
                 return False
             else:
-                return True
+                continue
+        return True
 
     def check_port(self, port):
         if not port.isdigit():
@@ -323,9 +325,15 @@ class ViewSettingsPage(QWidget):
         self.setLayout(self.layout)
 
         # Add the "Pick Color" button to the View tab
-        self.color_button = QPushButton('Pick Color')
+        self.color_button = QPushButton('Main Color')
         # Hook button into pick_color()
         self.color_button.clicked.connect(self.pick_color)
+        self.layout.addWidget(self.color_button)
+
+        # Add the "Pick Color" button to the View tab
+        self.color_button = QPushButton('Font Color')
+        # Hook button into pick_color()
+        self.color_button.clicked.connect(self.pick_font_color)
         self.layout.addWidget(self.color_button)
 
         # init dialog for displays options
@@ -342,8 +350,17 @@ class ViewSettingsPage(QWidget):
         if color.isValid():
             # get hex color code
             self.main_window.settings["background_color"] = color.name()
-            # set main window colot
-            gui_utils.set_main_background_color(self.main_window, color)
+            # set main window color
+            self.main_window.update_settings()
+
+    # use the built in Qt color selector
+    def pick_font_color(self):
+        color = QColorDialog.getColor()
+        if color.isValid():
+            # get hex color code
+            self.main_window.settings["font_color"] = color.name()
+            # set main window color
+            self.main_window.update_settings()
 
 
 # the dialog ot run when the displays page is opened

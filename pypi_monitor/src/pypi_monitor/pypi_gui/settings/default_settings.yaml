@@ -1,4 +1,5 @@
 background_color: '#454545'
+font_color: '#ffffff'
 displays:
   CPU:
     color: '#77767b'
