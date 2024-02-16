@@ -120,11 +120,10 @@ Current design:
     - Fixed bug where IP checker wasn't checking all 4 parts of the address. 
     - Fixed bug where IP checked crashed if given a char instead of an int. 
     - Fixed issue where gui wasn't running on Windows after all the big changes. 
+    - Windows client now works and grabs data to display. 
     - 
 
-- Next:
-    - Finish implementing windows client to read and store data.
-        - At least get a sample of /api/rootnode so we can begin loading it as a json and start trying to parse it. 
+- Next: 
     - Change name util/utilzn/utilization to load throughout the project.
     - Add a logger to log errors and progress. Then add a button in settings where the user can print/view the log.
 

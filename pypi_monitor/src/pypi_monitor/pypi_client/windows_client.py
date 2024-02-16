@@ -64,7 +64,10 @@ class DataQueue(QObject):
         self.update_rate = int(self.main_window.settings["update_rate"])
         self.ip = self.main_window.settings["ip"]
         self.port = self.main_window.settings["port"]
-        self.url = "http://" + self.ip + ":" + self.port + "/data"
+        self.cpu_url = "http://" + self.ip + ":" + \
+            self.port + "/api/nodes/intelcpu/0"
+        self.gpu_url = "http://" + self.ip + ":" + \
+            self.port + "/api/nodes/nvidiagpu/0"
 
     # handle pause requests from the pause button
     def handle_pause_resume(self, action):
@@ -97,8 +100,9 @@ class DataQueue(QObject):
         while self.is_running:
             try:
                 # get data from request and pass to data dumper
-                # response = requests.get(self.url, timeout=2)
-                # self.data_dumper(response)
+                cpu_response = requests.get(self.cpu_url, timeout=2)
+                gpu_response = requests.get(self.gpu_url, timeout=2)
+                self.data_dumper(cpu_response, gpu_response)
 
                 # can't call pane manager until it spawns
                 # if self.main_window.pane_manager_spawned:
@@ -109,5 +113,141 @@ class DataQueue(QObject):
 
             time.sleep(self.update_rate)
 
-    # def data_dumper(self):
-        # handle data here
+    def data_dumper(self, cpu_response, gpu_response):
+        # convert cpu response to json
+        cpu = cpu_response.json()
+
+        # get cpu name
+        cpu_name = None
+        for sensor in cpu["Sensors"]:
+            if sensor["Parent"] == "/intelcpu/0":
+                cpu_name = cpu["Name"]
+                self.main_window.data["CPU"]["name"] = cpu_name
+                break
+
+        # get temperatures
+        cpu_temperature_values = []
+        for sensor in cpu["Sensors"]:
+            if sensor["Type"] == "Temperature":
+                cpu_temperature_values.append(sensor["Value"])
+
+        # find avg cpu values across all 12 cores
+        cpu_average_core_temp = sum(cpu_temperature_values) \
+            / len(cpu_temperature_values)
+
+        # get loads
+        cpu_load_values = []
+        for sensor in cpu["Sensors"]:
+            if sensor["Type"] == "Load":
+                cpu_load_values.append(sensor["Value"])
+
+        # find avg load values across all 12 cores
+        cpu_average_core_load = sum(cpu_load_values) / len(cpu_load_values)
+
+        # create dict of cpu data
+        cpu_dict = {"CPU": {
+            "name": cpu_name,
+            "temp": cpu_average_core_temp,
+            "util": cpu_average_core_load
+        }}
+
+        # convert gpu response to json
+        gpu = gpu_response.json()
+
+        # get cpu name
+        gpu_name = None
+        for sensor in cpu["Sensors"]:
+            if sensor["Parent"] == "/nvidiagpu/0":
+                gpu_name = gpu["Name"]
+                self.main_window.data["GPU"]["name"] = gpu_name
+                break
+
+        # get temperatures
+        gpu_temperature_value = []
+        for sensor in gpu["Sensors"]:
+            if sensor["Type"] == "Temperature":
+                gpu_temperature_value.append(sensor["Value"])
+        # for some reason it is a list, extract value from list
+        gpu_temperature_value = gpu_temperature_value[0]
+
+        # get load values
+        # get loads
+        gpu_load_values = []
+        for sensor in gpu["Sensors"]:
+            if sensor["Type"] == "Load":
+                gpu_load_values.append(sensor["Value"])
+
+        # find avg load values across all 12 cores
+        gpu_average_core_load = sum(gpu_load_values) / len(gpu_load_values)
+
+        # create dict of cpu data
+        gpu_dict = {"GPU": {
+            "name": gpu_name,
+            "temp": gpu_temperature_value,
+            "util": gpu_average_core_load
+        }}
+
+        # call the function below to maintain stats
+        self.update_handler("CPU", "temp", cpu_dict)
+        self.update_handler("CPU", "util", cpu_dict)
+        self.update_handler("GPU", "temp", gpu_dict)
+        self.update_handler("GPU", "util", gpu_dict)
+
+    # handles the updating of min, max, and averages on update
+    def update_handler(self, title, key, response):
+        # grab main data of [key]
+        self.main_window.data[title][key] = response[title][key]
+
+        # create other stat keys
+        min_key = "min_" + key
+        max_key = "max_" + key
+        avg_key = "avg_" + key
+
+        # if title or key are missing from last_n_datums add them
+        if title not in self.last_n_datums:
+            self.last_n_datums[title] = {}
+        if key not in self.last_n_datums[title]:
+            self.last_n_datums[title][key] = []
+
+        # if first time, init last_n_dataum to current vals and append
+        if len(self.last_n_datums[title][key]) == 0:
+
+            self.main_window.data[title][min_key] = \
+                self.main_window.data[title][key]
+
+            self.main_window.data[title][max_key] = \
+                self.main_window.data[title][key]
+
+            self.main_window.data[title][avg_key] = \
+                self.main_window.data[title][key]
+
+            self.last_n_datums[title][key].append(
+                self.main_window.data[title][key])
+
+        # if not yet 10 datums, append and keep going
+        if len(self.last_n_datums[title][key]) < 10:
+            self.last_n_datums[title][key].append(
+                self.main_window.data[title][key])
+
+        # if 10 datums update avg
+        else:
+            # remove oldest datum
+            self.last_n_datums[title][key].pop(0)
+            # add newest datum
+            self.last_n_datums[title][key].append(
+                self.main_window.data[title][key])
+
+        # update avg
+        self.main_window.data[title][avg_key] = \
+            round(sum(self.last_n_datums[title][key]) /
+                  len(self.last_n_datums[title][key]), 1)
+        # update min if needed
+        if self.main_window.data[title][key] < \
+           self.main_window.data[title][min_key]:
+            self.main_window.data[title][min_key] = \
+                self.main_window.data[title][key]
+        # update max if needed
+        if self.main_window.data[title][key] > \
+           self.main_window.data[title][max_key]:
+            self.main_window.data[title][max_key] = \
+                self.main_window.data[title][key]
