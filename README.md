@@ -28,6 +28,7 @@ The gui is written in python with Qt. It spawns a client to listen to data from 
 The gui, and client live in the pypi_monitor pip package. The linux_setup.sh script included will create a python virtual environment for you, and install pypi_monitor in it.
 
 #### Linux Setup
+run setup script
 ```
 ./linux_setup.sh
 ```
@@ -46,19 +47,15 @@ gui
 ```
 In the GUI you will need to enter the IP of the server. If running server on your machine, localhost port 8000 should work (127.0.0.1:8000).
 
-#### Windows Setup (Windows GUI Not Complete Yet)
+#### Windows Setup (Windows GUI not complete yet, it just has dummy numbers)
 
-create venv
+run setup script
 ```
-python -m venv .pypi_monitor
+.\windows_setup.bat
 ```
 source venv
 ```
 .\pypi_monitor\Scripts\activate
-```
-install pypi_monitor 
-```
-pip install -e .\pypi_monitor
 ```
 run code 
 ```
@@ -122,6 +119,8 @@ Current design:
     - Changing font color now changes font across entire app.  
     - Fixed bug where IP checker wasn't checking all 4 parts of the address. 
     - Fixed bug where IP checked crashed if given a char instead of an int. 
+    - Fixed issue where gui wasn't running on Windows after all the big changes. 
+    - 
 
 - Next:
     - Finish implementing windows client to read and store data.

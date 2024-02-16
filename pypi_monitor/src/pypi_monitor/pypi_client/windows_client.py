@@ -97,7 +97,7 @@ class DataQueue(QObject):
         while self.is_running:
             try:
                 # get data from request and pass to data dumper
-                response = requests.get(self.url, timeout=2)
+                # response = requests.get(self.url, timeout=2)
                 # self.data_dumper(response)
 
                 # can't call pane manager until it spawns
@@ -108,6 +108,6 @@ class DataQueue(QObject):
                 print(f"Error: {e}")
 
             time.sleep(self.update_rate)
-    
+
     # def data_dumper(self):
         # handle data here

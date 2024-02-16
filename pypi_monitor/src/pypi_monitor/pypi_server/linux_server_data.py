@@ -72,12 +72,12 @@ class LinuxGPUData():
                 }
                 gpus.update(info)
         else:
-                info = {
+            info = {
                     'name': "",
                     'temp': 0,
                     'util': 0
                 }
-                gpus.update(info)
+            gpus.update(info)
 
         self.gpu_data = gpus
 

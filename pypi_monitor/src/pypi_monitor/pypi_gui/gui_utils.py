@@ -16,6 +16,13 @@ def set_main_background_color(main_window, color):
         main_window.settings_button.styleSheet() +
         f'background-color: {q_color.name()};')
 
+    # for some reason in windows this doesn't properly color the tabs
+    # but in linux it does
+    main_window.settings_controller.settings_dialog.tab_widget.setStyleSheet(
+        main_window.settings_controller.settings_dialog.
+        tab_widget.styleSheet() +
+        f'background-color: {q_color.name()};')
+
     main_window.settings_controller.settings_dialog.setStyleSheet(
         main_window.settings_controller.settings_dialog.styleSheet() +
         f'background-color: {q_color.name()};')
