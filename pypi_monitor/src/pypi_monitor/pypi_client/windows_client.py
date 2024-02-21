@@ -141,8 +141,11 @@ class DataQueue(QObject):
             if sensor["Type"] == "Load":
                 cpu_load_values.append(sensor["Value"])
 
-        # find avg load values across all 12 cores
-        cpu_average_core_load = sum(cpu_load_values) / len(cpu_load_values)
+        # get avg load (first element)
+        cpu_average_core_load = cpu_load_values[0]
+
+        # get max core load
+        cpu_average_core_load = max(cpu_load_values[1:])
 
         # create dict of cpu data
         cpu_dict = {"CPU": {

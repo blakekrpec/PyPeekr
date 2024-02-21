@@ -131,6 +131,7 @@ Current design:
     - Fixed bug where windows client didn't return gpu core temp, it returned avg of all gpu temps. 
 
 - Next: 
+    - OpenHardwareMonitor CPU loads are wronged. Compared against LibreHardwareMonitor, Task Manager, and Riva Stat Server. All were same except oHM. 
     - Add setting to let user see if they want avg core load, or max core load on CPU. While gamin avg is low since only a single core is used usually. 
     - Add support for AMD GPUs to Linux server. Use pyamdgpuinfo module. 
     - Add support for AMD CPUs and GPUs to Windows client. Currently the Windows client looks specifically for the intelcpu and nvidiagpu nodes. 
