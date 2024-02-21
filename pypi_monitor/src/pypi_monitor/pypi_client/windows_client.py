@@ -131,27 +131,27 @@ class DataQueue(QObject):
             if sensor["Type"] == "Temperature":
                 cpu_temperature_values.append(sensor["Value"])
 
-        # find avg cpu values across all 12 cores
-        cpu_average_core_temp = sum(cpu_temperature_values) \
-            / len(cpu_temperature_values)
-
         # get loads
         cpu_load_values = []
         for sensor in cpu["Sensors"]:
             if sensor["Type"] == "Load":
                 cpu_load_values.append(sensor["Value"])
 
-        # get avg load (first element)
-        cpu_average_core_load = cpu_load_values[0]
-
-        # get max core load
-        cpu_average_core_load = max(cpu_load_values[1:])
+        # if handles lists with max
+        if self.main_window.settings["handle_list_stats"] == "max":
+            cpu_load = max(cpu_load_values)
+            cpu_temp = max(cpu_temperature_values)
+        # elif use avg
+        elif self.main_window.settings["handle_list_stats"] == "avg":
+            cpu_load = round(sum(cpu_load_values) / len(cpu_load_values), 1)
+            cpu_temp = round(sum(cpu_temperature_values) /
+                             len(cpu_temperature_values), 1)
 
         # create dict of cpu data
         cpu_dict = {"CPU": {
             "name": cpu_name,
-            "temp": cpu_average_core_temp,
-            "util": cpu_average_core_load
+            "temp": cpu_temp,
+            "util": cpu_load
         }}
 
         # convert gpu response to json
@@ -170,7 +170,7 @@ class DataQueue(QObject):
         for sensor in gpu["Sensors"]:
             if sensor["Type"] == "Temperature":
                 gpu_temperature_value.append(sensor["Value"])
-        # for some reason it is a list, extract value from list
+        # for some reason it is a length 1 list, extract value from list
         gpu_temperature_value = gpu_temperature_value[0]
 
         # get loads

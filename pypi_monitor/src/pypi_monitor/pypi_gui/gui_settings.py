@@ -2,7 +2,7 @@ import os
 import yaml
 from PyQt6.QtWidgets import (QPushButton, QDialog, QVBoxLayout, QHBoxLayout,
                              QColorDialog, QTabWidget, QWidget, QLabel,
-                             QLineEdit, QMessageBox, QSlider)
+                             QLineEdit, QMessageBox, QSlider, QRadioButton)
 from PyQt6.QtCore import Qt
 
 
@@ -344,6 +344,24 @@ class ViewSettingsPage(QWidget):
         self.displays_button.clicked.connect(self.displays_dialog.exec)
         self.layout.addWidget(self.displays_button)
 
+        # add layout to host handle list setting as radio buttons
+        self.handle_list_layout = QHBoxLayout()
+        self.handle_list_label = QLabel("Handle Lists as: ")
+        self.handle_list_max_opt = QRadioButton("Max")
+        self.handle_list_avg_opt = QRadioButton("Average")
+        self.handle_list_max_opt.toggled.connect(self.on_max_selected)
+        self.handle_list_avg_opt.toggled.connect(self.on_avg_selected)
+        self.handle_list_layout.addWidget(self.handle_list_label)
+        self.handle_list_layout.addWidget(self.handle_list_max_opt)
+        self.handle_list_layout.addWidget(self.handle_list_avg_opt)
+        self.layout.addLayout(self.handle_list_layout)
+
+        # init radio buttons to match settings
+        if self.main_window.settings["handle_list_stats"] == "max":
+            self.handle_list_max_opt.setChecked(True)
+        elif self.main_window.settings["handle_list_stats"] == "avg":
+            self.handle_list_avg_opt.setChecked(True)
+
     # use the built in Qt color selector
     def pick_color(self):
         color = QColorDialog.getColor()
@@ -361,6 +379,18 @@ class ViewSettingsPage(QWidget):
             self.main_window.settings["font_color"] = color.name()
             # set main window color
             self.main_window.update_settings()
+
+    def on_max_selected(self, checked):
+        if checked:
+            self.main_window.settings["handle_list_stats"] = "max"
+            # reset settings since meaning of current data is changing
+            self.main_window.client.data_client.queue.handle_data_reset()
+
+    def on_avg_selected(self, checked):
+        if checked:
+            self.main_window.settings["handle_list_stats"] = "avg"
+            # reset settings since meaning of current data is changing
+            self.main_window.client.data_client.queue.handle_data_reset()
 
 
 # the dialog ot run when the displays page is opened

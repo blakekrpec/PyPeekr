@@ -51,7 +51,7 @@ class LinuxCPUData():
 
     # get cpu utilzation with psutil
     def get_cpu_util(self):
-        cpu_utilization = psutil.cpu_percent(interval=None)
+        cpu_utilization = psutil.cpu_percent(interval=None, percpu=True)
         self.cpu_util = cpu_utilization
 
 

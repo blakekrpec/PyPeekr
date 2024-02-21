@@ -123,13 +123,27 @@ class DataQueue(QObject):
 
     # handles the updating of min, max, and averages on update
     def update_handler(self, title, key, response):
-        # grab main data of [key]
-        self.main_window.data[title][key] = response.json()[title][key]
 
         # create other stat keys
         min_key = "min_" + key
         max_key = "max_" + key
         avg_key = "avg_" + key
+
+        # if a datum is a list decide if w will average it, or use max of list
+        if isinstance(response.json()[title][key], list):
+            if self.main_window.settings["handle_list_stats"] == "max":
+                # if use max
+                self.main_window.data[title][key] = \
+                    max(response.json()[title][key])
+            else:
+                # elif use avg
+                self.main_window.data[title][key] = \
+                    round(sum(response.json()[title][key]) /
+                          len(response.json()[title][key]), 1)      
+        # if datum is not a list just store it
+        else:
+            # grab main data of [key]
+            self.main_window.data[title][key] = response.json()[title][key]
 
         # if title or key are missing from last_n_datums add them
         if title not in self.last_n_datums:
