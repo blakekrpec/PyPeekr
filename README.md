@@ -128,8 +128,10 @@ Current design:
     - Fixed issue where gui wasn't running on Windows after all the big changes. 
     - Windows client now works and grabs data to display. 
     - Added support for AMD CPUs in the Linux server.
+    - Fixed bug where windows client didn't return gpu core temp, it returned avg of all gpu temps. 
 
 - Next: 
+    - Add setting to let user see if they want avg core load, or max core load on CPU. While gamin avg is low since only a single core is used usually. 
     - Add support for AMD GPUs to Linux server. Use pyamdgpuinfo module. 
     - Add support for AMD CPUs and GPUs to Windows client. Currently the Windows client looks specifically for the intelcpu and nvidiagpu nodes. 
         - Linux client should support them as long as the server does since the Linux server ships data already in the desired format. 

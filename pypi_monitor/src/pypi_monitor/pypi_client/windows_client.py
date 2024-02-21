@@ -170,21 +170,20 @@ class DataQueue(QObject):
         # for some reason it is a list, extract value from list
         gpu_temperature_value = gpu_temperature_value[0]
 
-        # get load values
         # get loads
         gpu_load_values = []
         for sensor in gpu["Sensors"]:
             if sensor["Type"] == "Load":
                 gpu_load_values.append(sensor["Value"])
 
-        # find avg load values across all 12 cores
-        gpu_average_core_load = sum(gpu_load_values) / len(gpu_load_values)
+        # get gpu core load (first element in list)
+        gpu_core_load = gpu_load_values[0]
 
-        # create dict of cpu data
+        # create dict of gpu data
         gpu_dict = {"GPU": {
             "name": gpu_name,
             "temp": gpu_temperature_value,
-            "util": gpu_average_core_load
+            "util": gpu_core_load
         }}
 
         # call the function below to maintain stats
