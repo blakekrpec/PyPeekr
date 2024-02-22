@@ -133,7 +133,8 @@ Current design:
 
 - Next: 
     - Test ability to handle lists as both max and average in Windows.
-    - OpenHardwareMonitor CPU loads are wronged. Compared against LibreHardwareMonitor, Task Manager, and Riva Stat Server. All were same except OHM. 
+    - OpenHardwareMonitor CPU loads are wronge. Compared against LibreHardwareMonitor, Task Manager, and Riva Stat Server. All were same except OHM.
+        - Try to use LibreHardwareMonitors webserver. Their repo has python examples for accessing data from their webserver.
     - Add support for AMD GPUs to Linux server. Use pyamdgpuinfo module. 
     - Add support for AMD CPUs and GPUs to Windows client. Currently the Windows client looks specifically for the intelcpu and nvidiagpu nodes. 
         - Linux client should support them as long as the server does since the Linux server ships data already in the desired format. 
