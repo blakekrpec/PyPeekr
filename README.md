@@ -10,15 +10,17 @@ git clone git@github.com:blakekrpec/pypi_monitor.git
 ### Server
 
 #### Windows Server
-[OpenHardwareMonitor](https://github.com/hexagon-oss/openhardwaremonitor) project as the server on Windows to host the pc information over the web. 
+[LibreHardwareMonitor](https://github.com/blakekrpec/LibreHardwareMonitor) project as the server on Windows to host the pc information over the web. 
 
-To install OpenHardwareMonitor, grab the latest release [here](https://github.com/hexagon-oss/openhardwaremonitor/releases). Then follow the setup guide to complete installation. The http endpoints available are "/api/available" (returns "true" or an error if not), "/api/version" (returns the version of the server), "/api/rootnode" (returns a json with the sensor tree and all the values), "/api/nodes/{NodeId}" (returns a json with just the information for the given node).
+To install LibreHardwareMonitor, grab the latest release. Then extract, and run the app. 
 
-Launch OpenHardwareMonitor and make the following changes to settings:
+Launch LibreHardwareMonitor and make the following changes to settings:
 
-    Enable run on startup
-    Enable web server
-    Enable remote access for the web server
+    Options > Enable Run on Windows Startup
+    Options > Minimize on Close
+    Options > Remote Web Server > Enable Run 
+    Options > Remote Web Server > Port > (set desired port and note it)
+
 
 #### Linux Server
 
@@ -76,7 +78,7 @@ Current design:
 
 - Server
     - On Linux, the server is custom.
-    - On Windows, the OpenHardwareMonitor REST API will be used. Data from OpenHardwareMonitor is stored in a structure identical to what the Linux server creates so that the GUI is agnostic of where the data is coming from. 
+    - On Windows, the LibreHardwareMonitor REST API will be used. Data from LibreHardwareMonitor is parsed by the client and stored in a structure identical to what the Linux server creates so that the GUI is agnostic of where the data is coming from. 
 
 - Done: 
     - Files separated for readability 
@@ -139,6 +141,7 @@ Current design:
     - Added a libre_hwm_inspector cmd line tool to print the http request from Libre Hardware Monitor. This allows users to introspect it. 
 
 - Next: 
+    - Add a release to my fork of LibreHardwareMonitor. 
     - Open a PR for LibreHardwareMonitor to merge in the fix for adding individual endpoints.
     - Modify the clients to work with the new Libre data. The Libre data will already have min and max which is nice.  
     - Add toggle for CPU and GPU for user to select brand. 
