@@ -139,7 +139,7 @@ class DataQueue(QObject):
                 # elif use avg
                 self.main_window.data[title][key] = \
                     round(sum(response.json()[title][key]) /
-                          len(response.json()[title][key]), 1)      
+                          len(response.json()[title][key]), 1)
         # if datum is not a list just store it
         else:
             # grab main data of [key]

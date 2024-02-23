@@ -14,8 +14,9 @@ if %ERRORLEVEL% equ 0 (
 )
 
 REM Check if virtualenv is installed
-python -c "import virtualenv" 2>nul
-if %errorlevel% neq 0 (
+pip show virtualenv > nul 2>&1if %errorlevel% equ 0 (
+    echo Virtualenv is already installed.
+) else (
     echo Installing virtualenv...
     pip install virtualenv
     if %errorlevel% neq 0 (
@@ -23,8 +24,6 @@ if %errorlevel% neq 0 (
         exit /b 1
     )
     echo Virtualenv installed successfully.
-) else (
-    echo Virtualenv is already installed.
 )
 
 REM Create venv
