@@ -129,12 +129,19 @@ Current design:
     - Windows client now works and grabs data to display. 
     - Added support for AMD CPUs in the Linux server.
     - Fixed bug where windows client didn't return gpu core temp, it returned avg of all gpu temps. 
-    - Added setting so user can choose to handle list data as either max, or avg. Only tested in Linux
+    - Added setting so user can choose to handle list data as either max, or avg. Only tested in Linux.
+    - Tested that user choosing between max and average also works on Windows. 
+    - Going to need to switch to LibreHardwareMonitor. The only endpoint currently in LibreHardwareMonitor is data.json and it is a mess to parse.
+        - Switching because: OpenHardwareMonitor CPU loads are wrong. Compared against LibreHardwareMonitor, Task Manager, and Riva Stat Server. All were same except OHM.
+        - Either need to modify LibreHardwareMonitor. Or, figure how to parse data. I'd rather not parse data cause it is huge, and may be slow on a rapi. 
+    - Modified LibreHardwareMonitor to return for endpoints. Its modified on my personal fork. 
+    - test_sensor.py shows how to access the new LibreHardwareMonitorEndpoints.
+    - Added a libre_hwm_inspector cmd line tool to print the http request from Libre Hardware Monitor. This allows users to introspect it. 
 
 - Next: 
-    - Test ability to handle lists as both max and average in Windows.
-    - OpenHardwareMonitor CPU loads are wronge. Compared against LibreHardwareMonitor, Task Manager, and Riva Stat Server. All were same except OHM.
-        - Try to use LibreHardwareMonitors webserver. Their repo has python examples for accessing data from their webserver.
+    - Open a PR for LibreHardwareMonitor to merge in the fix for adding individual endpoints.
+    - Modify the clients to work with the new Libre data. The Libre data will already have min and max which is nice.  
+    - Add toggle for CPU and GPU for user to select brand. 
     - Add support for AMD GPUs to Linux server. Use pyamdgpuinfo module. 
     - Add support for AMD CPUs and GPUs to Windows client. Currently the Windows client looks specifically for the intelcpu and nvidiagpu nodes. 
         - Linux client should support them as long as the server does since the Linux server ships data already in the desired format. 

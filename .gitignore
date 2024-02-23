@@ -1,5 +1,6 @@
 .pypi_monitor
 .vscode
+data.json
 
 #ignore .VSCodeCounter dir
 .VSCodeCounter
