@@ -11,6 +11,7 @@ displays:
     enabled: true
     temp: true
     util: true
+handle_list_stats: max
 ip: "0.0.0.0"
 port: "0000"
 update_rate: 1

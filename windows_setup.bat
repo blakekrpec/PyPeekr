@@ -1,6 +1,4 @@
 @echo off
-echo THIS SCRIPT IS UNTESTED
-echo.
 
 setlocal
 
@@ -15,32 +13,31 @@ if %ERRORLEVEL% equ 0 (
     echo Python 3 installed successfully.
 )
 
-REM Check for Python venv
-where pyvenv >nul 2>&1
-if %ERRORLEVEL% equ 0 (
-    echo Python venv is already installed.
+REM Check if virtualenv is installed
+pip show virtualenv > nul 2>&1if %errorlevel% equ 0 (
+    echo Virtualenv is already installed.
 ) else (
-    echo Installing Python venv...
-    REM Installing Python venv
-    py -m ensurepip
-    py -m pip install --upgrade pip
-    py -m pip install virtualenv
-    echo Python venv installed successfully.
+    echo Installing virtualenv...
+    pip install virtualenv
+    if %errorlevel% neq 0 (
+        echo Failed to install virtualenv. Exiting.
+        exit /b 1
+    )
+    echo Virtualenv installed successfully.
 )
 
 REM Create venv
 echo Activating .pypi_monitor venv...
 if exist .pypi_monitor (
-    set /p user_input="The venv already exists. Do you want to override it? (y/n): "
-    if /i "%user_input%"=="y" (
-        rmdir /s /q .pypi_monitor
-        py -m venv .pypi_monitor
+    choice /c yn /m "The venv already exists. Do you want to override it?"
+    if errorlevel 2 (
+        echo Skipping venv creation.
     ) else (
-        echo Invalid input. Please enter Y or N.
-        exit /b 1
+        rmdir /s /q .pypi_monitor
+        python -m venv .pypi_monitor
     )
 ) else (
-    py -m venv .pypi_monitor
+    python -m venv .pypi_monitor
 )
 
 REM Activate venv

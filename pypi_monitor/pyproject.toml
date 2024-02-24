@@ -22,7 +22,8 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-gui = "pypi_monitor.pypi_gui.gui_main:run_app"
 create_config_dir = "pypi_monitor.pypi_utils.create_config_dir:create_config_dir"
 lint_pypi ="pypi_monitor.pypi_utils.pypi_linter:linter"
+libre_hwm_inspector = "pypi_monitor.pypi_utils.libre_hwm_inspector:main"
 run_linux_server = "pypi_monitor.pypi_server.linux_server_app:run_linux_server_app"
+gui = "pypi_monitor.pypi_gui.gui_main:run_app"

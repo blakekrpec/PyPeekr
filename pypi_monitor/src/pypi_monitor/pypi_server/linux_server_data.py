@@ -37,13 +37,21 @@ class LinuxCPUData():
         cpu_temp = None
         if hasattr(psutil, "sensors_temperatures"):
             temps = psutil.sensors_temperatures()
+            # intel cpus have coretemp
             if 'coretemp' in temps:
+                # grab the temp reported by intel cpu (1st element)
                 cpu_temp = temps['coretemp'][0].current
-        self.cpu_temp = cpu_temp
+            # amd cpus have k10temp
+            elif 'k10temp' in temps:
+                # grab the temp reported by amd cpu (2nd element)
+                # amd k10temp = {Tctl, Tdie, Tccd1}
+                # Tdie (2nd element) is what is desired
+                cpu_temp = temps['k10temp'][1].current
+            self.cpu_temp = cpu_temp
 
     # get cpu utilzation with psutil
     def get_cpu_util(self):
-        cpu_utilization = psutil.cpu_percent(interval=None)
+        cpu_utilization = psutil.cpu_percent(interval=None, percpu=True)
         self.cpu_util = cpu_utilization
 
 
@@ -61,8 +69,8 @@ class LinuxGPUData():
     def update_gpu_data(self):
         gpus = {}
 
+        # find any nvidia gpus
         nvidia_gpus = GPUtil.getGPUs()
-        print(nvidia_gpus)
         if nvidia_gpus:
             for gpu in nvidia_gpus:
                 info = {
@@ -71,13 +79,15 @@ class LinuxGPUData():
                     'util': gpu.load * 100
                 }
                 gpus.update(info)
+
+        # elif no nvidia gpus find amd gpus
         else:
-                info = {
+            info = {
                     'name': "",
                     'temp': 0,
                     'util': 0
                 }
-                gpus.update(info)
+            gpus.update(info)
 
         self.gpu_data = gpus
 
