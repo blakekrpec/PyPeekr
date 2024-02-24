@@ -139,16 +139,16 @@ Current design:
     - Modified LibreHardwareMonitor to return for endpoints. Its modified on my personal fork. 
     - test_sensor.py shows how to access the new LibreHardwareMonitorEndpoints.
     - Added a libre_hwm_inspector cmd line tool to print the http request from Libre Hardware Monitor. This allows users to introspect it. 
+    - Modified client to work with LibreHwMonitor data. Decided not to use min and max values from Libre so that they could be reset in pypi gui without sending requests to Libre to reset. 
 
 - Next: 
     - Add a release to my fork of LibreHardwareMonitor. 
     - Open a PR for LibreHardwareMonitor to merge in the fix for adding individual endpoints.
-    - Modify the clients to work with the new Libre data. The Libre data will already have min and max which is nice.  
     - Add toggle for CPU and GPU for user to select brand. 
-    - Add support for AMD GPUs to Linux server. Use pyamdgpuinfo module. 
-    - Add support for AMD CPUs and GPUs to Windows client. Currently the Windows client looks specifically for the intelcpu and nvidiagpu nodes. 
-        - Linux client should support them as long as the server does since the Linux server ships data already in the desired format. 
+        - Add support for AMD GPUs to Linux server. Use pyamdgpuinfo module. 
     - Change name util/utilzn/utilization to load throughout the project.
     - Add a logger to log errors and progress. Then add a button in settings where the user can print/view the log.
+    - Get PyQt6 to run on RasPi.
+    - Can we send a request to Libre to reset min and max values? Then we wouldn't have to track them within pypi, we could just use the values in the requests. Maybe use wireshark to look at the request that gets sent when resetting in the browser page of LibreHwMonitor. 
 
 - Bugs:
