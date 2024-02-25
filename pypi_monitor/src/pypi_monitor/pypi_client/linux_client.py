@@ -125,7 +125,7 @@ class DataQueue(QObject):
     def update_handler(self, title, key, response):
         # grab with data of [key]
         self.main_window.data[title][key] = response.json()[title][key]
-        
+
         # create other stat keys
         min_key = "min_" + key
         max_key = "max_" + key

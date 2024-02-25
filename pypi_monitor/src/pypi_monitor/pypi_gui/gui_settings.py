@@ -2,7 +2,7 @@ import os
 import yaml
 from PyQt6.QtWidgets import (QPushButton, QDialog, QVBoxLayout, QHBoxLayout,
                              QColorDialog, QTabWidget, QWidget, QLabel,
-                             QLineEdit, QMessageBox, QSlider, QRadioButton)
+                             QLineEdit, QMessageBox, QSlider)
 from PyQt6.QtCore import Qt
 
 
