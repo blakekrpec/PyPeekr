@@ -143,6 +143,7 @@ Current design:
     - Just going to get one temp and load from Libre, so remove max, avg options from clients, and settings.
 
 - Next: 
+    - CPU Core temp endpoint in windows client will vary depending on number of cores (25 on my machine). Need to think of a way to automate this. 
     - Add a release to my fork of LibreHardwareMonitor. 
     - Open a PR for LibreHardwareMonitor to merge in the fix for adding individual endpoints.
     - Add toggle for CPU and GPU for user to select brand. 
