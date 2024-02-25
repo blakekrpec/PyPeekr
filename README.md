@@ -67,7 +67,7 @@ run code
 ```
 gui
 ```
-In the GUI you will need to enter the IP of the server. This will be the IP and port used in the OpenHardwareMonitor settings.
+In the GUI you will need to enter the IP of the server. This will be the IP and port used in the LibreHardwareMonitor settings.
 
 
 Current design:
@@ -140,6 +140,7 @@ Current design:
     - test_sensor.py shows how to access the new LibreHardwareMonitorEndpoints.
     - Added a libre_hwm_inspector cmd line tool to print the http request from Libre Hardware Monitor. This allows users to introspect it. 
     - Modified client to work with LibreHwMonitor data. Decided not to use min and max values from Libre so that they could be reset in pypi gui without sending requests to Libre to reset. 
+    - Just going to get one temp and load from Libre, so remove max, avg options from clients, and settings.
 
 - Next: 
     - Add a release to my fork of LibreHardwareMonitor. 

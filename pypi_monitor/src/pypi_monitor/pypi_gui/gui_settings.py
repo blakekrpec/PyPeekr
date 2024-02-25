@@ -344,24 +344,6 @@ class ViewSettingsPage(QWidget):
         self.displays_button.clicked.connect(self.displays_dialog.exec)
         self.layout.addWidget(self.displays_button)
 
-        # add layout to host handle list setting as radio buttons
-        self.handle_list_layout = QHBoxLayout()
-        self.handle_list_label = QLabel("Handle Lists as: ")
-        self.handle_list_max_opt = QRadioButton("Max")
-        self.handle_list_avg_opt = QRadioButton("Average")
-        self.handle_list_max_opt.toggled.connect(self.on_max_selected)
-        self.handle_list_avg_opt.toggled.connect(self.on_avg_selected)
-        self.handle_list_layout.addWidget(self.handle_list_label)
-        self.handle_list_layout.addWidget(self.handle_list_max_opt)
-        self.handle_list_layout.addWidget(self.handle_list_avg_opt)
-        self.layout.addLayout(self.handle_list_layout)
-
-        # init radio buttons to match settings
-        if self.main_window.settings["handle_list_stats"] == "max":
-            self.handle_list_max_opt.setChecked(True)
-        elif self.main_window.settings["handle_list_stats"] == "avg":
-            self.handle_list_avg_opt.setChecked(True)
-
     # use the built in Qt color selector
     def pick_color(self):
         color = QColorDialog.getColor()
