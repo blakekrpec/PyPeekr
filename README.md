@@ -141,6 +141,7 @@ Current design:
     - Added a libre_hwm_inspector cmd line tool to print the http request from Libre Hardware Monitor. This allows users to introspect it. 
     - Modified client to work with LibreHwMonitor data. Decided not to use min and max values from Libre so that they could be reset in pypi gui without sending requests to Libre to reset. 
     - Just going to get one temp and load from Libre, so remove max, avg options from clients, and settings.
+    - Updated linux_data_server to only serve the max utilization value, not a list of all CPU util/loads. This was done to keep parity with the Windows client (which only gets the max load of across all cores).
 
 - Next: 
     - CPU Core temp endpoint in windows client will vary depending on number of cores (25 on my machine). Need to think of a way to automate this. 
