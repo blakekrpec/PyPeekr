@@ -70,7 +70,7 @@ class DataQueue(QObject):
 
         self.cpu_temp_params = dict(id="/intelcpu/0/temperature/26",
                                     action="Get")
-        self.cpu_util_params = dict(id="/intelcpu/0/load/1",
+        self.cpu_util_params = dict(id="/intelcpu/0/load/0",
                                     action="Get")
         self.gpu_temp_params = dict(id="/gpu-nvidia/0/temperature/0",
                                     action="Get")

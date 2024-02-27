@@ -50,8 +50,9 @@ class LinuxCPUData():
             self.cpu_temp = cpu_temp
 
     # get cpu utilzation with psutil
+    # returns avg cpu util acorss all cores
     def get_cpu_util(self):
-        cpu_utilization = psutil.cpu_percent(interval=None, percpu=True)
+        cpu_utilization = psutil.cpu_percent(interval=None)
         self.cpu_util = cpu_utilization
 
 
