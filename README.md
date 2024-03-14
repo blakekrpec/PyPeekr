@@ -145,6 +145,7 @@ Current design:
 
 - Next: 
     - CPU Core temp endpoint in windows client will vary depending on number of cores (25 on my machine). Need to think of a way to automate this. 
+        - Easiest thing to do would be to fix LHwM so that the avg temp endpoint is 0, how it is for load. 
     - Add a release to my fork of LibreHardwareMonitor. 
     - Open a PR for LibreHardwareMonitor to merge in the fix for adding individual endpoints.
     - Add toggle for CPU and GPU for user to select brand. 
