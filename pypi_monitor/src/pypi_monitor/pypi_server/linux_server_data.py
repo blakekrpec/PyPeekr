@@ -11,7 +11,7 @@ class LinuxCPUData():
         self.cpu_util = None
         self.update_cpu_data()
 
-    # main update fxm that calls all others
+    # main update fxn that calls all others
     def update_cpu_data(self):
         self.get_cpu_name()
         self.get_cpu_temp()
@@ -52,8 +52,9 @@ class LinuxCPUData():
     # get cpu utilzation with psutil
     # returns avg cpu util acorss all cores
     def get_cpu_util(self):
-        cpu_utilization = psutil.cpu_percent(interval=None)
-        self.cpu_util = cpu_utilization
+        if hasattr(psutil, "cpu_percent"):
+            cpu_utilization = psutil.cpu_percent(interval=None)
+            self.cpu_util = cpu_utilization
 
 
 # class to get GPU info on Linux
@@ -92,6 +93,37 @@ class LinuxGPUData():
 
         self.gpu_data = gpus
 
+# class to get RAM info on Linux
+class LinuxRAMData():
+    def __init__(self) -> None:
+        self.ram_data = {}
+        self.ram_name = None
+        self.ram_usage = None
+        self.ram_util = None
+        self.update_ram_data()
+
+    # main update fxn that calls all others
+    def update_ram_data(self):
+        self.get_ram_usage()
+        self.get_ram_util()
+        self.ram_data["name"] = "RAM"
+        self.ram_data["usage"] = self.ram_usage
+        self.ram_data["util"] = self.ram_util
+
+    # get ram usage using psutil module
+    def get_ram_usage(self):
+        usage_bytes = None
+        usage_gb = None
+        if hasattr(psutil, "virtual_memory"):
+            usage_bytes = psutil.virtual_memory().used
+            usage_gb = round(usage_bytes / (1024 * 1024 * 1024), 2)
+            self.ram_usage = usage_gb
+
+    # get ram utilization with psutil
+    def get_ram_util(self):
+        if hasattr(psutil, "virtual_memory"):
+            ram_utilization = psutil.virtual_memory().percent
+            self.ram_util = ram_utilization
 
 # class to serve as the main data server
 class LinuxDataServer():
@@ -101,6 +133,8 @@ class LinuxDataServer():
         self.server_cpu_data = None
         self.gpu_data_obj = LinuxGPUData()
         self.server_gpu_data = None
+        self.ram_data_obj = LinuxRAMData()
+        self.server_ram_data = None
         self.last_n_samples = {}
         self.update_linux_data_server()
 
@@ -108,5 +142,7 @@ class LinuxDataServer():
     def update_linux_data_server(self):
         self.cpu_data_obj.update_cpu_data()
         self.gpu_data_obj.update_gpu_data()
+        self.ram_data_obj.update_ram_data()
         self.server_data["CPU"] = self.cpu_data_obj.cpu_data
         self.server_data["GPU"] = self.gpu_data_obj.gpu_data
+        self.server_data["RAM"] = self.ram_data_obj.ram_data

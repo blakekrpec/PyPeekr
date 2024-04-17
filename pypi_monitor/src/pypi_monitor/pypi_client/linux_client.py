@@ -47,7 +47,20 @@ class DataQueue(QObject):
                 "min_util": 0,
                 "max_util": 0,
                 "avg_util": 0
+            },
+         "RAM": {
+                "name": "",
+                "usage": 0,
+                "min_usage": 0,
+                "max_usage": 0,
+                "avg_usage": 0,
+                "util": 0,
+                "min_util": 0,
+                "max_util": 0,
+                "avg_util": 0
             }
+         
+         
         }
 
         self.last_n_datums = {}
@@ -114,13 +127,16 @@ class DataQueue(QObject):
         # grab names
         self.main_window.data["CPU"]["name"] = response.json()["CPU"]["name"]
         self.main_window.data["GPU"]["name"] = response.json()["GPU"]["name"]
+        self.main_window.data["RAM"]["name"] = response.json()["RAM"]["name"]
 
         # call the function below to maintain stats
         self.update_handler("CPU", "temp", response)
         self.update_handler("CPU", "util", response)
         self.update_handler("GPU", "temp", response)
         self.update_handler("GPU", "util", response)
-
+        self.update_handler("RAM", "usage", response)
+        self.update_handler("RAM", "util", response)
+        
     # handles the updating of min, max, and averages on update
     def update_handler(self, title, key, response):
         # grab with data of [key]

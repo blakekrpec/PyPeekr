@@ -389,8 +389,10 @@ class DisplaysDialog(QDialog):
         #  Create and add pages to the tab widget
         self.cpu_page = CPUPage(main_window, self)
         self.gpu_page = GPUPage(main_window, self)
+        self.ram_page = RAMPage(main_window, self)
         self.tab_widget.addTab(self.cpu_page, 'CPU')
         self.tab_widget.addTab(self.gpu_page, 'GPU')
+        self.tab_widget.addTab(self.ram_page, 'RAM')
 
         self.layout = QVBoxLayout(self)
         # add in the widgets we defined
@@ -577,7 +579,7 @@ class GPUPage(QWidget):
         self.gpu_enable_button.setChecked(
             main_window.settings["displays"]["GPU"]["enabled"])
 
-        # link button to the cpu_button_logic function
+        # link button to the gpu_button_logic function
         self.gpu_enable_button.clicked.connect(
             lambda: self.gpu_button_logic(self.gpu_enable_button))
 
@@ -668,12 +670,12 @@ class GPUPage(QWidget):
                         = False
             # if gpu is not enabled, ignore request to change state of temp
             else:
-                # force temp false while cpu disabled
+                # force temp false while gpu disabled
                 self.gpu_temp_button.setChecked(False)
 
         # if the gpu temp button was pressed
         if button == self.gpu_util_button:
-            # if cpu is currently enabled
+            # if gpu is currently enabled
             if self.main_window.settings["displays"]["GPU"]["enabled"] is True:
                 # if button was clicked to true/on
                 if button.isChecked():
@@ -686,7 +688,7 @@ class GPUPage(QWidget):
                         = False
             # if gpu is not enabled, ignore request to change state of util
             else:
-                # force util false while cpu disabled
+                # force util false while gpu disabled
                 self.gpu_util_button.setChecked(False)
 
         # if both temp and util disabled, set gpu enabled to false in settings
@@ -697,6 +699,157 @@ class GPUPage(QWidget):
             # set gpu button to false and update text
             self.gpu_enable_button.setChecked(False)
             self.gpu_enable_button.setText("Enable GPU Stats")
+
+        # call the main settings updater
+        self.main_window.update_settings()
+
+# create a RAM tab in displays page
+class RAMPage(QWidget):
+    def __init__(self, main_window, parent=None):
+
+        super(RAMPage, self).__init__(parent)
+        self.main_window = main_window
+        self.layout = QVBoxLayout(self)
+        self.setLayout(self.layout)
+
+        # create button to change color of ram panels
+        self.ram_color_button = QPushButton("RAM Panel Color", self)
+        self.ram_color_button.setCheckable(False)
+        # link button to the ram_color() function
+        self.ram_color_button.clicked.connect(lambda: self.ram_color())
+        self.layout.addWidget(self.ram_color_button)
+
+        # create button to enable RAM stats
+        if main_window.settings["displays"]["RAM"]["enabled"]:
+            self.ram_enable_button = QPushButton("Disable RAM Stats", self)
+        else:
+            self.ram_enable_button = QPushButton("Enable RAM Stats", self)
+        self.ram_enable_button.setCheckable(True)
+
+        # set ram button to enabled or disabled based on settings.yaml
+        self.ram_enable_button.setChecked(
+            main_window.settings["displays"]["RAM"]["enabled"])
+
+        # link button to the ram_button_logic function
+        self.ram_enable_button.clicked.connect(
+            lambda: self.ram_button_logic(self.ram_enable_button))
+
+        # add button to layout
+        self.layout.addWidget(self.ram_enable_button)
+
+        # create button to enable RAM usage stats
+        self.ram_usage_button = QPushButton("RAM Usage (GB)", self)
+        self.ram_usage_button.setCheckable(True)
+
+        # set ram temp to enabled or disabled based on settings.yaml
+        self.ram_usage_button.setChecked(
+            main_window.settings["displays"]["RAM"]["usage"])
+
+        # link to the ram_button_logic function
+        self.ram_usage_button.clicked.connect(
+            lambda: self.ram_button_logic(self.ram_usage_button))
+        self.layout.addWidget(
+            self.ram_usage_button, alignment=Qt.AlignmentFlag.AlignHCenter)
+
+        # create button to enable RAM util stats
+        self.ram_util_button = QPushButton("RAM Util %", self)
+        self.ram_util_button.setCheckable(True)
+
+        # set ram util to enabled or disabled based on settings.yaml
+        self.ram_util_button.setChecked(
+            main_window.settings["displays"]["RAM"]["util"])
+
+        # link to the ram_button_logic function
+        self.ram_util_button.clicked.connect(
+            lambda: self.ram_button_logic(self.ram_util_button))
+        self.layout.addWidget(self.ram_util_button,
+                              alignment=Qt.AlignmentFlag.AlignHCenter)
+
+    # anytime the displays window is changes, update button sizes
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        # set usage & util buttons to be half size of window
+        self.ram_usage_button.setFixedWidth(self.ram_enable_button.width() // 2)
+        self.ram_util_button.setFixedWidth(self.ram_enable_button.width() // 2)
+
+    # use the built in Qt color selector
+    def ram_color(self):
+        color = QColorDialog.getColor()
+        if color.isValid():
+            # get hex color code and store in global settings
+            self.main_window.settings["displays"]["RAM"]["color"] = \
+                color.name()
+            # call the settings updater
+            self.main_window.update_settings()
+
+    def ram_button_logic(self, button):
+        # if the user clicked enable button
+        if button == self.ram_enable_button:
+            # if it was clicked to true/on
+            if button.isChecked():
+                # set usage and util buttons to true, and update settings
+                self.ram_usage_button.setChecked(True)
+                self.main_window.settings["displays"]["RAM"]["usage"] = True
+                self.ram_util_button.setChecked(True)
+                self.main_window.settings["displays"]["RAM"]["util"] = True
+                self.main_window.settings["displays"]["RAM"]["enabled"] = True
+                # update the button text
+                self.ram_enable_button.setText("Disable RAM Stats")
+            # if it was clicked to false/off
+            else:
+                # set usage and util buttons to false, and update settings
+                self.ram_usage_button.setChecked(False)
+                self.main_window.settings["displays"]["RAM"]["usage"] = False
+                self.ram_util_button.setChecked(False)
+                self.main_window.settings["displays"]["RAM"]["util"] = False
+                self.main_window.settings["displays"]["RAM"]["enabled"] = False
+                # update the button text
+                self.ram_enable_button.setText("Enable RAM Stats")
+
+        # if the ram usage button was pressed
+        if button == self.ram_usage_button:
+            # if ram is currently enabled
+            if self.main_window.settings["displays"]["RAM"]["enabled"] is True:
+                # if button was clicked to true/on
+                if button.isChecked():
+                    # update settings
+                    self.main_window.settings["displays"]["RAM"]["usage"] = True
+                # if button was clicked to false/off
+                else:
+                    # update settings
+                    self.main_window.settings["displays"]["RAM"]["usage"] \
+                        = False
+            # if ram is not enabled, ignore request to change state of temp
+            else:
+                # force usage false while ram disabled
+                self.ram_usage_button.setChecked(False)
+
+        # if the ram usage button was pressed
+        if button == self.ram_util_button:
+            # if ram is currently enabled
+            if self.main_window.settings["displays"]["RAM"]["enabled"] is True:
+                # if button was clicked to true/on
+                if button.isChecked():
+                    # update settings
+                    self.main_window.settings["displays"]["RAM"]["util"] = True
+                # if button was clicked to false/off
+                else:
+                    # update settings
+                    self.main_window.settings["displays"]["RAM"]["util"] \
+                        = False
+            # if ram is not enabled, ignore request to change state of util
+            else:
+                # force util false while ram disabled
+                self.ram_util_button.setChecked(False)
+
+        # if both usage and util disabled, set ram enabled to false in settings
+        if (self.main_window.settings["displays"]["RAM"]["usage"] is False and
+                self.main_window.settings["displays"]["RAM"]["util"] is False):
+            # set ram false in settings
+            self.main_window.settings["displays"]["RAM"]["enabled"] = False
+            # set ram button to false and update text
+            self.ram_enable_button.setChecked(False)
+            self.ram_enable_button.setText("Enable RAM Stats")
 
         # call the main settings updater
         self.main_window.update_settings()
