@@ -142,8 +142,10 @@ Current design:
     - Modified client to work with LibreHwMonitor data. Decided not to use min and max values from Libre so that they could be reset in pypi gui without sending requests to Libre to reset. 
     - Just going to get one temp and load from Libre, so remove max, avg options from clients, and settings.
     - Now Windows client, and linux data server both listen to and serve only avg CPU load across all cores. This was a choice I made over displaying the max core util as this was a little harder to track. 
+    - Added RAM to linux_client, and linux_server. 
 
 - Next: 
+    - Add RAM to windows_client.
     - CPU Core temp endpoint in windows client will vary depending on number of cores (25 on my machine). Need to think of a way to automate this. 
     - Add a release to my fork of LibreHardwareMonitor. 
     - Open a PR for LibreHardwareMonitor to merge in the fix for adding individual endpoints.
