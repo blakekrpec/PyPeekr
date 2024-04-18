@@ -59,8 +59,6 @@ class DataQueue(QObject):
                 "max_util": 0,
                 "avg_util": 0
             }
-         
-         
         }
 
         self.last_n_datums = {}
