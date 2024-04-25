@@ -816,7 +816,8 @@ class RAMPage(QWidget):
                 # if button was clicked to true/on
                 if button.isChecked():
                     # update settings
-                    self.main_window.settings["displays"]["RAM"]["usage"] = True
+                    self.main_window.settings["displays"]["RAM"]["usage"] \
+                        = True
                 # if button was clicked to false/off
                 else:
                     # update settings
