@@ -59,8 +59,11 @@ class DataQueue(QObject):
                 "max_util": 0,
                 "avg_util": 0
             }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 66f84810b551b3054899b9cca7c4a23628486276
         }
 
         self.last_n_datums = {}
