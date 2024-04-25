@@ -59,8 +59,8 @@ class DataQueue(QObject):
                 "max_util": 0,
                 "avg_util": 0
             }
-         
-         
+
+
         }
 
         self.last_n_datums = {}
@@ -136,7 +136,7 @@ class DataQueue(QObject):
         self.update_handler("GPU", "util", response)
         self.update_handler("RAM", "usage", response)
         self.update_handler("RAM", "util", response)
-        
+
     # handles the updating of min, max, and averages on update
     def update_handler(self, title, key, response):
         # grab with data of [key]

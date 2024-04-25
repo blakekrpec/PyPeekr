@@ -87,10 +87,10 @@ class DataQueue(QObject):
                                     action="Get")
         self.gpu_util_params = dict(id="/gpu-nvidia/0/load/0",
                                     action="Get")
-        
+
         # TODO add RAM endpoint for util %, and usage
         self.ram_usage_params = dict(id="/gpu-nvidia/0/temperature/0",
-                                    action="Get")
+                                     action="Get")
         self.ram_util_params = dict(id="/gpu-nvidia/0/load/0",
                                     action="Get")
 
@@ -139,10 +139,10 @@ class DataQueue(QObject):
                 gpu_util_response = requests.get(self.sensor_url,
                                                  params=self.gpu_util_params,
                                                  timeout=2)
-                
+
                 ram_usage_response = requests.get(self.sensor_url,
-                                                 params=self.ram_usage_params,
-                                                 timeout=2)
+                                                  params=self.ram_usage_params,
+                                                  timeout=2)
 
                 ram_util_response = requests.get(self.sensor_url,
                                                  params=self.ram_util_params,
@@ -180,7 +180,7 @@ class DataQueue(QObject):
             "temp": data_requests["GPU"]["temp"].json()["value"],
             "util": data_requests["GPU"]["util"].json()["value"]
         }}
-        
+
         # grab the data from requests, and store in a dict
         ram_dict = {"RAM": {
             "usage": data_requests["RAM"]["usage"].json()["value"],

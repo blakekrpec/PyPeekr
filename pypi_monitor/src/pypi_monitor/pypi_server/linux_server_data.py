@@ -93,6 +93,7 @@ class LinuxGPUData():
 
         self.gpu_data = gpus
 
+
 # class to get RAM info on Linux
 class LinuxRAMData():
     def __init__(self) -> None:
@@ -124,6 +125,7 @@ class LinuxRAMData():
         if hasattr(psutil, "virtual_memory"):
             ram_utilization = psutil.virtual_memory().percent
             self.ram_util = ram_utilization
+
 
 # class to serve as the main data server
 class LinuxDataServer():

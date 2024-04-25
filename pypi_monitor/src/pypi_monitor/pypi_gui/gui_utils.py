@@ -5,6 +5,7 @@ from PyQt6.QtCore import Qt
 
 # Set the background color for the main window (and other windows as needed)
 def set_main_background_color(main_window, color):
+
     # convert hex to QColor
     q_color = QColor(color)
 
@@ -107,7 +108,7 @@ class PaneManager:
             self.panes_status["GPU"] = True
         else:
             self.panes_status["GPU"] = False
-            
+
         if self.main_window.settings["displays"]["RAM"]["enabled"] is True:
             self.panes_status["RAM"] = True
         else:

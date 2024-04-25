@@ -13,7 +13,10 @@ from pypi_monitor.pypi_utils import set_settings_dirs
 
 
 class MainWindow(QMainWindow):
+    print("0")
+
     def __init__(self):
+        print("1")
         super(MainWindow, self).__init__()
 
         # save the time when the gui was started

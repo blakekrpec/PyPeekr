@@ -703,8 +703,10 @@ class GPUPage(QWidget):
         # call the main settings updater
         self.main_window.update_settings()
 
+
 # create a RAM tab in displays page
 class RAMPage(QWidget):
+
     def __init__(self, main_window, parent=None):
 
         super(RAMPage, self).__init__(parent)
@@ -769,7 +771,8 @@ class RAMPage(QWidget):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         # set usage & util buttons to be half size of window
-        self.ram_usage_button.setFixedWidth(self.ram_enable_button.width() // 2)
+        self.ram_usage_button.setFixedWidth(
+            self.ram_enable_button.width() // 2)
         self.ram_util_button.setFixedWidth(self.ram_enable_button.width() // 2)
 
     # use the built in Qt color selector
