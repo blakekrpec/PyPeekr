@@ -140,10 +140,13 @@ Current design:
     - test_sensor.py shows how to access the new LibreHardwareMonitorEndpoints.
     - Added a libre_hwm_inspector cmd line tool to print the http request from Libre Hardware Monitor. This allows users to introspect it. 
     - Modified client to work with LibreHwMonitor data. Decided not to use min and max values from Libre so that they could be reset in pypi gui without sending requests to Libre to reset. 
+    - Rebuilt LHM after pulling main repo back into fork. Had to run `dotnet restore` in the dir to get Visual Studio to quit complaining about dotnet version issues. 
 
 - Next: 
     - Add a release to my fork of LibreHardwareMonitor. 
     - Open a PR for LibreHardwareMonitor to merge in the fix for adding individual endpoints.
+    - Find better way to access avg CPU temp. Other endpoints return avg as "0" which is easy to find. CPU temp avg is at the end of the list and its index depends on number of CPU cores. 
+        - The best fix would be to fix LHM so that the temp max endpoint is the 0th item in the list.
     - Add toggle for CPU and GPU for user to select brand. 
         - Add support for AMD GPUs to Linux server. Use pyamdgpuinfo module. 
     - Change name util/utilzn/utilization to load throughout the project.
