@@ -3,7 +3,7 @@ import requests
 
 
 def requester():
-    resp = requests.get(url="http://192.168.1.149:8085" +
+    resp = requests.get(url="http://192.168.1.137:8080" +
                         "/data.json", timeout=10)
     data = json.loads(resp.text)
     return data

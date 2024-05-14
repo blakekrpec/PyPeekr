@@ -89,9 +89,9 @@ class DataQueue(QObject):
                                     action="Get")
 
         # TODO add RAM endpoint for util %, and usage
-        self.ram_usage_params = dict(id="/gpu-nvidia/0/temperature/0",
+        self.ram_usage_params = dict(id="/ram/load/0",
                                      action="Get")
-        self.ram_util_params = dict(id="/gpu-nvidia/0/load/0",
+        self.ram_util_params = dict(id="/ram/data/0",
                                     action="Get")
 
     # handle pause requests from the pause button
