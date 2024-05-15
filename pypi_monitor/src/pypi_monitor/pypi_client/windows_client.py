@@ -47,6 +47,17 @@ class DataQueue(QObject):
                 "min_util": 0,
                 "max_util": 0,
                 "avg_util": 0
+            },
+         "RAM": {
+                "name": "",
+                "usage": 0,
+                "min_usage": 0,
+                "max_usage": 0,
+                "avg_usage": 0,
+                "util": 0,
+                "min_util": 0,
+                "max_util": 0,
+                "avg_util": 0
             }
         }
 
@@ -75,6 +86,10 @@ class DataQueue(QObject):
         self.gpu_temp_params = dict(id="/gpu-nvidia/0/temperature/0",
                                     action="Get")
         self.gpu_util_params = dict(id="/gpu-nvidia/0/load/0",
+                                    action="Get")
+        self.ram_usage_params = dict(id="/ram/data/0",
+                                     action="Get")
+        self.ram_util_params = dict(id="/ram/load/0",
                                     action="Get")
 
     # handle pause requests from the pause button
@@ -123,11 +138,21 @@ class DataQueue(QObject):
                                                  params=self.gpu_util_params,
                                                  timeout=2)
 
+                ram_usage_response = requests.get(self.sensor_url,
+                                                  params=self.ram_usage_params,
+                                                  timeout=2)
+
+                ram_util_response = requests.get(self.sensor_url,
+                                                 params=self.ram_util_params,
+                                                 timeout=2)
+
                 data_requests = {
                     "CPU": {"temp": cpu_temp_response,
                             "util": cpu_util_response},
                     "GPU": {"temp": gpu_temp_response,
-                            "util": gpu_util_response}
+                            "util": gpu_util_response},
+                    "RAM": {"usage": ram_usage_response,
+                            "util": ram_util_response}
                 }
                 self.data_dumper(data_requests)
 
@@ -154,11 +179,19 @@ class DataQueue(QObject):
             "util": data_requests["GPU"]["util"].json()["value"]
         }}
 
+        # grab the data from requests, and store in a dict
+        ram_dict = {"RAM": {
+            "usage": data_requests["RAM"]["usage"].json()["value"],
+            "util": data_requests["RAM"]["util"].json()["value"]
+        }}
+
         # call the function below to maintain stats
         self.data_update_handler("CPU", "temp", cpu_dict)
         self.data_update_handler("CPU", "util", cpu_dict)
         self.data_update_handler("GPU", "temp", gpu_dict)
         self.data_update_handler("GPU", "util", gpu_dict)
+        self.data_update_handler("RAM", "usage", ram_dict)
+        self.data_update_handler("RAM", "util", ram_dict)
 
 # handles the updating of min, max, and averages on update
     def data_update_handler(self, title, key, data):

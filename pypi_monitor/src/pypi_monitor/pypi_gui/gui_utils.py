@@ -5,6 +5,7 @@ from PyQt6.QtCore import Qt
 
 # Set the background color for the main window (and other windows as needed)
 def set_main_background_color(main_window, color):
+
     # convert hex to QColor
     q_color = QColor(color)
 
@@ -108,6 +109,11 @@ class PaneManager:
         else:
             self.panes_status["GPU"] = False
 
+        if self.main_window.settings["displays"]["RAM"]["enabled"] is True:
+            self.panes_status["RAM"] = True
+        else:
+            self.panes_status["RAM"] = False
+
     # function that creates a simple pane with correct title
     def create_pane(self, title):
         # create the pane for "title" and store in panes list
@@ -189,7 +195,7 @@ class PaneController():
         self.label.setAlignment(
             Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
 
-        # get its color from CPU color settings
+        # get its color from respective color setting
         color = self.main_window.settings["displays"][self.title]["color"]
 
         # define the style sheet and apply it to the label widget
@@ -212,6 +218,11 @@ class PaneController():
         if self.title == "CPU" or self.title == "GPU":
             self.widgets_status["temp"] = (
                 self.main_window.settings["displays"][self.title]["temp"])
+            self.widgets_status["util"] = (
+                self.main_window.settings["displays"][self.title]["util"])
+        elif self.title == "RAM":
+            self.widgets_status["usage"] = (
+                self.main_window.settings["displays"][self.title]["usage"])
             self.widgets_status["util"] = (
                 self.main_window.settings["displays"][self.title]["util"])
 
@@ -260,7 +271,7 @@ class PaneController():
         self.widgets_main_layouts[title].addWidget(widget_title)
 
         # grab the main data of [title] and make label of it
-        main_data = str(int(self.main_window.data[self.title][title]))
+        main_data = str(round(self.main_window.data[self.title][title]))
         main_label = QLabel(main_data)
         main_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_label_settings = (
@@ -318,6 +329,8 @@ class PaneController():
             return "Temperature (\u00B0C)"
         elif title == "util":
             return "Utilization (%)"
+        elif title == "usage":
+            return "Memory (GB)"
         else:
             return ""
 

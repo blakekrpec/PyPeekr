@@ -13,6 +13,7 @@ from pypi_monitor.pypi_utils import set_settings_dirs
 
 
 class MainWindow(QMainWindow):
+
     def __init__(self):
         super(MainWindow, self).__init__()
 
