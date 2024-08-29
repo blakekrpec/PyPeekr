@@ -10,7 +10,7 @@ git clone git@github.com:blakekrpec/pypi_monitor.git
 ### Server
 
 #### Windows Server
-[LibreHardwareMonitor](https://github.com/blakekrpec/LibreHardwareMonitor) project as the server on Windows to host the pc information over the web. 
+[LibreHardwareMonitor](https://github.com/blakekrpec/LibreHardwareMonitor) is used as the server on Windows to host the pc information over the web. This was easier than getting to cpu stats via python on Windows.
 
 To install LibreHardwareMonitor, grab the latest release. Then extract, and run the app. 
 
@@ -24,7 +24,7 @@ Launch LibreHardwareMonitor and make the following changes to settings:
 
 #### Linux Server
 
-The Linux server is written in python. It currently outputs temperature and utilization data for Intel CPUs, AMD CPUs, and Nvidia GPUs. AMD GPUs are to be added at a later late when one is available for testing.
+The Linux server is written in python (LibreHardwareMonitor does not run on Linux). It currently outputs temperature and utilization data for Intel CPUs, AMD CPUs, and Nvidia GPUs. AMD GPUs are to be added at a later late when one is available for testing.
 
 The linux server can be started with `run_linux_server` from inside the activated python virtual environment, .pypi_monitor. 
 
@@ -69,6 +69,7 @@ gui
 ```
 In the GUI you will need to enter the IP of the server. This will be the IP and port used in the OpenHardwareMonitor settings.
 
+--------------------------------------------
 
 Current design:
 
