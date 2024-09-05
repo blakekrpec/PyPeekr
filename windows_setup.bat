@@ -3,18 +3,18 @@
 setlocal
 
 REM Check for Python 3
-where python >nul 2>&1
+python3 --version >nul 2>&1
 if %ERRORLEVEL% equ 0 (
-    echo Python 3 is already installed.
+    echo Python 3 is installed.
 ) else (
-    echo Installing Python 3...
-    REM Installing Python 3 using Chocolatey
-    choco install python3
-    echo Python 3 installed successfully.
+    echo WARNING Python3 is not installed, please install it and rerun.
+    echo An easy way to do this is to get the latest python3 version from the windows store.
+    exit /b 1
 )
 
 REM Check if virtualenv is installed
-pip show virtualenv > nul 2>&1if %errorlevel% equ 0 (
+pip show virtualenv > nul 2>&1
+if %errorlevel% equ 0 (
     echo Virtualenv is already installed.
 ) else (
     echo Installing virtualenv...
@@ -23,39 +23,43 @@ pip show virtualenv > nul 2>&1if %errorlevel% equ 0 (
         echo Failed to install virtualenv. Exiting.
         exit /b 1
     )
-    echo Virtualenv installed successfully.
 )
 
 REM Create venv
-echo Activating .pypi_monitor venv...
+echo Checking if a pyvenv exists, if not will create it.
 if exist .pypi_monitor (
     choice /c yn /m "The venv already exists. Do you want to override it?"
     if errorlevel 2 (
         echo Skipping venv creation.
     ) else (
         rmdir /s /q .pypi_monitor
-        python -m venv .pypi_monitor
+        python3 -m venv .pypi_monitor
     )
 ) else (
-    python -m venv .pypi_monitor
+    echo Creating the pyvenv.
+    python3 -m venv .pypi_monitor
 )
 
 REM Activate venv
+echo Activating the pyvenv.
 call .pypi_monitor\Scripts\activate.bat
 
 REM Upgrade pip if necessary
 for /f "tokens=2 delims== " %%V in ('pip --version ^| findstr /r /c:"^[^ ]* "') do set "pip_version=%%V"
 if not "%pip_version%" geq "23.0.0" (
     echo Updating pip...
-    python -m pip install --upgrade pip
+    python3 -m pip install --upgrade pip
     echo Pip updated successfully.
 )
 
 REM Install pypi_monitor with pip
+echo Installing pypi_monitor.
 pip install -e ./pypi_monitor
 
 REM create the config dir 
 create_config_dir
+
+echo Setup complete.
 
 :end
 endlocal
