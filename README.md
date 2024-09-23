@@ -63,6 +63,16 @@ source venv
 ```
 .\pypi_monitor\Scripts\activate
 ```
+You may need to add privellages for your user on windows to activate the pyven. If you see errors akin to "cannot be loaded because running scripts is diaables on this system". 
+
+You can run this script with the privalleges
+```
+powershell -ExecutionPolicy Bypass -File .pypi_monitor\Scripts\activate
+```
+Or you can set you user to always be able to run scripts.
+```
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
 run code 
 ```
 gui
