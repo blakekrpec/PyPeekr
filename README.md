@@ -77,7 +77,7 @@ run code
 ```
 gui
 ```
-In the GUI you will need to enter the IP of the server. This will be the IP and port used in the OpenHardwareMonitor settings.
+In the GUI you will need to enter the IP of the server. This will be the IP and port used in the LibreHardwareMonitor settings.
 
 --------------------------------------------
 
@@ -152,8 +152,15 @@ Current design:
     - Added a libre_hwm_inspector cmd line tool to print the http request from Libre Hardware Monitor. This allows users to introspect it. 
     - Modified client to work with LibreHwMonitor data. Decided not to use min and max values from Libre so that they could be reset in pypi gui without sending requests to Libre to reset. 
     - Rebuilt LHM after pulling main repo back into fork. Had to run `dotnet restore` in the dir to get Visual Studio to quit complaining about dotnet version issues. 
+    - Just going to get one temp and load from Libre, so remove max, avg options from clients, and settings.
+    - Now Windows client, and linux data server both listen to and serve only avg CPU load across all cores. This was a choice I made over displaying the max core util as this was a little harder to track. 
+    - Added RAM to linux_client, and linux_server. 
+    - Added RAM to windows_client. 
+    - Merged LibreHardwareMonitor back into my fork. 
 
 - Next: 
+    - CPU Core temp endpoint in windows client will vary depending on number of cores (25 on my machine). Need to think of a way to automate this. 
+        - Easiest thing to do would be to fix LHwM so that the avg temp endpoint is 0, how it is for load. 
     - Add a release to my fork of LibreHardwareMonitor. 
     - Open a PR for LibreHardwareMonitor to merge in the fix for adding individual endpoints.
     - Find better way to access avg CPU temp. Other endpoints return avg as "0" which is easy to find. CPU temp avg is at the end of the list and its index depends on number of CPU cores. 
