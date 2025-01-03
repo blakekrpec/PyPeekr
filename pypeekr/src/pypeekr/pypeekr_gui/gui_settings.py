@@ -2,7 +2,7 @@ import os
 import yaml
 from PyQt6.QtWidgets import (QPushButton, QDialog, QVBoxLayout, QHBoxLayout,
                              QColorDialog, QTabWidget, QWidget, QLabel,
-                             QLineEdit, QMessageBox, QSlider)
+                             QLineEdit, QMessageBox, QSlider, QComboBox)
 from PyQt6.QtCore import Qt
 
 
@@ -31,8 +31,10 @@ class SettingsDialog(QDialog):
 
         #  Create and add pages to the tab widget
         self.file_settings_page = FileSettingsPage(main_window, self)
+        self.edit_settings_page = EditSettingsPage(main_window, self)
         self.view_settings_page = ViewSettingsPage(main_window, self)
         self.tab_widget.addTab(self.file_settings_page, 'File')
+        self.tab_widget.addTab(self.edit_settings_page, 'Edit')
         self.tab_widget.addTab(self.view_settings_page, 'View')
 
         #  Create the "Save" button and hook into save_resettings()
@@ -316,7 +318,78 @@ class IPDialog(QDialog):
             return True
 
 
-# create a views tab on settings page
+# create a edit views tab on settings page
+class EditSettingsPage(QWidget):
+    def __init__(self, main_window, parent=None):
+        super(EditSettingsPage, self).__init__(parent)
+        self.main_window = main_window
+        self.layout = QVBoxLayout(self)
+        self.setLayout(self.layout)
+
+        # create container layout for cpu label and drop down
+        self.cpu_vendor_container = QWidget(self)
+        cpu_vendor_layout = QVBoxLayout(self.cpu_vendor_container)
+
+        # create label for cpu vendor
+        self.cpu_vendor_label = QLabel("Select CPU Vendor:", self)
+        cpu_vendor_layout.addWidget(self.cpu_vendor_label)
+
+        # create a QComboBox (drop-down menu) for cpu
+        self.cpu_vendor_combo = QComboBox(self)
+        self.cpu_vendor_combo.addItem("Intel")
+        self.cpu_vendor_combo.addItem("AMD")
+        cpu_vendor_layout.addWidget(self.cpu_vendor_combo)
+
+        # connect combo box to update function
+        self.cpu_vendor_combo.currentIndexChanged.connect(
+            self.update_cpu_vendor)
+
+        # set the default value based on settings (if available)
+        if "cpu_vendor" in self.main_window.settings:
+            selected_cpu = self.main_window.settings["cpu_vendor"]
+            self.cpu_vendor_combo.setCurrentText(selected_cpu)
+
+        self.layout.addWidget(self.cpu_vendor_container,
+                              alignment=Qt.AlignmentFlag.AlignTop)
+
+        # create container layout for gpu label and drop down
+        self.gpu_vendor_container = QWidget(self)
+        gpu_vendor_layout = QVBoxLayout(self.gpu_vendor_container)
+
+        # create label for gpu vendor
+        self.gpu_vendor_label = QLabel("Select GPU Vendor:", self)
+        gpu_vendor_layout.addWidget(self.gpu_vendor_label)
+
+        # create a QComboBox (drop-down menu) for gpu
+        self.gpu_vendor_combo = QComboBox(self)
+        self.gpu_vendor_combo.addItem("Nvidia")
+        self.gpu_vendor_combo.addItem("AMD")
+        self.gpu_vendor_combo.addItem("Intel")
+        gpu_vendor_layout.addWidget(self.gpu_vendor_combo)
+
+        # connect combo box to update function
+        self.gpu_vendor_combo.currentIndexChanged.connect(
+            self.update_gpu_vendor)
+
+        # set the default value based on settings (if available)
+        if "gpu_vendor" in self.main_window.settings:
+            selected_gpu = self.main_window.settings["gpu_vendor"]
+            self.gpu_vendor_combo.setCurrentText(selected_gpu)
+
+        self.layout.addWidget(self.gpu_vendor_container,
+                              alignment=Qt.AlignmentFlag.AlignTop)
+
+        self.setLayout(self.layout)
+
+    def update_cpu_vendor(self):
+        selected_cpu = self.cpu_vendor_combo.currentText()
+        self.main_window.settings["cpu_vendor"] = str(selected_cpu)
+
+    def update_gpu_vendor(self):
+        selected_gpu = self.gpu_vendor_combo.currentText()
+        self.main_window.settings["gpu_vendor"] = str(selected_gpu)
+
+
 class ViewSettingsPage(QWidget):
     def __init__(self, main_window, parent=None):
         super(ViewSettingsPage, self).__init__(parent)
@@ -324,13 +397,13 @@ class ViewSettingsPage(QWidget):
         self.layout = QVBoxLayout(self)
         self.setLayout(self.layout)
 
-        # Add the "Pick Color" button to the View tab
+        # Add the "Main Color" button to the View tab
         self.color_button = QPushButton('Main Color')
         # Hook button into pick_color()
         self.color_button.clicked.connect(self.pick_color)
         self.layout.addWidget(self.color_button)
 
-        # Add the "Pick Color" button to the View tab
+        # Add the "Font Color" button to the View tab
         self.color_button = QPushButton('Font Color')
         # Hook button into pick_color()
         self.color_button.clicked.connect(self.pick_font_color)

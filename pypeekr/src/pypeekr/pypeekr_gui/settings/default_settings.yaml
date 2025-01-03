@@ -19,3 +19,5 @@ displays:
 ip: "0.0.0.0"
 port: "0000"
 update_rate: 1
+gpu_vendor: "None"
+cpu_vendor: "None"
