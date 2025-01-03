@@ -79,14 +79,32 @@ class DataQueue(QObject):
         self.sensor_url = "http://" + self.ip + ":" + \
             self.port + "/Sensor"
 
-        self.cpu_temp_params = dict(id="/intelcpu/0/temperature/26",
-                                    action="Get")
-        self.cpu_util_params = dict(id="/intelcpu/0/load/0",
-                                    action="Get")
-        self.gpu_temp_params = dict(id="/gpu-nvidia/0/temperature/0",
-                                    action="Get")
-        self.gpu_util_params = dict(id="/gpu-nvidia/0/load/0",
-                                    action="Get")
+        cpu_vendor = self.main_window.settings.get("cpu_vendor", "Intel")
+        gpu_vendor = self.main_window.settings.get("gpu_vendor", "Nvidia")
+
+        if cpu_vendor == "Intel":
+            self.cpu_temp_params = dict(
+                id="/intelcpu/0/temperature/26", action="Get")
+            self.cpu_util_params = dict(id="/intelcpu/0/load/0", action="Get")
+        elif cpu_vendor == "AMD":
+            self.cpu_temp_params = dict(
+                id="/amd-cpu/0/temperature/26", action="Get")
+            self.cpu_util_params = dict(id="/amd-cpu/0/load/0", action="Get")
+
+        if gpu_vendor == "Nvidia":
+            self.gpu_temp_params = dict(
+                id="/gpu-nvidia/0/temperature/0", action="Get")
+            self.gpu_util_params = dict(
+                id="/gpu-nvidia/0/load/0", action="Get")
+        elif gpu_vendor == "AMD":
+            self.gpu_temp_params = dict(
+                id="/gpu-amd/0/temperature/0", action="Get")
+            self.gpu_util_params = dict(id="/gpu-amd/0/load/0", action="Get")
+        elif gpu_vendor == "Intel":
+            self.gpu_temp_params = dict(
+                id="/gpu-intel/0/temperature/0", action="Get")
+            self.gpu_util_params = dict(id="/gpu-intel/0/load/0", action="Get")
+
         self.ram_usage_params = dict(id="/ram/data/0",
                                      action="Get")
         self.ram_util_params = dict(id="/ram/load/0",
