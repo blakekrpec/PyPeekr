@@ -1,7 +1,7 @@
 import platform
 
-from pypi_monitor.pypi_client import windows_client
-from pypi_monitor.pypi_client import linux_client
+from pypeekr.pypeekr_client import windows_client
+from pypeekr.pypeekr_client import linux_client
 
 
 class Client():

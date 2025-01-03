@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from pypi_monitor.pypi_server import linux_server_data
+from pypeekr.pypeekr_server import linux_server_data
 
 # flask app to handle http request for data from linux server
 app = Flask(__name__)

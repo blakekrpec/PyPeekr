@@ -25,28 +25,25 @@ else
     echo "python3-venv installed successfully."
 fi
 
-#creating settings location on host
-
-
 # Check if the directory .test exists
-echo "activating .pypi_monitor venv"
-if [ -d .pypi_monitor ]; then
+echo "activating .pypeekr venv"
+if [ -d .pypeekr ]; then
     # Directory exists
     read -p "The venv already exists. Do you want to override it? (y/n): " user_input
     if [ "$user_input" == "Y" ] || [ "$user_input" == "y" ]; then
-        rm -rf .pypi_monitor
-        python3 -m venv .pypi_monitor
+        rm -rf .pypeekr
+        python3 -m venv .pypeekr
     # elif [ "$user_input" == "N" || "$user_input" == "n"]; then   
     else
         echo "Invalid input. Please enter Y or N."
         exit
     fi
 else
-    python3 -m venv .pypi_monitor
+    python3 -m venv .pypeekr
 fi
 
 #activate the venv
-source .pypi_monitor/bin/activate
+source .pypeekr/bin/activate
 
 #upgrade pip is out of date (less than 23.0.0)
 current_version=$(pip --version | awk '{print $2}')
@@ -55,8 +52,8 @@ if [[ "$(printf '%s\n' "20.0.0" "$current_version" | sort -V | head -n1)" != "23
     pip install --upgrade pip
 fi 
 
-#install pypi_monitor with pip
-pip install -e ./pypi_monitor
+#install pypeekr with pip
+pip install -e ./pypeekr
 
 #create the config dir 
 create_config_dir

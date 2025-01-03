@@ -27,22 +27,22 @@ if %errorlevel% equ 0 (
 
 REM Create venv
 echo Checking if a pyvenv exists, if not will create it.
-if exist .pypi_monitor (
+if exist .pypeekr (
     choice /c yn /m "The venv already exists. Do you want to override it?"
     if errorlevel 2 (
         echo Skipping venv creation.
     ) else (
-        rmdir /s /q .pypi_monitor
-        python3 -m venv .pypi_monitor
+        rmdir /s /q .pypeekr
+        python3 -m venv .pypeekr
     )
 ) else (
     echo Creating the pyvenv.
-    python3 -m venv .pypi_monitor
+    python3 -m venv .pypeekr
 )
 
 REM Activate venv
 echo Activating the pyvenv.
-call .pypi_monitor\Scripts\activate.bat
+call .pypeekr\Scripts\activate.bat
 
 REM Upgrade pip if necessary
 for /f "tokens=2 delims== " %%V in ('pip --version ^| findstr /r /c:"^[^ ]* "') do set "pip_version=%%V"
@@ -53,8 +53,8 @@ if not "%pip_version%" geq "23.0.0" (
 )
 
 REM Install pypi_monitor with pip
-echo Installing pypi_monitor.
-pip install -e ./pypi_monitor
+echo Installing pypeekr.
+pip install -e ./pypeekr
 
 REM create the config dir 
 create_config_dir

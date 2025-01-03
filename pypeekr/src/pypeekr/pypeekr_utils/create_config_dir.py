@@ -1,5 +1,5 @@
 import os
-from pypi_monitor import __name__
+from pypeekr import __name__
 import shutil
 import platform
 from pathlib import Path
@@ -13,13 +13,13 @@ def create_config_dir():
 
     # if windows
     if platform.platform().split('-')[0] == 'Windows':
-        config_dir = str(Path.home())+"\\.config\\pypi_monitor"
+        config_dir = str(Path.home())+"\\.config\\pypeekr"
         if not os.path.exists(config_dir):
             print("creating dir")
             os.makedirs(config_dir)
 
         # construct file path to default settings
-        file_path = "..\\pypi_gui\\settings\\default_settings.yaml"
+        file_path = "..\\pypeekr_gui\\settings\\default_settings.yaml"
         script_dir = os.path.dirname(os.path.abspath(__file__))
         default_settings = os.path.join(script_dir, file_path)
 
@@ -34,13 +34,13 @@ def create_config_dir():
 
     # else linux
     else:
-        config_dir = str(Path.home())+"/.config/pypi_monitor"
+        config_dir = str(Path.home())+"/.config/pypeekr"
         if not os.path.exists(config_dir):
             print("creating dir")
             os.makedirs(config_dir)
 
         # construct file path to default settings
-        file_path = "../pypi_gui/settings/default_settings.yaml"
+        file_path = "../pypeekr_gui/settings/default_settings.yaml"
         script_dir = os.path.dirname(os.path.abspath(__file__))
         default_settings = os.path.join(script_dir, file_path)
 

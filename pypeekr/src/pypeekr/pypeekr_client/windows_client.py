@@ -26,7 +26,7 @@ class DataQueue(QObject):
         # init list with 0s to avoid crashes if server isn't reached
         # other indices under CPU/GPu etc will be added later dynamically
         self.main_window.data = {
-         "CPU": {
+            "CPU": {
                 "name": "",
                 "temp": 0,
                 "min_temp": 0,
@@ -37,7 +37,7 @@ class DataQueue(QObject):
                 "max_util": 0,
                 "avg_util": 0
             },
-         "GPU": {
+            "GPU": {
                 "name": "",
                 "temp": 0,
                 "min_temp": 0,
@@ -48,7 +48,7 @@ class DataQueue(QObject):
                 "max_util": 0,
                 "avg_util": 0
             },
-         "RAM": {
+            "RAM": {
                 "name": "",
                 "usage": 0,
                 "min_usage": 0,
@@ -204,7 +204,7 @@ class DataQueue(QObject):
         avg_key = "avg_" + key
 
         # the requests have min and max values in them, but by maintaining
-        # min and max within pypi_monitor min and max can be reset in the gui
+        # min and max within pypeekr min and max can be reset in the gui
         # without sending a reset request to LibreHardwareMonitor
 
         # if title or key are missing from last_n_datums add them
