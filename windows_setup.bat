@@ -3,12 +3,24 @@
 setlocal
 
 REM Check for Python 3
-python3 --version >nul 2>&1
-if %ERRORLEVEL% equ 0 (
-    echo Python 3 is installed.
+python --version >nul 2>&1
+if errorlevel 1 (
+    echo WARNING: Python is not installed.
+    echo Install Python 3 from the official page: https://www.python.org/downloads/
+    echo An easy way to do this is to get the latest Python version from the Windows Store.
+    exit /b 1
+)
+
+for /f "tokens=2" %%a in ('python --version 2^>^&1') do (
+    set "version=%%a"
+)
+
+set "major_version=%version:~0,1%"
+if %major_version% geq 3 (
+    echo Python %version% is installed. Version is 3 or higher.
 ) else (
-    echo WARNING Python3 is not installed, please install it and rerun.
-    echo An easy way to do this is to get the latest python3 version from the windows store.
+    echo WARNING: Python version is less than 3. Current version is %version%
+    echo Please install Python 3 or higher.
     exit /b 1
 )
 
@@ -33,11 +45,11 @@ if exist .pypeekr (
         echo Skipping venv creation.
     ) else (
         rmdir /s /q .pypeekr
-        python3 -m venv .pypeekr
+        python -m venv .pypeekr
     )
 ) else (
     echo Creating the pyvenv.
-    python3 -m venv .pypeekr
+    python -m venv .pypeekr
 )
 
 REM Activate venv
