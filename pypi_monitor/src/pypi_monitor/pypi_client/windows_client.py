@@ -79,7 +79,7 @@ class DataQueue(QObject):
         self.sensor_url = "http://" + self.ip + ":" + \
             self.port + "/Sensor"
 
-        self.cpu_temp_params = dict(id="/intelcpu/0/temperature/26",
+        self.cpu_temp_params = dict(id="/intelcpu/0/temperature/1",
                                     action="Get")
         self.cpu_util_params = dict(id="/intelcpu/0/load/0",
                                     action="Get")
