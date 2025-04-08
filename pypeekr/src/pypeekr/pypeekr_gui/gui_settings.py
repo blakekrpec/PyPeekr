@@ -1,5 +1,7 @@
 import os
 import yaml
+import platform
+
 from PyQt6.QtWidgets import (QPushButton, QDialog, QVBoxLayout, QHBoxLayout,
                              QColorDialog, QTabWidget, QWidget, QLabel,
                              QLineEdit, QMessageBox, QSlider, QComboBox)
@@ -325,32 +327,34 @@ class EditSettingsPage(QWidget):
         self.main_window = main_window
         self.layout = QVBoxLayout(self)
         self.setLayout(self.layout)
+        self.os = platform.os
 
         # create container layout for cpu label and drop down
-        self.cpu_vendor_container = QWidget(self)
-        cpu_vendor_layout = QVBoxLayout(self.cpu_vendor_container)
+        if self.os == "Windows":
+            self.cpu_vendor_container = QWidget(self)
+            cpu_vendor_layout = QVBoxLayout(self.cpu_vendor_container)
 
-        # create label for cpu vendor
-        self.cpu_vendor_label = QLabel("Select CPU Vendor:", self)
-        cpu_vendor_layout.addWidget(self.cpu_vendor_label)
+            # create label for cpu vendor
+            self.cpu_vendor_label = QLabel("Select CPU Vendor:", self)
+            cpu_vendor_layout.addWidget(self.cpu_vendor_label)
 
-        # create a QComboBox (drop-down menu) for cpu
-        self.cpu_vendor_combo = QComboBox(self)
-        self.cpu_vendor_combo.addItem("Intel")
-        self.cpu_vendor_combo.addItem("AMD")
-        cpu_vendor_layout.addWidget(self.cpu_vendor_combo)
+            # create a QComboBox (drop-down menu) for cpu
+            self.cpu_vendor_combo = QComboBox(self)
+            self.cpu_vendor_combo.addItem("Intel")
+            self.cpu_vendor_combo.addItem("AMD")
+            cpu_vendor_layout.addWidget(self.cpu_vendor_combo)
 
-        # connect combo box to update function
-        self.cpu_vendor_combo.currentIndexChanged.connect(
-            self.update_cpu_vendor)
+            # connect combo box to update function
+            self.cpu_vendor_combo.currentIndexChanged.connect(
+                self.update_cpu_vendor)
 
-        # set the default value based on settings (if available)
-        if "cpu_vendor" in self.main_window.settings:
-            selected_cpu = self.main_window.settings["cpu_vendor"]
-            self.cpu_vendor_combo.setCurrentText(selected_cpu)
+            # set the default value based on settings (if available)
+            if "cpu_vendor" in self.main_window.settings:
+                selected_cpu = self.main_window.settings["cpu_vendor"]
+                self.cpu_vendor_combo.setCurrentText(selected_cpu)
 
-        self.layout.addWidget(self.cpu_vendor_container,
-                              alignment=Qt.AlignmentFlag.AlignTop)
+            self.layout.addWidget(self.cpu_vendor_container,
+                                  alignment=Qt.AlignmentFlag.AlignTop)
 
         # create container layout for gpu label and drop down
         self.gpu_vendor_container = QWidget(self)
