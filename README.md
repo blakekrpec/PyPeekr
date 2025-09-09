@@ -1,7 +1,7 @@
 # PyPeekr
 Python package to use a raspberry + display as a computer stat monitoring screen. 
 
-The project is designed to have a server that hosts the computer stats over a local network. A client then grabs this data and presents it in a GUI on. 
+The project is designed to have a server that hosts the computer stats over a local network. A client then grabs this data and presents it in a GUI. 
 
 Clone the project
 ```
